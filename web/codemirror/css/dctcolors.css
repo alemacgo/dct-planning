@@ -1,0 +1,65 @@
+html {
+  cursor: text;
+}
+
+.editbox {
+  padding: .4em;
+  margin: 0;
+  font-family: monospace;
+  font-size: 12pt;
+  line-height: 1.1em;
+  color: black;
+}
+
+pre.code, .editbox {
+  color: #666666;
+}
+
+.editbox p {
+  margin: 0;
+}
+
+span.dct-delimiter, span.dct-special {
+  color: #666666;
+}
+
+span.dct-operator {
+  color: #00c;
+}
+
+span.dct-error {
+  background-color: #660000;
+  color: #FFFFFF;
+}
+
+span.dct-keyword {
+  color: #1434a8;
+  font-weight: bold;
+}
+
+span.dct-literal {
+  color: #AA7700;
+  /* color: #228811; */
+}
+
+span.dct-identifier, span.dct-func  {
+  color: black;
+}
+
+span.dct-type, span.dct-decorator {
+  color: #02933c;
+}
+
+span.dct-comment {
+  /* color: #AA7700; */
+    color: #666;
+}
+
+span.dct-string, span.dct-bytes, span.dct-raw, span.dct-unicode {
+  color: #A22;
+}
+
+.parentheses {
+    color: #000;
+    background-color: #7b94f7; /* blue */
+}

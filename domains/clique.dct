@@ -1,0 +1,15 @@
+; (exists F in Inj)(forall x y)[f(x) < K & f(y) < K -> E(x,y)]
+
+(so-exists (?F Inj)
+  (and (forall (?y) (exists (?x) (?F ?x ?y)))  ; totality
+       (forall (?x) (forall (?y)
+         (implies (and (< ?x ?y)
+                       (exists (?z) (and (?F ?x ?z) (?K ?z)))
+                       (exists (?z) (and (?F ?y ?z) (?K ?z)))
+                   )
+                   (?E ?x ?y)
+          )
+       ))
+  )
+)
+

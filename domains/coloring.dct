@@ -1,0 +1,20 @@
+(so-exists (?R 1) (so-exists (?G 1) (so-exists (?B 1)
+    (forall (?x) 
+        (and
+            (forall (?y)
+                ; no two adjacent vertices of the same color
+                (implies (?E ?x ?y) (not (or (and (?R ?x) (?R ?y))
+                                             (and (?G ?x) (?G ?y))
+                                             (and (?B ?x) (?B ?y))
+                                          ))
+                )
+            )
+            (or (?R ?x) (?G ?x) (?B ?x))  ; all vertices must be colored
+            ; only one color per vertex
+            (implies (?R ?x) (and (not (?G ?x)) (not (?B ?x))))
+            (implies (?G ?x) (and (not (?R ?x)) (not (?B ?x))))
+            (implies (?B ?x) (and (not (?R ?x)) (not (?G ?x))))
+        )
+    )
+)))
+

@@ -1,0 +1,11 @@
+#! /usr/bin/env bash
+for i in `ls domains/ | grep .dct | sed -e s/.dct$//`; do    
+    mkdir -p problems/$i
+
+    tool/soplan.py --output=problems/$i/$i.pddl domains/$i.dct\
+    > /dev/null
+        echo "Created domain for $i"
+done
+mkdir -p solutions
+./get_problem_directories.py
+./create_problems.py

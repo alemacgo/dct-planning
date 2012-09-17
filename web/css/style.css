@@ -1,0 +1,21 @@
+.all {
+     font-family:"Arial", Arial, sans-serif;
+}
+
+.texta {
+     font-size: 16px;
+     border: 4px solid #333;
+     font-family: monospace;
+}
+
+.CodeMirror-line-numbers {
+    width: 1.2em;
+    color: #000;
+    background-color: #7b94f7; /* blue */
+    text-align: right;
+    padding: .4em;
+    margin: 0;
+    font-family: monospace;
+    font-size: 12pt;
+    line-height: 1.1em;
+}

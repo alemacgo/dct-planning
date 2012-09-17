@@ -1,0 +1,15 @@
+Configure the benchmarks you want in the file get_problem_directories:
+  it is possible to adjust the graph size (number of nodes), the probability
+  of an edge (Bollobás), and others depending on the domain.
+Then, run 'setup'. Generating the PDDL problem
+  with the default settings may take a while.
+After this step, the folder 'problems' will contain the generated PDDL problems.
+
+To solve these, the script solve_all may be useful: it takes the horizon windows
+  limits into account when calling M to solve the problems.
+
+The scripts bash_results.py and results.py (the latter receives a folder as argument)
+    may be useful for analyzing the solutions.
+
+The directory 'chromatic' has some of our benchmarks for determining the
+  chromatic number of a graph using our k-colorability domain.

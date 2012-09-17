@@ -1,0 +1,10 @@
+; these include establish_goal, set and move_on
+; problem (minBound, maxBound)
+
+; Substract 1 from these numbers when running M (horizon 0 counts)
+clique (2n+4, 3n+7) ; VERIFIED
+sat (n+5, n+6) ; VERIFIED
+matching (3n+4, 3n+6) ; VERIFIED
+coloring (2n+4, 2n+6) ; VERIFIED
+hamiltonian (n+3, n+10) ; VERIFIED
+kcolorability (2n+4, 3n+6) ; VERIFIED

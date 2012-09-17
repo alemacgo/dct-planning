@@ -1,0 +1,14 @@
+(so-exists (?F Inj)
+    (so-exists (?G Inj)
+        (and
+            (forall (?x) (exists (?y) (?F ?x ?y))) ; F is total
+            (forall (?x) (exists (?y) (?G ?x ?y))) ; G is total
+            (forall (?x) (forall (?y) (forall (?z)
+                (implies (and (?F ?x ?y) (?G ?x ?z))
+                         (?T ?x ?y ?z)
+                )
+            )))
+        )
+    )
+)
+

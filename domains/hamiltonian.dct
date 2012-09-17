@@ -1,0 +1,19 @@
+; (exists F in Inj)(forall x)[x < MAX -> E(f(x),f(x+1))]
+
+; (signature (E 2))
+
+(so-exists (?F Inj)
+  (forall (?x)
+     (implies (< ?x MAX)
+              (exists (?y1)
+                (and (?F ?x ?y1)
+                     (exists (?y2)
+                       (and (exists (?x2) (and (SUC ?x ?x2) (?f ?x2 ?y2)))
+                            (?E ?y1 ?y2))
+                     )
+                )
+              )
+     )
+   )
+)
+

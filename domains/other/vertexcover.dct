@@ -1,0 +1,14 @@
+(so-exists (?F Inj)
+    (forall (?x)  ; we should be able to handle this kind of transformations!
+        (and      ; automatic indentation, web tool
+            (exists (?y) (?F ?y ?x))
+            (forall (?y) (implies
+                            (?E ?x ?y)
+                            (exists (?z)
+                                (and (?K ?z) 
+                                     (or (?F ?x ?z) (?F ?y ?z))))
+                         )
+            )
+        )
+    )
+)
