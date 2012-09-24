@@ -138,7 +138,7 @@
 \newcommand*{\authors}[1]{\def\authornames{#1}}
 \newcommand*{\addresses}[1]{\def\addressnames{#1}}
 \newcommand*{\university}[1]{\def\univname{#1}}
-\newcommand*{\UNIVERSITY}[1]{\def\UNIVNAME{#1}}
+\newcommand*{\UNIVERSITY}[1]{}
 \newcommand*{\department}[1]{\def\deptname{#1}}
 \newcommand*{\DEPARTMENT}[1]{\def\DEPTNAME{#1}}
 \newcommand*{\group}[1]{\def\groupname{#1}}
@@ -228,22 +228,9 @@
 { 
   \btypeout{Abstract Page}
   \thispagestyle{plain}
-  \null\vfil
   \begin{center}
     \setlength{\parskip}{0pt}
-    {\normalsize \UNIVNAME \par}
-    \bigskip
-    {\huge{\textbf{Resumen}} \par}
-    \bigskip
-    {\normalsize \facname \par}
-    {\normalsize \deptname \par}
-    \bigskip
-    {\normalsize Ingeniería de la Computación\par}
-    \bigskip
-    {\normalsize\bf \@title \par}
-    \medskip
-    {\normalsize por \authornames \par}
-    \bigskip
+    {\bf{\textbf{Resumen}} \par}
   \end{center}
 }
 {
@@ -346,7 +333,7 @@
 \btypeout{Agradecimientos}
 \addtotoc{Agradecimientos}
 \thispagestyle{plain}
-\begin{center}{\huge{\textbf{Agradecimientos}} \par}\end{center}
+{\huge{\textbf{Agradecimientos}} \par}
 {\normalsize #1}
 \vfil\vfil\null
 
