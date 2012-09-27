@@ -17,12 +17,11 @@
 \usepackage{epigraph}
 \usepackage{natbib}
 \usepackage[utf8]{inputenc}
-\usepackage{babelbib} % Bibliografia en españ±ol
+\usepackage{babelbib} % Bibliografia en español
 %\usepackage[letterpaper, inner=3cm, outer=2cm]{geometry}
 %\addtolength[\topmargin]{-1.5cm}
 %\addtolength[\textheight]{4cm}
 
-% Paquetes para presentar una tesis decente.
 %\usepackage{setspace,cite} % Doble espacio para texto, espacio singular para
                            % los caption y pie de pagina
 
@@ -38,7 +37,7 @@
 \floatname{algorithm}{Algoritmo}
 
 % Definiciones para definicions, teoremas y lemas
-\theoremstyle{definition} \newtheorem{definicion}{Definici\'{o}n}
+\theoremstyle{definition} \newtheorem{definicion}{Definición}
 \theoremstyle{plain} \newtheorem{teorema}{Teorema}
 \theoremstyle{plain} \newtheorem{lema}{Lema}
 
@@ -143,9 +142,9 @@ Agradecimientos aquí.
 \listoftables  % Write out the List of Tables
 
 %% ----------------------------------------------------------------
-\lhead{\emph{Lista de Algoritmos}} % Set the left side page header to "List of Algorithms"
-\addtotoc{Lista de Algoritmos}
-\listofalgorithms % Write out the List of Algorithms
+%\lhead{\emph{Lista de Algoritmos}} % Set the left side page header to "List of Algorithms"
+%\addtotoc{Lista de Algoritmos}
+%\listofalgorithms % Write out the List of Algorithms
 
 %% ----------------------------------------------------------------
 \setstretch{1.5}  % Set the line spacing to 1.5, this makes the following tables easier to read
@@ -154,18 +153,6 @@ Agradecimientos aquí.
 \listofsymbols{ll}  % Include a list of Abbreviations (a table of two columns)
 {
 % \textbf{Acronym} & \textbf{W}hat (it) \textbf{S}tands \textbf{F}or \\
-
-\textbf{2D}  & Dos \textbf{D}imensiones \\
-\textbf{3D}  & Tres \textbf{D}imensiones \\
-\textbf{ILS} & Búsqueda Local Iterada (\textbf{I}terated \textbf{L}ocal \textbf{S}earch) \\
-\textbf{LS}  & Búsqueda Local (\textbf{L}ocal \textbf{S}earch) \\
-\textbf{SA}  & Recocido Simulado (\textbf{S}imulated \textbf{A}nnealing) \\
-\textbf{TAT} & \textbf{T}he \textbf{A}stonishing \textbf{T}ribe \\
-\textbf{TSP} & Problema del Agente Viajero (\textbf{T}raveling \textbf{S}alesman \textbf{P}roblem) \\
-\textbf{QAP} & Problema de Asignación Cuadrática (\textbf{Q}uadratic \textbf{A}ssignment \textbf{P}roblem) \\
-\textbf{VAP} & Problema de asignación de vértices (\textbf{V}ertex \textbf{A}ssignment \textbf{P}roblem) \\
-\textbf{VRP} & Problema de enrutamiento de vehículos (\textbf{V}ehicle \textbf{R}outing \textbf{P}roblem) \\
-
 }
 
 %% ----------------------------------------------------------------
@@ -188,12 +175,12 @@ Agradecimientos aquí.
 % Just uncomment the lines as you write the chapters
 
 \input{./capitulos/introduccion}
-%\input{./capitulos/capitulo1}
-%\input{./capitulos/capitulo2}
-%\input{./capitulos/capitulo3}
-%\input{./capitulos/capitulo4}
+\input{./capitulos/capitulo1}
+\input{./capitulos/capitulo2}
+\input{./capitulos/capitulo3}
+\input{./capitulos/capitulo4}
 %\input{./capitulos/capitulo5}
-%\input{./capitulos/conclusiones}
+\input{./capitulos/conclusiones}
 
 %% ----------------------------------------------------------------
 % Now begin the Appendices, including them as separate files
@@ -202,7 +189,7 @@ Agradecimientos aquí.
 
 \appendix % Cue to tell LaTeX that the following 'chapters' are Appendices
 
-%\input{./apendices/apendiceA}
+\input{./apendices/apendiceA}
 
 \addtocontents{toc}{\vspace{2em}}  % Add a gap in the Contents, for aesthetics
 \backmatter
