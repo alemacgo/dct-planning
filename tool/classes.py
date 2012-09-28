@@ -245,8 +245,8 @@ class SoWff(LogicalFormula):
         parameters = ":parameters\t(" + " ".join(variables_list) + ")"
         precondition = ":precondition\t(and (" + coin_predicate + " ".join(variables_list) + ") "\
                              + free_condition + "" + iterateFluent + ")"
-        effects = ":effect\t\t\t(and (not (" + coin_predicate + " ".join(variables_list) + ")) (not (" +\
-                            free_condition + ")) (" + predicate + " " + " ".join(variables_list) +")" + baton + ")\n\t)"
+        effects = ":effect\t\t\t(and (not (" + coin_predicate + " ".join(variables_list) + ")) (not " +\
+                            free_condition + ") (" + predicate + " " + " ".join(variables_list) +")" + baton + ")\n\t)"
         
         actions += "\n\t\t".join([prefix + name, parameters, precondition, effects]) + "\n\t"
             
