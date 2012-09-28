@@ -36,7 +36,6 @@
 		:effect			(and (not (coin_t  ?iv0)) (not (t  ?iv0)) (not_t  ?iv0) (coin_t  ?iv1) )
 	)
 	(:action one_plus_one_final_t
-		:parameters	( max)
 		:precondition	(and (itarate_t) ( max) (t  max))
 		:effect	(and (not (itarate_t) ) (not (itarate_t) ) (not (coin_t  max)) (not (t  max)) (not_t  max) (holds_soforall_t) )
 	)

@@ -277,7 +277,7 @@ class SoWff(LogicalFormula):
         
         #Final case
         name = "one_plus_one_final_" + predicate
-        # parameters = ":parameters\t(" + arity*' max' + ")" 
+        parameters = ""
         precondition = ":precondition\t(and" + iterateFluent + "(" + arity*' max' + ") (" + \
                          predicate + " " + arity*' max' +"))"
         effects = ":effect\t(and (not" + iterateFluent + ") (not" + iterateFluent + ") (not (" + coin_predicate + arity*' max' + ")) " +\
@@ -285,7 +285,7 @@ class SoWff(LogicalFormula):
                   "(not_" + predicate + " " + arity*' max' + ") " +\
                   "(holds_soforall_" + predicate + ") )\n\t)"
                   
-        actions += "\n\t\t".join([prefix + name, parameters, precondition, effects]) + "\n\t"
+        actions += "\n\t\t".join([prefix + name, precondition, effects]) + "\n\t"
         
         global_fluents.add("(holds_soforall_" + predicate + ")")
         
