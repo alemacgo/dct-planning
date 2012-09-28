@@ -252,7 +252,7 @@ class SoWff(LogicalFormula):
             
         #One plus One base case
         name = "one_plus_one_0_" + predicate
-        parameters = ":parameters\t(" + " ".join(variables_list[:-1]) + " ?iv0" + ")" 
+        parameters = ":parameters\t(" + " ".join(variables_list[:-1]) + " ?iv0 ?iv1)" 
         precondition = ":precondition\t(and " + iterateFluent + "(" + coin_predicate + " ".join(variables_list[:-1]) + " ?iv0) ("\
                          + predicate + " " +  " ".join(variables_list[:-1]) + " ?iv0" + ") (suc ?iv1 ?iv0) )"
         effects = ":effect\t\t\t(and (not (" + coin_predicate + " ".join(variables_list[:-1]) + " ?iv0)) "+\
@@ -265,7 +265,7 @@ class SoWff(LogicalFormula):
         #One plus one n-ary relations
         for i in range(1,arity-1):
             name = "one_plus_one_" + str(i) + "_" + predicate
-            parameters = ":parameters\t(" + " ".join(variables_list[:-i]) + ")"
+            parameters = ":parameters\t(" + " ".join(variables_list[:-i]) + "?iv0 ?iv1)"
             precondition = ":precondition\t(and" + iterateFluent + "(" + coin_predicate + " ".join(variables_list[:-i]) + " ?iv0" + (i-1)*' max' + ") (" + \
                              predicate + " " + " ".join(variables_list[:-i]) + " ?iv0" + (i-1)*' max' + ") (suc ?iv1 ?iv0))"
             effects = ":effect\t(and (not (" + coin_predicate + " ".join(variables_list[:-i]) + " ?iv0" + (i-1)*' max' + ")) " +\

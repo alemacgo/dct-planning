@@ -31,7 +31,7 @@
 		:effect			(and (not (coin_t ?x0)) (not (not_t ?x0)) (t ?x0) (proof) )
 	)
 	(:action one_plus_one_0_t
-		:parameters	( ?iv0)
+		:parameters	( ?iv0 ?iv1)
 		:precondition	(and  (itarate_t) (coin_t  ?iv0) (t  ?iv0) (suc ?iv1 ?iv0) )
 		:effect			(and (not (coin_t  ?iv0)) (not (t  ?iv0)) (not_t  ?iv0) (coin_t  ?iv1) )
 	)
