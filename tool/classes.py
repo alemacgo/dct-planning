@@ -281,7 +281,7 @@ class SoWff(LogicalFormula):
         #Final case
         name = "one_plus_one_final_" + predicate
         parameters = ""
-        precondition = ":precondition\t(and" + iterateFluent + "(" + arity*' max' + ") (" + \
+        precondition = ":precondition\t(and" + iterateFluent + "("+ coin_predicate + arity*' max' + ") (" + \
                          predicate + " " + arity*' max' +"))"
         effects = ":effect\t(and (not" + iterateFluent + ") (not" + iterateFluent + ") (not (" + coin_predicate + arity*' max' + ")) " +\
                    "(not ("+ predicate + " " + arity*' max' + ")) " +\

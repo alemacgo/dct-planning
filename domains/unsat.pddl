@@ -37,7 +37,7 @@
 		:effect			(and (not (coin_t  ?iv0)) (not (t  ?iv0)) (not_t  ?iv0) (coin_t  ?iv1) )
 	)
 	(:action one_plus_one_final_t
-		:precondition	(and (iterate_t) ( max) (t  max))
+		:precondition	(and (iterate_t) (coin_t  max) (t  max))
 		:effect	(and (not (iterate_t) ) (not (iterate_t) ) (not (coin_t  max)) (not (t  max)) (not_t  max) (holds_soforall_t) )
 	)
 	(:action change_for_coin_t
