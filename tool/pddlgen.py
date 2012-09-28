@@ -59,7 +59,6 @@ def get_action_list(formula_tree):
 def get_fluent_list():
     fluent_list = list(generate_fluents())
     fluent_list.sort()
-    fluent_list.append("(guess)")
     fluent_list.append("(proof)")
     fluent_list.append("(holds_goal)")
     return "\t(:predicates\n\t\t" + "\n\t\t".join(fluent_list) + "\n\t)\n"

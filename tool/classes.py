@@ -189,6 +189,24 @@ class SoWff(LogicalFormula):
     def collect_fluents(self):
         return [self.get_fluent()]
                 
+    # Find the fluent that activates the proof of the next subformula
+    # in a metaforic way "pass the baton"
+    def get_baton(self):
+        baton = ""
+        print self._childlist[2]._childlist[0]
+        if isinstance(self._childlist[2]._childlist[0], FoWff):
+            # Fluent to be added at each action of foWff
+            baton = " (proof) "
+        elif isinstance(self._childlist[2]._childlist[0], Operator):
+            # Fluent to be added to let the subformula second order quantifiers start
+            if self._childlist[2]._childlist[0]._info == soexists_keyword:
+                childPredicate = self._childlist[2]._childlist[1]._childlist[0]._info[1:]
+                baton = " (guess_" + childPredicate + ") "
+            elif self._childlist[2]._childlist[0]._info == soforall_keyword:
+                childPredicate = self._childlist[2]._childlist[1]._childlist[0]._info[1:]
+                baton = " (iterate_" + childPredicate + ") "
+        return baton
+        
     def get_soforall(self):
         prefix = "(:action "
         
@@ -199,29 +217,36 @@ class SoWff(LogicalFormula):
         coin_predicate = "coin_"+ predicate + " "
         free_condition = "(not_" + predicate + " " +\
                 " ".join(variables_list) + ")"
-
+        global_fluents.add("(" + coin_predicate + " ".join(variables_list) + ")")
+        global_fluents.add(free_condition)
+         
         variable = "?x"
         variables_list = []
         for i in range(arity):
             variables_list.append(variable + str(i))
         varList = " ".join(variables_list)
         
+        baton = self.get_baton()
+        
         actions = ""
+        
+        iterateFluent = " (itarate_" + predicate + ") "
+        global_fluents.add("(itarate_" + predicate + ")")
         
         # Zero plus one
         name = "zero_plus_one_" + predicate
         parameters = ":parameters\t(" + " ".join(variables_list) + ")\n\t\t"
         preconditions = ":precondition\t(and (" + coin_predicate + " ".join(variables_list) + ") ("\
-                             + free_condition + ") (no_holds_" + predicate +"))\n\t\t"
+                             + free_condition + ")" + iterateFluent + ")\n\t\t"
         effects = ":effect\t\t\t(and (not (" + coin_predicate + " ".join(variables_list) + "))\n\t\t(not (" +\
-                            free_condition + ")) (" + predicate + " " + " ".join(variables_list) +") (prove_subforall_" + predicate + ") )\n\t)"
+                            free_condition + ")) (" + predicate + " " + " ".join(variables_list) +")" + baton + ")\n\t)"
         
         actions += "\n\t\t".join([prefix + name, parameters, precondition, effects]) + "\n"
             
         #One plus One base case
         name = "one_plus_one_0_" + predicate
         parameters = ":parameters\t(" + " ".join(variables_list[:-1]) + " ?iv0" + ")\n\t\t" 
-        precondition = ":precondition\t(and (noholds_soforall_" + predicate + ")(" + coin_predicate + " ".join(variables_list[:-1]) + " ?iv0) ("\
+        precondition = ":precondition\t(and " + iterateFluent + "(" + coin_predicate + " ".join(variables_list[:-1]) + " ?iv0) ("\
                          + predicate + " " +  " ".join(variables_list[:-1]) + " ?iv0" + ") (suc ?iv1 ?iv0) (no_holds_" + predicate +"))\n\t\t"
         effects = ":effect\t\t\t(and (not (" + coin_predicate + " ".join(variables_list[:-1]) + " ?iv0))\n\t\t"+\
                   "(not (" + predicate + " " + " ".join(variables_list[:-1]) + " ?iv0))" +\
@@ -234,7 +259,7 @@ class SoWff(LogicalFormula):
         for i in range(1,arity-1):
             name = "one_plus_one_" + str(i) + "_" + predicate
             parameters = ":parameters\t(" + " ".join(variables_list[:-i]) + " ?iv0" + (i-1)*' max' + ")\n\t\t"
-            precondition = ":precondition\t(and (" + coin_predicate + " ".join(variables_list[:-i]) + " ?iv0" + (i-1)*' max' + ") (" + \
+            precondition = ":precondition\t(and" + iterateFluent + "(" + coin_predicate + " ".join(variables_list[:-i]) + " ?iv0" + (i-1)*' max' + ") (" + \
                              predicate + " " + " ".join(variables_list[:-i]) + " ?iv0" + (i-1)*' max' + ") (suc ?iv1 ?iv0) (no_holds_" + predicate +"))\n\t\t"
             effects = ":effect\t(and (not (" + coin_predicate + " ".join(variables_list[:-i]) + " ?iv0" + (i-1)*' max' + "))" +\
                        "(not ("+ predicate + " " + " ".join(variables_list[:-i]) + " ?iv0" + (i-1)*' max' + "))"+\
@@ -246,26 +271,32 @@ class SoWff(LogicalFormula):
         #Final case
         name = "one_plus_one_final_" + predicate
         parameters = ":parameters\t(" + arity*' max' + ")\n\t\t" 
-        precondition = ":precondition\t(and (" + arity*' max' + ") (" + \
+        precondition = ":precondition\t(and" + iterateFluent + "(" + arity*' max' + ") (" + \
                          predicate + " " + arity*' max' +") (no_holds_" + predicate +"))\n\t\t"
-        effects = ":effect\t(and (not (" + coin_predicate + arity*' max' + "))" +\
+        effects = ":effect\t(and (not" + iterateFluent + ") (not" + iterateFluent + ") (not (" + coin_predicate + arity*' max' + "))" +\
                    "(not ("+ predicate + " " + arity*' max' + "))" +\
                   "(not_" + predicate + " " + arity*' max' + ")" +\
                   "(not (no_holds_forall_" + predicate + ")) (holds_soforall_" + predicate + ") )\n\t)"
                   
         actions += "\n\t\t".join([prefix + name, parameters, precondition, effects]) + "\n"
         
+        global_fluents.add("(holds_soforall_" + predicate + ")")
+        
+        
+        # If this is the final second order quantifier it needs delete
+        # the proof fluent
+        notProofFluent = ""
+        if (baton == " (proof) "):
+            notProofFluent = " (not (proof)) "
+            
         # Action that increments the quantifier of the relation whith the condition
         # that the subformula has already been prooved with the current quantifier
         # state
         name = "change_for_coin_" + predicate        
-        precondition = ":precondition\t(and " + self._childlist[2].get_fluent() + ")\n\t\t"
-        effects = ":effect\t(and (not " + self._childlist[2].get_fluent() + ")(coin_" + predicate + arity*' zero' ") )\n\t)"
+        precondition = ":precondition\t(and" + iterateFluent + self._childlist[2].get_fluent() + ")\n\t\t"
+        effects = ":effect\t(and" + notProofFluent + "(not " + self._childlist[2].get_fluent() + ")(coin_" + predicate + arity*' zero' ") )\n\t)"
         
-        actions += "\n\t\t".join([prefix + name, precondition, effects]) + "\n"
-                
-        global_fluents.add(free_condition)
-        global_fluents.add("(" + coin_predicate + " ".join(variables_list) + ")")
+        actions += "\n\t\t".join([prefix + name, precondition, effects])
         
         return [actions]
         
@@ -298,24 +329,15 @@ class SoWff(LogicalFormula):
         name_false = "set_false_" + predicate
         
         guessFluent = " (guess_" + predicate + ") "
-        proveFluent = " (proove_" + predicate + ") "
+        global_fluents.add("(guess_" + predicate + ")")
+        # Find the fluent that activates the proof of the next subformula
+        baton = self.get_baton()
+                
         # Guess action separates the "guessing relations state" from
         # the "prove the subformula part". Method used for breaking symetries
         guess_action = "(:action end_guess_" + predicate + "\n\t\t" +\
                         ":precondition\t(" + guessFluent + ")\n\t\t" +\
-                        ":effect\t\t(and" + proveFluent + "(not (" + guessFluent + ")))\n\t)"
-        
-        batom = ""
-        if isinstance(self._childlist[2]._childlist[0], FoWff):
-            # Fluent to be added at each action of foWff
-            prove_fowff_precondition_fluent.append(proveFluent)
-        elif isinstance(self._childlist[2]._childlist[0], Operator):
-            # Fluent to be added to let the subformula second order quantifiers
-            # start
-            
-            if self._childlist[2]._childlist[0]._info == "so_exists":
-                batom
-
+                        ":effect\t\t(and" + baton + "(not" + guessFluent + "))\n\t)"
         
         free_condition = "(not_" + predicate + " " +\
                 " ".join(variables_list) + ")"
@@ -330,7 +352,7 @@ class SoWff(LogicalFormula):
                     + ") (not " + free_condition + ") "
         #SetFalse
         precFalse = ":precondition\t(and (" + predicate + " " + " ".join(variables_list) + ") " + guessFluent
-        effFalse = ":effect\t\t(and (" + free_condition + " (not (" + predicate + " " + " ".join(variables_list) + "))   "
+        effFalse = ":effect\t\t(and " + free_condition + " (not (" + predicate + " " + " ".join(variables_list) + "))   "
         
         #Adding constraints to make a relation work as a function or an injective function
         if inj or func: 
@@ -360,12 +382,18 @@ class SoWff(LogicalFormula):
         
         #Establish so-exist -> used when the subformula of so-exist
         #is proved using a guessed relation
+        notProofFluent = ""
+        if (baton == " (proof) "):
+            notProofFluent = " (not (proof)) "
+            
         name = "establish_soexist_" + predicate        
-        precondition = ":precondition\t(and " + self._childlist[2].get_fluent() + proveFluent + ")"
-        effects = ":effect\t(and (not " + self._childlist[2].get_fluent() + ") (holds_" + soexists_keyword +\
-                  "_" + predicate +") (not" + proveFluent + ")) \n\t)"
-        finalAction = "\n\t\t".join([prefix + name, precondition, effects]) + "\n"
+        precondition = ":precondition\t(and " + self._childlist[2].get_fluent() + ")"
+        effects = ":effect\t(and" + notProofFluent + "(not " + self._childlist[2].get_fluent() + ") (holds_" + soexists_keyword +\
+                  "_" + predicate +")) \n\t)"
+        finalAction = "\n\t\t".join([prefix + name, precondition, effects])
 
+        global_fluents.add("(holds_" + soexists_keyword + "_" + predicate +")")
+        #Comment
         return [strue + "\n\t" + sfalse + "\n\t" + guess_action + "\n\t" + finalAction]
         
     # make readable
@@ -532,7 +560,7 @@ class FoWff(LogicalFormula):
                     negFluents += [" (not " + fluent[0] + ")"]
                  
             # print precondition_fluents
-            prec = ":precondition\t(and " + " ".join(precondition_fluents) + " " + prove_fowff_precondition_fluent[0] + ")"
+            prec = ":precondition\t(and " + " ".join(precondition_fluents) + " (proof))"
             
             eff = ":effect\t\t(and " + self.get_fluent() + " " + " ".join(negFluents) + ")\n\t)"
             return ["\n\t\t".join([prefix + name, parameters, prec, eff])]
@@ -548,7 +576,7 @@ class FoWff(LogicalFormula):
 
             operator_list = []
             for index, fluent in enumerate(precondition_fluents):
-                prec = ":precondition\t (and " + fluent + " " + prove_fowff_precondition_fluent[0] + ")"
+                prec = ":precondition\t (and " + fluent + " (proof))"
                 negFluent = ""
                 if fluent[1:7] == "holds_":
                     negFluent =" (not " + fluent + ")"
@@ -569,7 +597,7 @@ class FoWff(LogicalFormula):
             negFluent = ""
             if childFluents[1:7] == "holds_":
                 negFluent =" (not " + childFluents + ")"
-            prec = ":precondition\t (and " + childFluents + " " + prove_fowff_precondition_fluent[0] + ")"
+            prec = ":precondition\t (and " + childFluents + " (proof))"
             eff = ":effect\t\t(and "+ self.get_fluent() + negFluent + "))"
 
             return ["\n\t\t".join([prefix + name, parameters, prec, eff])]
@@ -584,7 +612,7 @@ class FoWff(LogicalFormula):
                 
             name = "establish_forall_" + str(self.id) + "_base"
             parameters = ":parameters\t(" + " ".join(self.free_vars_set) + ")"
-            prec = ":precondition\t (and " + childFluentsBase + " " + prove_fowff_precondition_fluent[0] + ")"
+            prec = ":precondition\t (and " + childFluentsBase + " (proof))"
             eff = ":effect\t\t(and " + self.get_forall_fluent(quantified_variable, zero_keyword) +\
  				  " " + negFluentBase + ")\n\t)"
 			
@@ -609,7 +637,7 @@ class FoWff(LogicalFormula):
             parameters = ":parameters\t(" + " ".join(self.free_vars_set) +\
                     " ?iv0 ?iv1)"
             prec = ":precondition\t(and " + childFluentsInduc_1 + " (suc ?iv0 ?iv1) " + \
-                    childFluentsInduc_2 + " " + prove_fowff_precondition_fluent[0] + ")"
+                    childFluentsInduc_2 + " (proof))"
 
             eff = ":effect\t\t(and " + negFluentInduc_1 + " " + negFluentInduc_2 + " " +\
                     self.get_forall_fluent(quantified_variable, "?iv1") + ")\n\t)"

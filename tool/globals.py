@@ -35,7 +35,6 @@ symbols = {'suc': (2,0)}
 # [(symbol, arity)]
 # e.g. [(not_k, 1), (k, 1), (e, 2)]
 fluents_to_include = {}
-prove_fowff_precondition_fluent = []
 quantified_relations = {}
 
 # Set of constants defined in the signature file
