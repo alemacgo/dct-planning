@@ -265,7 +265,7 @@ class SoWff(LogicalFormula):
         #One plus one n-ary relations
         for i in range(1,arity-1):
             name = "one_plus_one_" + str(i) + "_" + predicate
-            parameters = ":parameters\t(" + " ".join(variables_list[:-i]) + " ?iv0" + (i-1)*' max' + ")"
+            parameters = ":parameters\t(" + " ".join(variables_list[:-i]) + ")"
             precondition = ":precondition\t(and" + iterateFluent + "(" + coin_predicate + " ".join(variables_list[:-i]) + " ?iv0" + (i-1)*' max' + ") (" + \
                              predicate + " " + " ".join(variables_list[:-i]) + " ?iv0" + (i-1)*' max' + ") (suc ?iv1 ?iv0))"
             effects = ":effect\t(and (not (" + coin_predicate + " ".join(variables_list[:-i]) + " ?iv0" + (i-1)*' max' + ")) " +\
@@ -277,7 +277,7 @@ class SoWff(LogicalFormula):
         
         #Final case
         name = "one_plus_one_final_" + predicate
-        parameters = ":parameters\t(" + arity*' max' + ")" 
+        # parameters = ":parameters\t(" + arity*' max' + ")" 
         precondition = ":precondition\t(and" + iterateFluent + "(" + arity*' max' + ") (" + \
                          predicate + " " + arity*' max' +"))"
         effects = ":effect\t(and (not" + iterateFluent + ") (not" + iterateFluent + ") (not (" + coin_predicate + arity*' max' + ")) " +\
