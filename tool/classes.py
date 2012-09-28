@@ -221,17 +221,17 @@ class SoWff(LogicalFormula):
         predicate = self._childlist[1]._childlist[0]._info
         predicate = predicate[1:] # remove the '?'
         
-        coin_predicate = "coin_"+ predicate + " "
-        free_condition = "(not_" + predicate + " " +\
-                " ".join(variables_list) + ")"
-        global_fluents.add("(" + coin_predicate + " ".join(variables_list) + ")")
-        global_fluents.add(free_condition)
-         
         variable = "?x"
         variables_list = []
         for i in range(arity):
             variables_list.append(variable + str(i))
         varList = " ".join(variables_list)
+        
+        coin_predicate = "coin_"+ predicate + " "
+        free_condition = "(not_" + predicate + " " +\
+                " ".join(variables_list) + ")"
+        global_fluents.add("(" + coin_predicate + " ".join(variables_list) + ")")
+        global_fluents.add(free_condition)
         
         baton = self.get_baton()
         
@@ -243,7 +243,7 @@ class SoWff(LogicalFormula):
         # Zero plus one
         name = "zero_plus_one_" + predicate
         parameters = ":parameters\t(" + " ".join(variables_list) + ")\n\t\t"
-        preconditions = ":precondition\t(and (" + coin_predicate + " ".join(variables_list) + ") ("\
+        precondition = ":precondition\t(and (" + coin_predicate + " ".join(variables_list) + ") ("\
                              + free_condition + ")" + iterateFluent + ")\n\t\t"
         effects = ":effect\t\t\t(and (not (" + coin_predicate + " ".join(variables_list) + "))\n\t\t(not (" +\
                             free_condition + ")) (" + predicate + " " + " ".join(variables_list) +")" + baton + ")\n\t)"
