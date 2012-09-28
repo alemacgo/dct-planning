@@ -211,8 +211,8 @@ class SoWff(LogicalFormula):
                 baton = " (guess_" + childPredicate + ") "
             elif formula._childlist[0]._info == soforall_keyword:
                 childPredicate = formula._childlist[1]._childlist[0]._info[1:]
-                baton = " (iterate_" + childPredicate + ") (begin_forall_" + childPredicate + ") "
-                global_fluents.add("(begin_forall_" + childPredicate + ")")
+                baton = " (iterate_" + childPredicate + ") (begin_so-forall_" + childPredicate + ") "
+                global_fluents.add("(begin_so-forall_" + childPredicate + ")")
         return baton
         
     def get_soforall(self):
@@ -309,9 +309,9 @@ class SoWff(LogicalFormula):
         actions += "\n\t\t".join([prefix + name, precondition, effects]) + "\n\t"
         
         # Makes the proof of the quantifier when all the relations is false
-        name = "init_forall_" + predicate        
-        precondition = ":precondition\t(and" + iterateFluent + "(begin_forall_" + predicate + ")"
-        effects = ":effect\t(and (not (begin_forall_" + predicate + "))" + baton + ")\n\t)"
+        name = "init_so-forall_" + predicate        
+        precondition = ":precondition\t(and" + iterateFluent + "(begin_so-forall_" + predicate + "))"
+        effects = ":effect\t(and (not (begin_so-forall_" + predicate + "))" + baton + ")\n\t)"
         
         actions += "\n\t\t".join([prefix + name, precondition, effects])
         
