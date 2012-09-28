@@ -13,16 +13,15 @@ def generate_fluents():
     for fluent in global_fluents:
         fluent = fluent.replace('(', '').replace(')', '').split()
         name = fluent[0]
-        
         arguments = fluent[1:]
-
+        index = 0
         for index, _ in enumerate(arguments):
             arguments[index] = variable_basename + str(index)
 
         fluent_str = "(" + name + " " + " ".join(arguments) + ")"
         new_fluents.add(fluent_str)
 
-        if name.find('holds') == -1:
+        if name.find('holds') == -1 and index:
             global fluents_to_include
             fluents_to_include[name] = index+1
     return new_fluents
@@ -46,11 +45,11 @@ def get_action_list(formula_tree):
 
     goal_fluent = formula_tree.get_goal_action()
     # remember formula must be a sentence!
-
+    baton = global_formulas[0].get_baton(True)
     # use ljust!
-    dummy_action = "(:action begin-proof\n\t\t:precondition\t(guess)\n\t\t:effect\t\t(and (proof) (not (guess)))\n\t)"
+    dummy_action = "(:action begin-proof\n\t\t:effect\t\t"+ baton + "\n\t)"
     goal_action = "(:action prove-goal\n\t\t:precondition\t (and " +\
-            goal_fluent + " (proof))\n\t\t:effect\t\t(holds_goal)\n\t)"
+            global_formulas[0].get_fluent() + ")\n\t\t:effect\t\t(holds_goal)\n\t)"
     action_list.append(dummy_action)
     action_list.append(goal_action)
 

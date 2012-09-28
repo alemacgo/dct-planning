@@ -191,19 +191,26 @@ class SoWff(LogicalFormula):
                 
     # Find the fluent that activates the proof of the next subformula
     # in a metaforic way "pass the baton"
-    def get_baton(self):
+    # When begin generates de baton to pass to the first formula
+    # otherwise, it selects the baton to pass to the next formula
+    def get_baton(self, begin = False):
         baton = ""
-        print self._childlist[2]._childlist[0]
-        if isinstance(self._childlist[2]._childlist[0], FoWff):
-            # Fluent to be added at each action of foWff
+        formula = ""
+        if begin:
+            formula = self
+        else:
+            formula = self._childlist[2]
+        # print self._childlist[2]._childlist[0]
+        if isinstance(formula._childlist[0], FoWff):
+            # Fluent to be added at each action of foWff                
             baton = " (proof) "
-        elif isinstance(self._childlist[2]._childlist[0], Operator):
+        elif isinstance(formula._childlist[0], Operator):
             # Fluent to be added to let the subformula second order quantifiers start
-            if self._childlist[2]._childlist[0]._info == soexists_keyword:
-                childPredicate = self._childlist[2]._childlist[1]._childlist[0]._info[1:]
+            if formula._childlist[0]._info == soexists_keyword:
+                childPredicate = formula._childlist[1]._childlist[0]._info[1:]
                 baton = " (guess_" + childPredicate + ") "
-            elif self._childlist[2]._childlist[0]._info == soforall_keyword:
-                childPredicate = self._childlist[2]._childlist[1]._childlist[0]._info[1:]
+            elif formula._childlist[0]._info == soforall_keyword:
+                childPredicate = formula._childlist[1]._childlist[0]._info[1:]
                 baton = " (iterate_" + childPredicate + ") "
         return baton
         
@@ -272,11 +279,11 @@ class SoWff(LogicalFormula):
         name = "one_plus_one_final_" + predicate
         parameters = ":parameters\t(" + arity*' max' + ")\n\t\t" 
         precondition = ":precondition\t(and" + iterateFluent + "(" + arity*' max' + ") (" + \
-                         predicate + " " + arity*' max' +") (no_holds_" + predicate +"))\n\t\t"
+                         predicate + " " + arity*' max' +"))\n\t\t"
         effects = ":effect\t(and (not" + iterateFluent + ") (not" + iterateFluent + ") (not (" + coin_predicate + arity*' max' + "))" +\
                    "(not ("+ predicate + " " + arity*' max' + "))" +\
                   "(not_" + predicate + " " + arity*' max' + ")" +\
-                  "(not (no_holds_forall_" + predicate + ")) (holds_soforall_" + predicate + ") )\n\t)"
+                  "(holds_soforall_" + predicate + ") )\n\t)"
                   
         actions += "\n\t\t".join([prefix + name, parameters, precondition, effects]) + "\n"
         
@@ -306,16 +313,17 @@ class SoWff(LogicalFormula):
         func = False
         arity = self._childlist[1]._childlist[1]._info
         
-        if arity == 2: #Might be a function
-            if predicate in func_symbols:
-                func = True
-            elif predicate in inj_symbols:
-                inj = True
         # @Dace: 9063340-45
         # Get predicate asosiated with the quantifier
         predicate = self._childlist[1]._childlist[0]._info
         predicate = predicate[1:] # remove the '?'
         
+        if arity == 2: #Might be a function
+            if predicate in func_symbols:
+                func = True
+            elif predicate in inj_symbols:
+                inj = True
+                
         # Getting parameters of the actions depending on the relation arity
         variable = "?x"
         variables_list = []
@@ -393,7 +401,7 @@ class SoWff(LogicalFormula):
         finalAction = "\n\t\t".join([prefix + name, precondition, effects])
 
         global_fluents.add("(holds_" + soexists_keyword + "_" + predicate +")")
-        #Comment
+
         return [strue + "\n\t" + sfalse + "\n\t" + guess_action + "\n\t" + finalAction]
         
     # make readable
