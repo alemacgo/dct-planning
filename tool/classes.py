@@ -344,7 +344,7 @@ class SoWff(LogicalFormula):
         # Guess action separates the "guessing relations state" from
         # the "prove the subformula part". Method used for breaking symetries
         guess_action = "(:action end_guess_" + predicate + "\n\t\t" +\
-                        ":precondition\t(" + guessFluent + ")\n\t\t" +\
+                        ":precondition\t" + guessFluent + "\n\t\t" +\
                         ":effect\t\t(and" + baton + "(not" + guessFluent + "))\n\t)"
         
         free_condition = "(not_" + predicate + " " +\
