@@ -38,7 +38,7 @@
 	)
 	(:action one_plus_one_final_t
 		:precondition	(and (iterate_t) (coin_t  max) (t  max))
-		:effect	(and (not (iterate_t) ) (not (iterate_t) ) (not (coin_t  max)) (not (t  max)) (not_t  max) (holds_soforall_t) )
+		:effect	(and (not (iterate_t) ) (not (coin_t  max)) (not (t  max)) (not_t  max) (holds_soforall_t) )
 	)
 	(:action change_for_coin_t
 		:precondition	(and (iterate_t) (holds_exists_9 ))
@@ -55,7 +55,7 @@
 	(:action establish_forall_8_base
 		:parameters	(?y)
 		:precondition	 (and (holds_or_7 ?y zero) (proof))
-		:effect		(and (holds_forall_8 ?y zero) )
+		:effect		(and (holds_forall_8 ?y zero)  (not (holds_or_7 ?y zero)))
 	)
 	(:action establish_forall_8_inductive
 		:parameters	(?y ?iv0 ?iv1)

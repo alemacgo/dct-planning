@@ -283,7 +283,7 @@ class SoWff(LogicalFormula):
         parameters = ""
         precondition = ":precondition\t(and" + iterateFluent + "("+ coin_predicate + arity*' max' + ") (" + \
                          predicate + " " + arity*' max' +"))"
-        effects = ":effect\t(and (not" + iterateFluent + ") (not" + iterateFluent + ") (not (" + coin_predicate + arity*' max' + ")) " +\
+        effects = ":effect\t(and (not" + iterateFluent + ") (not (" + coin_predicate + arity*' max' + ")) " +\
                    "(not ("+ predicate + " " + arity*' max' + ")) " +\
                   "(not_" + predicate + " " + arity*' max' + ") " +\
                   "(holds_soforall_" + predicate + ") )\n\t)"
@@ -323,7 +323,7 @@ class SoWff(LogicalFormula):
         func = False
         arity = self._childlist[1]._childlist[1]._info
         
-        # @Dace: 9063340-45
+        # @Dace: 9063340-45 - Situacion academica (Sencilla -18bsf - 5 dias habiles| rector 90bsf - 20 dias habiles)
         # Get predicate asosiated with the quantifier
         predicate = self._childlist[1]._childlist[0]._info
         predicate = predicate[1:] # remove the '?'
@@ -623,10 +623,10 @@ class FoWff(LogicalFormula):
             quantified_variable = self._childlist[1]._childlist[0]._info
 
             childFluentsBase = self._childlist[2].get_fluent(quantified_variable, zero_keyword)
-                        
+            print childFluentsBase
             negFluentBase = ""
             if childFluentsBase[1:7] == "holds_":
-                negFluentbase =" (not " + childFluentsBase + ")"
+                negFluentBase =" (not " + childFluentsBase + ")"
                 
             name = "establish_forall_" + str(self.id) + "_base"
             parameters = ":parameters\t(" + " ".join(self.free_vars_set) + ")"
