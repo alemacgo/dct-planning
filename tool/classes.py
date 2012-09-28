@@ -238,8 +238,8 @@ class SoWff(LogicalFormula):
         
         actions = ""
         
-        iterateFluent = " (itarate_" + predicate + ") "
-        global_fluents.add("(itarate_" + predicate + ")")
+        iterateFluent = " (iterate_" + predicate + ") "
+        global_fluents.add("(iterate_" + predicate + ")")
         
         # Zero plus one
         name = "zero_plus_one_" + predicate
