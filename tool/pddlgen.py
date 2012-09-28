@@ -47,7 +47,7 @@ def get_action_list(formula_tree):
     # remember formula must be a sentence!
     baton = global_formulas[0].get_baton(True)
     # use ljust!
-    dummy_action = "(:action begin-proof\n\t\t:effect\t\t"+ baton + "\n\t)"
+    dummy_action = "(:action begin-proof\n\t\t:precondition\t(begin)\n\t\t:effect\t\t (and"+ baton + " (not (begin)))\n\t)"
     goal_action = "(:action prove-goal\n\t\t:precondition\t (and " +\
             global_formulas[0].get_fluent() + ")\n\t\t:effect\t\t(holds_goal)\n\t)"
     action_list.append(dummy_action)
@@ -58,7 +58,7 @@ def get_action_list(formula_tree):
 def get_fluent_list():
     fluent_list = list(generate_fluents())
     fluent_list.sort()
-    fluent_list.append("(proof)")
+    fluent_list.append("(begin)")
     fluent_list.append("(holds_goal)")
     return "\t(:predicates\n\t\t" + "\n\t\t".join(fluent_list) + "\n\t)\n"
 
