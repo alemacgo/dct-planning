@@ -242,50 +242,50 @@ class SoWff(LogicalFormula):
         
         # Zero plus one
         name = "zero_plus_one_" + predicate
-        parameters = ":parameters\t(" + " ".join(variables_list) + ")\n\t\t"
+        parameters = ":parameters\t(" + " ".join(variables_list) + ")"
         precondition = ":precondition\t(and (" + coin_predicate + " ".join(variables_list) + ") ("\
-                             + free_condition + ")" + iterateFluent + ")\n\t\t"
-        effects = ":effect\t\t\t(and (not (" + coin_predicate + " ".join(variables_list) + "))\n\t\t(not (" +\
+                             + free_condition + ")" + iterateFluent + ")"
+        effects = ":effect\t\t\t(and (not (" + coin_predicate + " ".join(variables_list) + ")) (not (" +\
                             free_condition + ")) (" + predicate + " " + " ".join(variables_list) +")" + baton + ")\n\t)"
         
-        actions += "\n\t\t".join([prefix + name, parameters, precondition, effects]) + "\n"
+        actions += "\n\t\t".join([prefix + name, parameters, precondition, effects]) + "\n\t"
             
         #One plus One base case
         name = "one_plus_one_0_" + predicate
-        parameters = ":parameters\t(" + " ".join(variables_list[:-1]) + " ?iv0" + ")\n\t\t" 
+        parameters = ":parameters\t(" + " ".join(variables_list[:-1]) + " ?iv0" + ")" 
         precondition = ":precondition\t(and " + iterateFluent + "(" + coin_predicate + " ".join(variables_list[:-1]) + " ?iv0) ("\
-                         + predicate + " " +  " ".join(variables_list[:-1]) + " ?iv0" + ") (suc ?iv1 ?iv0) (no_holds_" + predicate +"))\n\t\t"
-        effects = ":effect\t\t\t(and (not (" + coin_predicate + " ".join(variables_list[:-1]) + " ?iv0))\n\t\t"+\
-                  "(not (" + predicate + " " + " ".join(variables_list[:-1]) + " ?iv0))" +\
-                  "(not_" + predicate + " " + " ".join(variables_list[:-1]) + " ?iv0)" +\
-                  "(" + coin_predicate + " ".join(variables_list[:-1]) + " ?iv1)" + ")\n\t)"
+                         + predicate + " " +  " ".join(variables_list[:-1]) + " ?iv0" + ") (suc ?iv1 ?iv0) )"
+        effects = ":effect\t\t\t(and (not (" + coin_predicate + " ".join(variables_list[:-1]) + " ?iv0)) "+\
+                  "(not (" + predicate + " " + " ".join(variables_list[:-1]) + " ?iv0)) " +\
+                  "(not_" + predicate + " " + " ".join(variables_list[:-1]) + " ?iv0) " +\
+                  "(" + coin_predicate + " ".join(variables_list[:-1]) + " ?iv1) " + ")\n\t)"
                   
-        actions += "\n\t\t".join([prefix + name, parameters, precondition, effects]) + "\n"
+        actions += "\n\t\t".join([prefix + name, parameters, precondition, effects]) + "\n\t"
                             
         #One plus one n-ary relations
         for i in range(1,arity-1):
             name = "one_plus_one_" + str(i) + "_" + predicate
-            parameters = ":parameters\t(" + " ".join(variables_list[:-i]) + " ?iv0" + (i-1)*' max' + ")\n\t\t"
+            parameters = ":parameters\t(" + " ".join(variables_list[:-i]) + " ?iv0" + (i-1)*' max' + ")"
             precondition = ":precondition\t(and" + iterateFluent + "(" + coin_predicate + " ".join(variables_list[:-i]) + " ?iv0" + (i-1)*' max' + ") (" + \
-                             predicate + " " + " ".join(variables_list[:-i]) + " ?iv0" + (i-1)*' max' + ") (suc ?iv1 ?iv0) (no_holds_" + predicate +"))\n\t\t"
-            effects = ":effect\t(and (not (" + coin_predicate + " ".join(variables_list[:-i]) + " ?iv0" + (i-1)*' max' + "))" +\
-                       "(not ("+ predicate + " " + " ".join(variables_list[:-i]) + " ?iv0" + (i-1)*' max' + "))"+\
-                      "(not_" + predicate + " "  + " ".join(variables_list[:-i]) + " ?iv0" + (i-1)*' max' + ")" +\
+                             predicate + " " + " ".join(variables_list[:-i]) + " ?iv0" + (i-1)*' max' + ") (suc ?iv1 ?iv0))"
+            effects = ":effect\t(and (not (" + coin_predicate + " ".join(variables_list[:-i]) + " ?iv0" + (i-1)*' max' + ")) " +\
+                       "(not ("+ predicate + " " + " ".join(variables_list[:-i]) + " ?iv0" + (i-1)*' max' + ")) "+\
+                      "(not_" + predicate + " "  + " ".join(variables_list[:-i]) + " ?iv0" + (i-1)*' max' + ") " +\
                       "(" + coin_predicate + " ".join(variables_list[:-i]) + " ?iv1" + (i-1)*' zero' + ") )\n\t)"
                       
-            actions += "\n\t\t".join([prefix + name, parameters, precondition, effects]) + "\n"
+            actions += "\n\t\t".join([prefix + name, parameters, precondition, effects]) + "\n\t"
         
         #Final case
         name = "one_plus_one_final_" + predicate
-        parameters = ":parameters\t(" + arity*' max' + ")\n\t\t" 
+        parameters = ":parameters\t(" + arity*' max' + ")" 
         precondition = ":precondition\t(and" + iterateFluent + "(" + arity*' max' + ") (" + \
-                         predicate + " " + arity*' max' +"))\n\t\t"
-        effects = ":effect\t(and (not" + iterateFluent + ") (not" + iterateFluent + ") (not (" + coin_predicate + arity*' max' + "))" +\
-                   "(not ("+ predicate + " " + arity*' max' + "))" +\
-                  "(not_" + predicate + " " + arity*' max' + ")" +\
+                         predicate + " " + arity*' max' +"))"
+        effects = ":effect\t(and (not" + iterateFluent + ") (not" + iterateFluent + ") (not (" + coin_predicate + arity*' max' + ")) " +\
+                   "(not ("+ predicate + " " + arity*' max' + ")) " +\
+                  "(not_" + predicate + " " + arity*' max' + ") " +\
                   "(holds_soforall_" + predicate + ") )\n\t)"
                   
-        actions += "\n\t\t".join([prefix + name, parameters, precondition, effects]) + "\n"
+        actions += "\n\t\t".join([prefix + name, parameters, precondition, effects]) + "\n\t"
         
         global_fluents.add("(holds_soforall_" + predicate + ")")
         
@@ -300,7 +300,7 @@ class SoWff(LogicalFormula):
         # that the subformula has already been prooved with the current quantifier
         # state
         name = "change_for_coin_" + predicate        
-        precondition = ":precondition\t(and" + iterateFluent + self._childlist[2].get_fluent() + ")\n\t\t"
+        precondition = ":precondition\t(and" + iterateFluent + self._childlist[2].get_fluent() + ")"
         effects = ":effect\t(and" + notProofFluent + "(not " + self._childlist[2].get_fluent() + ")(coin_" + predicate + arity*' zero' ") )\n\t)"
         
         actions += "\n\t\t".join([prefix + name, precondition, effects])

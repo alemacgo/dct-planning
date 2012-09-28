@@ -27,30 +27,21 @@
 
 	(:action zero_plus_one_t
 		:parameters	(?x0)
-		
 		:precondition	(and (coin_t ?x0) ((not_t ?x0)) (itarate_t) )
-		
-		:effect			(and (not (coin_t ?x0))
-		(not ((not_t ?x0))) (t ?x0) (proof) )
+		:effect			(and (not (coin_t ?x0)) (not ((not_t ?x0))) (t ?x0) (proof) )
 	)
-(:action one_plus_one_0_t
+	(:action one_plus_one_0_t
 		:parameters	( ?iv0)
-		
-		:precondition	(and  (itarate_t) (coin_t  ?iv0) (t  ?iv0) (suc ?iv1 ?iv0) (no_holds_t))
-		
-		:effect			(and (not (coin_t  ?iv0))
-		(not (t  ?iv0))(not_t  ?iv0)(coin_t  ?iv1))
+		:precondition	(and  (itarate_t) (coin_t  ?iv0) (t  ?iv0) (suc ?iv1 ?iv0) )
+		:effect			(and (not (coin_t  ?iv0)) (not (t  ?iv0)) (not_t  ?iv0) (coin_t  ?iv1) )
 	)
-(:action one_plus_one_final_t
+	(:action one_plus_one_final_t
 		:parameters	( max)
-		
 		:precondition	(and (itarate_t) ( max) (t  max))
-		
-		:effect	(and (not (itarate_t) ) (not (itarate_t) ) (not (coin_t  max))(not (t  max))(not_t  max)(holds_soforall_t) )
+		:effect	(and (not (itarate_t) ) (not (itarate_t) ) (not (coin_t  max)) (not (t  max)) (not_t  max) (holds_soforall_t) )
 	)
-(:action change_for_coin_t
+	(:action change_for_coin_t
 		:precondition	(and (itarate_t) (holds_exists_9 ))
-		
 		:effect	(and (not (proof)) (not (holds_exists_9 ))(coin_t zero) )
 	)
 	(:action establish_exists_9
