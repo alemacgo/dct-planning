@@ -12,11 +12,12 @@
 		(coin_t ?x0)
 		(holds_and_3 ?x0 ?x1)
 		(holds_and_6 ?x0 ?x1)
-		(holds_exists_9 )
-		(holds_forall_8 ?x0 ?x1)
-		(holds_or_7 ?x0 ?x1)
+		(holds_exists_10 )
+		(holds_forall_9 ?x0 ?x1)
+		(holds_or_8 ?x0 ?x1)
 		(holds_soforall_t )
 		(iterate_t )
+		(m ?x0 ?x1)
 		(n ?x0 ?x1)
 		(not_t ?x0)
 		(p ?x0 ?x1)
@@ -41,47 +42,51 @@
 		:effect	(and (not (iterate_t) ) (not (coin_t  max)) (not (t  max)) (not_t  max) (holds_soforall_t) )
 	)
 	(:action change_for_coin_t
-		:precondition	(and (iterate_t) (holds_exists_9 ))
-		:effect	(and (not (proof)) (not (holds_exists_9 ))(coin_t zero) )
+		:precondition	(and (iterate_t) (holds_exists_10 ))
+		:effect	(and (not (proof)) (not (holds_exists_10 ))(coin_t zero) )
 	)
 	(:action init_so-forall_t
 		:precondition	(and (iterate_t) (begin_so-forall_t))
 		:effect	(and (not (begin_so-forall_t)) (proof) )
 	)
-	(:action establish_exists_9
+	(:action establish_exists_10
 		:parameters	( ?y)
-		:precondition	 (and (holds_forall_8 max ?y) (proof))
-		:effect		(and (holds_exists_9 ) (not (holds_forall_8 max ?y)))
-	)
-	(:action establish_forall_8_base
+		:precondition	 (and (holds_forall_9 ?y max) (proof))
+		:effect		(and (holds_exists_10 ) (not (holds_forall_9 ?y max))))
+	(:action establish_forall_9_base
 		:parameters	(?y)
-		:precondition	 (and (holds_or_7 zero ?y) (proof))
-		:effect		(and (holds_forall_8 zero ?y)  (not (holds_or_7 zero ?y)))
+		:precondition	 (and (holds_or_8 ?y zero) (proof))
+		:effect		(and (holds_forall_9 ?y zero)  (not (holds_or_8 ?y zero)))
 	)
-	(:action establish_forall_8_inductive
+	(:action establish_forall_9_inductive
 		:parameters	(?y ?iv0 ?iv1)
-		:precondition	(and (holds_forall_8 ?iv0 ?y) (suc ?iv0 ?iv1) (holds_or_7 ?iv1 ?y) (proof))
-		:effect		(and  (not (holds_forall_8 ?iv0 ?y))  (not (holds_or_7 ?iv1 ?y)) (holds_forall_8 ?iv1 ?y))
+		:precondition	(and (holds_forall_9 ?y ?iv0) (suc ?iv0 ?iv1) (holds_or_8 ?y ?iv1) (proof))
+		:effect		(and  (not (holds_forall_9 ?y ?iv0))  (not (holds_or_8 ?y ?iv1)) (holds_forall_9 ?y ?iv1))
 	)
-	(:action establish_or_7_0
-		:parameters	(?x ?y)
-		:precondition	 (and (holds_and_3 ?x ?y) (proof))
-		:effect		(and (holds_or_7 ?x ?y) (not (holds_and_3 ?x ?y)))
+	(:action establish_or_8_0
+		:parameters	(?y ?x)
+		:precondition	 (and (holds_and_3 ?y ?x) (proof))
+		:effect		(and (holds_or_8 ?y ?x) (not (holds_and_3 ?y ?x)))
 	)
-	(:action establish_or_7_1
-		:parameters	(?x ?y)
-		:precondition	 (and (holds_and_6 ?x ?y) (proof))
-		:effect		(and (holds_or_7 ?x ?y) (not (holds_and_6 ?x ?y)))
+	(:action establish_or_8_1
+		:parameters	(?y ?x)
+		:precondition	 (and (holds_and_6 ?y ?x) (proof))
+		:effect		(and (holds_or_8 ?y ?x) (not (holds_and_6 ?y ?x)))
+	)
+	(:action establish_or_8_2
+		:parameters	(?y ?x)
+		:precondition	 (and (m ?x ?y) (proof))
+		:effect		(and (holds_or_8 ?y ?x))
 	)
 	(:action establish_and_3
-		:parameters	(?x ?y)
+		:parameters	(?y ?x)
 		:precondition	(and (p ?x ?y) (not_t ?x) (proof))
-		:effect		(and (holds_and_3 ?x ?y) )
+		:effect		(and (holds_and_3 ?y ?x) )
 	)
 	(:action establish_and_6
-		:parameters	(?x ?y)
+		:parameters	(?y ?x)
 		:precondition	(and (n ?x ?y) (t ?x) (proof))
-		:effect		(and (holds_and_6 ?x ?y) )
+		:effect		(and (holds_and_6 ?y ?x) )
 	)
 	(:action begin-proof
 		:precondition	(begin)
