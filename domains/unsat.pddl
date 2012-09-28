@@ -8,6 +8,7 @@
 	)
 
 	(:predicates
+		(begin_forall_t )
 		(coin_t ?x0)
 		(holds_and_3 ?x0 ?x1)
 		(holds_and_6 ?x0 ?x1)
@@ -42,6 +43,10 @@
 	(:action change_for_coin_t
 		:precondition	(and (itarate_t) (holds_exists_9 ))
 		:effect	(and (not (proof)) (not (holds_exists_9 ))(coin_t zero) )
+	)
+	(:action init_forall_t
+		:precondition	(and (itarate_t) (begin_forall_t)
+		:effect	(and (not (begin_forall_t)) (proof) )
 	)
 	(:action establish_exists_9
 		:parameters	( ?y)
@@ -79,7 +84,7 @@
 	)
 	(:action begin-proof
 		:precondition	(begin)
-		:effect		 (and (iterate_t)  (not (begin)))
+		:effect		 (and (iterate_t) (begin_forall_t)  (not (begin)))
 	)
 	(:action prove-goal
 		:precondition	 (and (holds_so-forall_t))
