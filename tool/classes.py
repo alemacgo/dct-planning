@@ -286,7 +286,7 @@ class SoWff(LogicalFormula):
         effects = ":effect\t(and (not" + iterateFluent + ") (not (" + coin_predicate + arity*' max' + ")) " +\
                    "(not ("+ predicate + " " + arity*' max' + ")) " +\
                   "(not_" + predicate + " " + arity*' max' + ") " +\
-                  "(holds_soforall_" + predicate + ") )\n\t)"
+                  "(holds_so-forall_" + predicate + ") )\n\t)"
                   
         actions += "\n\t\t".join([prefix + name, precondition, effects]) + "\n\t"
         
