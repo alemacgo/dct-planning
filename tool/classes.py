@@ -257,7 +257,7 @@ class SoWff(LogicalFormula):
         name = "one_plus_one_0_" + predicate
         parameters = ":parameters\t(" + " ".join(variables_list[:-1]) + " ?iv0 ?iv1)" 
         precondition = ":precondition\t(and " + iterateFluent + "(" + coin_predicate + " ".join(variables_list[:-1]) + " ?iv0) ("\
-                         + predicate + " " +  " ".join(variables_list[:-1]) + " ?iv0" + ") (suc ?iv1 ?iv0) )"
+                         + predicate + " " +  " ".join(variables_list[:-1]) + " ?iv0" + ") (suc ?iv0 ?iv1) )"
         effects = ":effect\t\t\t(and (not (" + coin_predicate + " ".join(variables_list[:-1]) + " ?iv0)) "+\
                   "(not (" + predicate + " " + " ".join(variables_list[:-1]) + " ?iv0)) " +\
                   "(not_" + predicate + " " + " ".join(variables_list[:-1]) + " ?iv0) " +\
@@ -270,7 +270,7 @@ class SoWff(LogicalFormula):
             name = "one_plus_one_" + str(i) + "_" + predicate
             parameters = ":parameters\t(" + " ".join(variables_list[:-i]) + "?iv0 ?iv1)"
             precondition = ":precondition\t(and" + iterateFluent + "(" + coin_predicate + " ".join(variables_list[:-i]) + " ?iv0" + (i-1)*' max' + ") (" + \
-                             predicate + " " + " ".join(variables_list[:-i]) + " ?iv0" + (i-1)*' max' + ") (suc ?iv1 ?iv0))"
+                             predicate + " " + " ".join(variables_list[:-i]) + " ?iv0" + (i-1)*' max' + ") (suc ?iv0 ?iv1))"
             effects = ":effect\t(and (not (" + coin_predicate + " ".join(variables_list[:-i]) + " ?iv0" + (i-1)*' max' + ")) " +\
                        "(not ("+ predicate + " " + " ".join(variables_list[:-i]) + " ?iv0" + (i-1)*' max' + ")) "+\
                       "(not_" + predicate + " "  + " ".join(variables_list[:-i]) + " ?iv0" + (i-1)*' max' + ") " +\

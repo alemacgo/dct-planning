@@ -34,7 +34,7 @@
 	)
 	(:action one_plus_one_0_t
 		:parameters	( ?iv0 ?iv1)
-		:precondition	(and  (iterate_t) (coin_t  ?iv0) (t  ?iv0) (suc ?iv1 ?iv0) )
+		:precondition	(and  (iterate_t) (coin_t  ?iv0) (t  ?iv0) (suc ?iv0 ?iv1) )
 		:effect			(and (not (coin_t  ?iv0)) (not (t  ?iv0)) (not_t  ?iv0) (coin_t  ?iv1) )
 	)
 	(:action one_plus_one_final_t
