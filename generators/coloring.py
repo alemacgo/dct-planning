@@ -44,7 +44,7 @@ objects = "\n\t\t".join(bp.generate_obj(num_vert)) + "\n\t)"
 
 pddl_file.write(objects)
 
-pddl_file.write("\n\t(:init\n\t\t(guess)\n\t\t")
+pddl_file.write("\n\t(:init\n\t\t(begin)\n\t\t")
             
 suc_fluents = bp.generate_suc(num_vert)
 free_rel_fluents = bp.generate_free_rel_2arity(num_vert,"f")
