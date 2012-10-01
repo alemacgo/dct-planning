@@ -11,7 +11,7 @@
 		(suc obj1 obj2)
 		(suc obj2 max)
 		(not_t zero)
-		(not_t ob1)
+		(not_t obj1)
 		(not_t obj2)
 		(not_t max)
         (P zero zero)
