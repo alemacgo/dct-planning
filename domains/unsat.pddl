@@ -15,7 +15,7 @@
 		(holds_exists_10 )
 		(holds_forall_9 ?x0 ?x1)
 		(holds_or_8 ?x0 ?x1)
-		(holds_soforall_t )
+		(holds_so-forall_t )
 		(iterate_t )
 		(m ?x0 ?x1)
 		(n ?x0 ?x1)

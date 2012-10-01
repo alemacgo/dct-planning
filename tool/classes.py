@@ -290,7 +290,7 @@ class SoWff(LogicalFormula):
                   
         actions += "\n\t\t".join([prefix + name, precondition, effects]) + "\n\t"
         
-        global_fluents.add("(holds_soforall_" + predicate + ")")
+        global_fluents.add("(holds_so-forall_" + predicate + ")")
         
         
         # If this is the final second order quantifier it needs delete
