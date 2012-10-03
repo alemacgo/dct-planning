@@ -243,10 +243,10 @@ class SoWff(LogicalFormula):
         suc_predicate = "(suc ?iv0 ?iv1)"
         care_condition = ""
         max_obj_predicate = ""
-        min_obj_predicate = ""
+        zero_obj_predicate = ""
         max_parameter = "" #because the default is a constant (max) and does not need to be in the parameters
         max_obj = " max"
-        min_obj = " zero"
+        zero_obj = " zero"
         aditional_prec_predicates = ""
         
         #If normal mode (not efficient one) ignores this if (possible better codification)
@@ -346,7 +346,7 @@ class SoWff(LogicalFormula):
         name = "change_for_coin_" + predicate
         parameters = ":parameters (" + zero_obj + ")"   
         precondition = ":precondition\t(and" + iterateFluent + self._childlist[2].get_fluent() + zero_obj_predicate + ")"
-        effects = ":effect\t(and" + notProofFluent + "(not " + self._childlist[2].get_fluent() + ")(coin_" + predicate + arity*zero_obj ") )\n\t)"
+        effects = ":effect\t(and" + notProofFluent + "(not " + self._childlist[2].get_fluent() + ")(coin_" + predicate + arity*zero_obj + ") )\n\t)"
         
         actions += "\n\t\t".join([prefix + name, parameters, precondition, effects]) + "\n\t"
         
