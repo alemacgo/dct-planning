@@ -6,7 +6,7 @@
 	                (and (?P ?x ?c)
 	                     (or (and (not (?E ?x)) (?T ?x)) (and (?E ?x) (?R ?x)))
 	                )
-	                (and (?N ?x ?y)
+	                (and (?N ?x ?c)
 	                     (or (and (not (?E ?x)) (not (?T ?x))) (and (?E ?x) (not (?R ?x))))
 	                )
 	            )
