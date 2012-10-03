@@ -39,7 +39,7 @@
 	)
 	(:action one_plus_one_final_t
 		:parameters ()
-		:precondition	(and (iterate_t) (coin_t  max) (t  max) )
+		:precondition	(and (iterate_t) (coin_t  max) (t  max))
 		:effect	(and (not (iterate_t) ) (not (coin_t  max)) (not (t  max)) (not_t  max) (holds_so-forall_t) )
 	)
 	(:action change_for_coin_t
