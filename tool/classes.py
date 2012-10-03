@@ -235,7 +235,7 @@ class SoWff(LogicalFormula):
         global_fluents.add(free_condition)
         
         baton = self.get_baton()
-        mode = ""
+        mode = "normal"
         actions = ""
         
         iterateFluent = " (iterate_" + predicate + ") "
@@ -276,7 +276,7 @@ class SoWff(LogicalFormula):
             
             global_fluents.add(suc_predicate)
             global_fluents.add(max_obj_predicate)
-            global_fluents.add(min_obj_predicate)
+            global_fluents.add(zero_obj_predicate)
             max_obj = " ?ivmax"
             max_parameter = max_obj
             zero_obj = " ?ivzero"
