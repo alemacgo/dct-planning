@@ -241,19 +241,20 @@ class SoWff(LogicalFormula):
         iterateFluent = " (iterate_" + predicate + ") "
         global_fluents.add("(iterate_" + predicate + ")")
         suc_predicate = "(suc ?iv0 ?iv1)"
+        care_condition = ""
         max_obj_predicate = ""
         min_obj_predicate = ""
+        max_parameter = "" #because the default is a constant (max) and does not need to be in the parameters
         max_obj = " max"
         min_obj = " zero"
         aditional_prec_predicates = ""
+        
         #If normal mode (not efficient one) ignores this if (possible better codification)
         if mode == "dont_care":
             care_predicate = "care_" + predicate + " "
             dont_care_predicate = "dont_care_" + predicate + " "
             dont_care_condition = " (or " + "(" + dont_care_predicate + (")(" + dont_care_predicate).join(variables_list) +")) "
-            
-            #Care condition
-            aditional_prec_predicates = " (and " + "(" + care_predicate + (")(" + care_predicate).join(variables_list) +"))"
+            care_condition = " (and " + "(" + care_predicate + (")(" + care_predicate).join(variables_list) +"))"
             
             # Zero plus one dont care: pass to the next state of the relation whithout evaluate this one
             name = "zero_plus_one_dc_" + predicate
@@ -267,21 +268,25 @@ class SoWff(LogicalFormula):
             actions += "\n\t\t".join([prefix + name, parameters, precondition, effects]) + "\n\t"
 
         elif mode == "suc_special":
-            
-            suc_predicate = "(so-forall_suc_" + predicate + " ?iv0 ?iv1)"
-            max_obj_predicate = "(so-forall_max_" + predicate + " ?x0)"
-            min_obj_predicate = "(so-forall_min_" + predicate + "?x0)"
+            #Need to block variables named iv*
+            suc_predicate = " (so-forall_suc_" + predicate + " ?iv0 ?iv1)"
+            max_obj_predicate = " (so-forall_max_" + predicate + " ?x0)"
+            zero_obj_predicate = " (so-forall_zero_" + predicate + "?x0)"
+
             global_fluents.add(suc_predicate)
             global_fluents.add(max_obj_predicate)
             global_fluents.add(min_obj_predicate)
             max_obj = " ?ivmax"
-            max_obj = " ?ivzero"
+            max_parameter = max_obj
+            zero_obj = " ?ivzero"
+            
+            
             
         # Zero plus one
         name = "zero_plus_one_" + predicate
         parameters = ":parameters\t(" + " ".join(variables_list) + ")"
         precondition = ":precondition\t(and (" + coin_predicate + " ".join(variables_list) + ") "\
-                             + free_condition + "" + iterateFluent + " " + aditional_prec_predicates ")"
+                             + free_condition + "" + iterateFluent + " " + care_condition + ")"
         effects = ":effect\t\t\t(and (not (" + coin_predicate + " ".join(variables_list) + ")) (not " +\
                             free_condition + ") (" + predicate + " " + " ".join(variables_list) +")" + baton + ")\n\t)"
         
@@ -304,27 +309,27 @@ class SoWff(LogicalFormula):
         #One plus one n-ary relations
         for i in range(1,arity-1):
             name = "one_plus_one_" + str(i) + "_" + predicate
-            parameters = ":parameters\t(" + " ".join(variables_list[:-i]) + "?iv0 ?iv1)"
-            precondition = ":precondition\t(and" + iterateFluent + "(" + coin_predicate + " ".join(variables_list[:-i]) + " ?iv0" + (i-1)*' max' + ") (" + \
-                             predicate + " " + " ".join(variables_list[:-i]) + " ?iv0" + (i-1)*' max' + ") " + suc_predicate + ")"
-            effects = ":effect\t(and (not (" + coin_predicate + " ".join(variables_list[:-i]) + " ?iv0" + (i-1)*' max' + ")) " +\
-                       "(not ("+ predicate + " " + " ".join(variables_list[:-i]) + " ?iv0" + (i-1)*' max' + ")) "+\
-                      "(not_" + predicate + " "  + " ".join(variables_list[:-i]) + " ?iv0" + (i-1)*' max' + ") " +\
-                      "(" + coin_predicate + " ".join(variables_list[:-i]) + " ?iv1" + (i-1)*' zero' + ") )\n\t)"
+            parameters = ":parameters\t(" + " ".join(variables_list[:-i]) + "?iv0 ?iv1" + max_obj + zero_obj +")"
+            precondition = ":precondition\t(and" + iterateFluent + "(" + coin_predicate + " ".join(variables_list[:-i]) + " ?iv0" + (i-1)*max_obj + ") (" + \
+                             predicate + " " + " ".join(variables_list[:-i]) + " ?iv0" + (i-1)*max_obj + ") " + suc_predicate + max_obj_predicate + zero_obj_predicate + ")"
+            effects = ":effect\t(and (not (" + coin_predicate + " ".join(variables_list[:-i]) + " ?iv0" + (i-1)*max_obj + ")) " +\
+                       "(not ("+ predicate + " " + " ".join(variables_list[:-i]) + " ?iv0" + (i-1)*max_obj + ")) "+\
+                      "(not_" + predicate + " "  + " ".join(variables_list[:-i]) + " ?iv0" + (i-1)*max_obj + ") " +\
+                      "(" + coin_predicate + " ".join(variables_list[:-i]) + " ?iv1" + (i-1)*zero_obj + ") )\n\t)"
                       
             actions += "\n\t\t".join([prefix + name, parameters, precondition, effects]) + "\n\t"
         
         #Final case
         name = "one_plus_one_final_" + predicate
-        parameters = ""
-        precondition = ":precondition\t(and" + iterateFluent + "("+ coin_predicate + arity*' max' + ") (" + \
-                         predicate + " " + arity*' max' +"))"
-        effects = ":effect\t(and (not" + iterateFluent + ") (not (" + coin_predicate + arity*' max' + ")) " +\
-                   "(not ("+ predicate + " " + arity*' max' + ")) " +\
-                  "(not_" + predicate + " " + arity*' max' + ") " +\
+        parameters = ":parameters (" + max_obj + ")"
+        precondition = ":precondition\t(and" + iterateFluent + "("+ coin_predicate + arity*max_obj + ") (" + \
+                         predicate + " " + arity*max_obj + max_obj_predicate +"))"
+        effects = ":effect\t(and (not" + iterateFluent + ") (not (" + coin_predicate + arity*max_obj + ")) " +\
+                   "(not ("+ predicate + " " + arity*max_obj + ")) " +\
+                  "(not_" + predicate + " " + arity*max_obj + ") " +\
                   "(holds_so-forall_" + predicate + ") )\n\t)"
                   
-        actions += "\n\t\t".join([prefix + name, precondition, effects]) + "\n\t"
+        actions += "\n\t\t".join([prefix + name, parameters, precondition, effects]) + "\n\t"
         
         global_fluents.add("(holds_so-forall_" + predicate + ")")
         
@@ -338,11 +343,12 @@ class SoWff(LogicalFormula):
         # Action that increments the quantifier of the relation whith the condition
         # that the subformula has already been prooved with the current quantifier
         # state
-        name = "change_for_coin_" + predicate        
-        precondition = ":precondition\t(and" + iterateFluent + self._childlist[2].get_fluent() + ")"
-        effects = ":effect\t(and" + notProofFluent + "(not " + self._childlist[2].get_fluent() + ")(coin_" + predicate + arity*' zero' ") )\n\t)"
+        name = "change_for_coin_" + predicate
+        parameters = ":parameters (" + zero_obj + ")"   
+        precondition = ":precondition\t(and" + iterateFluent + self._childlist[2].get_fluent() + zero_obj_predicate + ")"
+        effects = ":effect\t(and" + notProofFluent + "(not " + self._childlist[2].get_fluent() + ")(coin_" + predicate + arity*zero_obj ") )\n\t)"
         
-        actions += "\n\t\t".join([prefix + name, precondition, effects]) + "\n\t"
+        actions += "\n\t\t".join([prefix + name, parameters, precondition, effects]) + "\n\t"
         
         # Makes the proof of the quantifier when all the relations is false
         name = "init_so-forall_" + predicate        
