@@ -235,29 +235,65 @@ class SoWff(LogicalFormula):
         global_fluents.add(free_condition)
         
         baton = self.get_baton()
-        
+        mode = "dont_care"
         actions = ""
         
         iterateFluent = " (iterate_" + predicate + ") "
         global_fluents.add("(iterate_" + predicate + ")")
-        
+        suc_predicate = "(suc ?iv0 ?iv1)"
+        max_obj_predicate = ""
+        min_obj_predicate = ""
+        max_obj = " max"
+        min_obj = " zero"
+        aditional_prec_predicates = ""
+        #If normal mode (not efficient one) ignores this if (possible better codification)
+        if mode == "dont_care":
+            care_predicate = "care_" + predicate + " "
+            dont_care_predicate = "dont_care_" + predicate + " "
+            dont_care_condition = " (or " + "(" + dont_care_predicate + (")(" + dont_care_predicate).join(variables_list) +")) "
+            
+            #Care condition
+            aditional_prec_predicates = " (and " + "(" + care_predicate + (")(" + care_predicate).join(variables_list) +"))"
+            
+            # Zero plus one dont care: pass to the next state of the relation whithout evaluate this one
+            name = "zero_plus_one_dc_" + predicate
+            parameters = ":parameters\t(" + " ".join(variables_list) + ")"
+            precondition = ":precondition\t(and (" + coin_predicate + " ".join(variables_list) + ") "\
+                                 + free_condition + "" + iterateFluent + " " + dont_care_condition + ")"
+            effects = ":effect\t\t\t(and (not "+ free_condition + ") (" + predicate + " " + " ".join(variables_list) +"))\n\t)"
+            global_fluents.add("(care_" + predicate + " ?x0)")
+            global_fluents.add("(dont_care_" + predicate + " ?x0)")
+            
+            actions += "\n\t\t".join([prefix + name, parameters, precondition, effects]) + "\n\t"
+
+        elif mode == "suc_special":
+            
+            suc_predicate = "(so-forall_suc_" + predicate + " ?iv0 ?iv1)"
+            max_obj_predicate = "(so-forall_max_" + predicate + " ?x0)"
+            min_obj_predicate = "(so-forall_min_" + predicate + "?x0)"
+            global_fluents.add(suc_predicate)
+            global_fluents.add(max_obj_predicate)
+            global_fluents.add(min_obj_predicate)
+            max_obj = " ?ivmax"
+            max_obj = " ?ivzero"
+            
         # Zero plus one
         name = "zero_plus_one_" + predicate
         parameters = ":parameters\t(" + " ".join(variables_list) + ")"
         precondition = ":precondition\t(and (" + coin_predicate + " ".join(variables_list) + ") "\
-                             + free_condition + "" + iterateFluent + ")"
+                             + free_condition + "" + iterateFluent + " " + aditional_prec_predicates ")"
         effects = ":effect\t\t\t(and (not (" + coin_predicate + " ".join(variables_list) + ")) (not " +\
                             free_condition + ") (" + predicate + " " + " ".join(variables_list) +")" + baton + ")\n\t)"
         
         actions += "\n\t\t".join([prefix + name, parameters, precondition, effects]) + "\n\t"
-            
         
+
         
         #One plus One base case
         name = "one_plus_one_0_" + predicate
         parameters = ":parameters\t(" + " ".join(variables_list[:-1]) + " ?iv0 ?iv1)" 
         precondition = ":precondition\t(and " + iterateFluent + "(" + coin_predicate + " ".join(variables_list[:-1]) + " ?iv0) ("\
-                         + predicate + " " +  " ".join(variables_list[:-1]) + " ?iv0" + ") (suc ?iv0 ?iv1) )"
+                         + predicate + " " +  " ".join(variables_list[:-1]) + " ?iv0" + ") " + suc_predicate + " )"
         effects = ":effect\t\t\t(and (not (" + coin_predicate + " ".join(variables_list[:-1]) + " ?iv0)) "+\
                   "(not (" + predicate + " " + " ".join(variables_list[:-1]) + " ?iv0)) " +\
                   "(not_" + predicate + " " + " ".join(variables_list[:-1]) + " ?iv0) " +\
@@ -270,7 +306,7 @@ class SoWff(LogicalFormula):
             name = "one_plus_one_" + str(i) + "_" + predicate
             parameters = ":parameters\t(" + " ".join(variables_list[:-i]) + "?iv0 ?iv1)"
             precondition = ":precondition\t(and" + iterateFluent + "(" + coin_predicate + " ".join(variables_list[:-i]) + " ?iv0" + (i-1)*' max' + ") (" + \
-                             predicate + " " + " ".join(variables_list[:-i]) + " ?iv0" + (i-1)*' max' + ") (suc ?iv0 ?iv1))"
+                             predicate + " " + " ".join(variables_list[:-i]) + " ?iv0" + (i-1)*' max' + ") " + suc_predicate + ")"
             effects = ":effect\t(and (not (" + coin_predicate + " ".join(variables_list[:-i]) + " ?iv0" + (i-1)*' max' + ")) " +\
                        "(not ("+ predicate + " " + " ".join(variables_list[:-i]) + " ?iv0" + (i-1)*' max' + ")) "+\
                       "(not_" + predicate + " "  + " ".join(variables_list[:-i]) + " ?iv0" + (i-1)*' max' + ") " +\
