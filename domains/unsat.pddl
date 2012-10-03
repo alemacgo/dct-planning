@@ -9,9 +9,7 @@
 
 	(:predicates
 		(begin_so-forall_t )
-		(care_t ?x0)
 		(coin_t ?x0)
-		(dont_care_t ?x0)
 		(holds_and_3 ?x0 ?x1)
 		(holds_and_6 ?x0 ?x1)
 		(holds_exists_10 )
@@ -29,14 +27,9 @@
 		(holds_goal)
 	)
 
-	(:action zero_plus_one_dc_t
-		:parameters	(?x0)
-		:precondition	(and (coin_t ?x0) (not_t ?x0) (iterate_t)   (or (dont_care_t ?x0)) )
-		:effect			(and (not (not_t ?x0)) (t ?x0))
-	)
 	(:action zero_plus_one_t
 		:parameters	(?x0)
-		:precondition	(and (coin_t ?x0) (not_t ?x0) (iterate_t)   (and (care_t ?x0)))
+		:precondition	(and (coin_t ?x0) (not_t ?x0) (iterate_t)  )
 		:effect			(and (not (coin_t ?x0)) (not (not_t ?x0)) (t ?x0) (proof) )
 	)
 	(:action one_plus_one_0_t

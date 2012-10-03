@@ -235,7 +235,7 @@ class SoWff(LogicalFormula):
         global_fluents.add(free_condition)
         
         baton = self.get_baton()
-        mode = "dont_care"
+        mode = ""
         actions = ""
         
         iterateFluent = " (iterate_" + predicate + ") "
