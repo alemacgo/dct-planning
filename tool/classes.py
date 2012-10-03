@@ -271,8 +271,8 @@ class SoWff(LogicalFormula):
         elif mode == "suc_special":
             #Need to block variables named iv*
             suc_predicate = " (so-forall_suc_" + predicate + " ?iv0 ?iv1)"
-            max_obj_predicate = " (so-forall_max_" + predicate + " ?x0)"
-            zero_obj_predicate = " (so-forall_zero_" + predicate + "?x0)"
+            max_obj_predicate = " (so-forall_max_" + predicate + " ?ivmax)"
+            zero_obj_predicate = " (so-forall_zero_" + predicate + "?ivzero)"
             
             global_fluents.add(suc_predicate)
             global_fluents.add(max_obj_predicate)

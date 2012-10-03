@@ -23,7 +23,7 @@
 		(p ?x0 ?x1)
 		(so-forall_max_t ?x0)
 		(so-forall_suc_t ?x0 ?x1)
-		(so-forall_zero_t?x0 )
+		(so-forall_zero_t?ivzero )
 		(suc ?x0 ?x1)
 		(t ?x0)
 		(begin)
@@ -42,12 +42,12 @@
 	)
 	(:action one_plus_one_final_t
 		:parameters ( ?ivmax)
-		:precondition	(and (iterate_t) (coin_t  ?ivmax) (t  ?ivmax)  (so-forall_max_t ?x0))
+		:precondition	(and (iterate_t) (coin_t  ?ivmax) (t  ?ivmax)  (so-forall_max_t ?ivmax))
 		:effect	(and (not (iterate_t) ) (not (coin_t  ?ivmax)) (not (t  ?ivmax)) (not_t  ?ivmax) (holds_so-forall_t) )
 	)
 	(:action change_for_coin_t
 		:parameters ( ?ivzero)
-		:precondition	(and (iterate_t) (holds_exists_10 ) (so-forall_zero_t?x0))
+		:precondition	(and (iterate_t) (holds_exists_10 ) (so-forall_zero_t?ivzero))
 		:effect	(and (not (proof)) (not (holds_exists_10 ))(coin_t ?ivzero) )
 	)
 	(:action init_so-forall_t
