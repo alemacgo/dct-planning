@@ -46,11 +46,17 @@ def get_action_list(formula_tree):
     goal_fluent = formula_tree.get_goal_action()
     # remember formula must be a sentence!
     baton = global_formulas[0].get_baton(True)
+    if (baton == "(proof_atom_level)"):
+        notProofFluent = " (not (proof_operator_level)) "
     # use ljust!
     dummy_action = "(:action begin-proof\n\t\t:precondition\t(begin)\n\t\t:effect\t\t (and"+ baton + " (not (begin)))\n\t)"
+    dummy_action2 = "(:action finish-atom-proof\n\t\t:precondition\t(proof_atom_level)\n\t\t:effect\t\t (and (proof_operator_level))\n\t)"
+    
     goal_action = "(:action prove-goal\n\t\t:precondition\t (and " +\
             global_formulas[0].get_fluent() + ")\n\t\t:effect\t\t(holds_goal)\n\t)"
     action_list.append(dummy_action)
+    action_list.append(dummy_action2)
+    
     action_list.append(goal_action)
 
     return "\n\t" + "\n\t".join(action_list) + "\n"  

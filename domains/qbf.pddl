@@ -161,6 +161,10 @@
 		:precondition	(begin)
 		:effect		 (and (iterate_t) (begin_so-forall_t)  (not (begin)))
 	)
+	(:action finish-atom-proof
+		:precondition	(proof_atom_level)
+		:effect		 (and (proof_operator_level))
+	)
 	(:action prove-goal
 		:precondition	 (and (holds_so-forall_t))
 		:effect		(holds_goal)
