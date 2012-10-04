@@ -19,7 +19,7 @@
 		(N obj1 zero)
 		(P max zero)
 		(P zero obj1)
-		(N max obj1)
+		(P max obj1)
 		(P obj1 max)
 		(P max max)
 	)
