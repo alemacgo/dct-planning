@@ -203,7 +203,7 @@ class SoWff(LogicalFormula):
         # print self._childlist[2]._childlist[0]
         if isinstance(formula._childlist[0], FoWff):
             # Fluent to be added at each action of foWff                
-            baton = " (proof_atom_level)"
+            baton = "(proof_atom_level)"
         elif isinstance(formula._childlist[0], Operator):
             # Fluent to be added to let the subformula second order quantifiers start
             if formula._childlist[0]._info == soexists_keyword:
