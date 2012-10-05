@@ -589,7 +589,7 @@ class FoWff(LogicalFormula):
                     " " + " ".join(argument_list) + " " +\
                      max_keyword + ")"
             global_fluents.add(fluent)
-            fowff_fluents.add(("(holds_" + operator + "_" + str(self.id) + " ",len(argument_list)))
+            fowff_fluents.add(("(holds_" + operator + "_" + str(self.id) + " ",len(argument_list) + 1))
             
         else: pass # should not happen
 

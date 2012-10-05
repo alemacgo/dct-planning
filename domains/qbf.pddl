@@ -135,6 +135,7 @@
 		:effect	(and (not (holds_forall_24  max)) (holds_so-exists_r)  (not (proof))
 				(forall (?ivDel0 ?ivDel1) (when (holds_and_9 ?ivDel0 ?ivDel1) (not (holds_and_9 ?ivDel0 ?ivDel1))))
 				(forall (?ivDel0) (when (holds_or_8 ?ivDel0) (not (holds_or_8 ?ivDel0))))
+				(forall (?ivDel0) (when (holds_forall_24 ?ivDel0) (not (holds_forall_24 ?ivDel0))))
 				(forall (?ivDel0 ?ivDel1) (when (holds_or_22 ?ivDel0 ?ivDel1) (not (holds_or_22 ?ivDel0 ?ivDel1))))
 				(forall (?ivDel0) (when (holds_or_20 ?ivDel0) (not (holds_or_20 ?ivDel0))))
 				(forall (?ivDel0 ?ivDel1) (when (holds_and_21 ?ivDel0 ?ivDel1) (not (holds_and_21 ?ivDel0 ?ivDel1))))
@@ -142,8 +143,7 @@
 				(forall (?ivDel0) (when (holds_and_19 ?ivDel0) (not (holds_and_19 ?ivDel0))))
 				(forall (?ivDel0) (when (holds_and_4 ?ivDel0) (not (holds_and_4 ?ivDel0))))
 				(forall (?ivDel0) (when (holds_and_7 ?ivDel0) (not (holds_and_7 ?ivDel0))))
-				(forall (?ivDel0) (when (holds_exists_23 ?ivDel0) (not (holds_exists_23 ?ivDel0))))
-				(forall () (when (holds_forall_24 ) (not (holds_forall_24 )))))
+				(forall (?ivDel0) (when (holds_exists_23 ?ivDel0) (not (holds_exists_23 ?ivDel0)))))
 	)
 	(:action zero_plus_one_t
 		:parameters	(?x0)
