@@ -129,7 +129,7 @@
 	)
 	(:action end_guess_r
 		:precondition	 (guess_r) 
-		:effect		(and (proof)2(not (guess_r) ))
+		:effect		(and (proof) (not (guess_r) ))
 	)
 	(:action establish_soexist_r
 		:precondition	(and (holds_forall_24  max))

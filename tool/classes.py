@@ -408,7 +408,7 @@ class SoWff(LogicalFormula):
         # the "prove the subformula part". Method used for breaking symetries
         guess_action = "(:action end_guess_" + predicate + "\n\t\t" +\
                         ":precondition\t" + guessFluent + "\n\t\t" +\
-                        ":effect\t\t(and " + baton + "(not" + guessFluent + "))\n\t)"
+                        ":effect\t\t(and " + baton + " (not" + guessFluent + "))\n\t)"
         
         free_condition = "(not_" + predicate + " " +\
                 " ".join(variables_list) + ")"
@@ -698,7 +698,7 @@ class FoWff(LogicalFormula):
             #     proof_fluent = " (proof_atom_level)"
                 
             prec = ":precondition\t (and " + childFluents + " " + proof_fluent + ")"
-            eff = ":effect\t\t(and "+ self.get_fluent() + negFluent + "))"
+            eff = ":effect\t\t(and "+ self.get_fluent() + negFluent + ")\n\t)"
 
             return ["\n\t\t".join([prefix + name, parameters, prec, eff])]
         elif operator == forall_keyword:
