@@ -195,7 +195,9 @@ class SoWff(LogicalFormula):
             var_list = []
             for i in range(0,fluents[1]):
                 var_list += ["?ivDel" + str(i)]
-            predicates += "\n\t\t\t\t(forall (" + " ".join(var_list) + ") (when " + fluents[0] + " ".join(var_list) + ") (not " + fluents[0] + " ".join(var_list) + "))))"
+            predicates += "\n\t\t\t\t(forall (" + " ".join(var_list) + ") (when " +\
+                          fluents[0] + " ".join(var_list) + ") (not " + fluents[0] +\
+                          " ".join(var_list) + "))))"
         return predicates    
     # Find the fluent that activates the proof of the next subformula
     # in a metaforic way "pass the baton"
@@ -634,8 +636,8 @@ class FoWff(LogicalFormula):
                 fluent = child.collect_fluents() 
                 precondition_fluents += fluent  
                 
-                if fluent and fluent[0][1:7] == "holds_":
-                    negFluents += [" (not " + fluent[0] + ")"]
+                # if fluent and fluent[0][1:7] == "holds_":
+                #     negFluents += [" (not " + fluent[0] + ")"]
             #         only_atom_operator = False
             #         
             # proof_fluent = " (proof_operator_level)"
@@ -661,8 +663,8 @@ class FoWff(LogicalFormula):
             for index, fluent in enumerate(precondition_fluents):
                 negFluent = ""
                 # only_atom_operator = True
-                if fluent[1:7] == "holds_":
-                    negFluent =" (not " + fluent + ")"
+                # if fluent[1:7] == "holds_":
+                #     negFluent =" (not " + fluent + ")"
                 #     only_atom_operator = False
                 # 
                 # proof_fluent = " (proof_operator_level)"
@@ -687,8 +689,8 @@ class FoWff(LogicalFormula):
             negFluent = ""
             # only_atom_operator = True
             
-            if childFluents[1:7] == "holds_":
-                negFluent =" (not " + childFluents + ")"
+            # if childFluents[1:7] == "holds_":
+            #     negFluent =" (not " + childFluents + ")"
             #     only_atom_operator = False
             # 
             # proof_fluent = " (proof_operator_level)"
@@ -707,8 +709,8 @@ class FoWff(LogicalFormula):
             negFluentBase = ""
             # only_atom_operator = True
             
-            if childFluentsBase[1:7] == "holds_":
-                negFluentBase =" (not " + childFluentsBase + ")"
+            # if childFluentsBase[1:7] == "holds_":
+            #     negFluentBase =" (not " + childFluentsBase + ")"
             #     only_atom_operator = False
             # 
             # proof_fluent = " (proof_operator_level)"
@@ -735,14 +737,14 @@ class FoWff(LogicalFormula):
             negFluentInduc_1 = ""
             # only_atom_operator = True
             
-            if childFluentsInduc_1[1:7] == "holds_":
-                negFluentInduc_1 =" (not " + childFluentsInduc_1 + ")"
+            # if childFluentsInduc_1[1:7] == "holds_":
+            #     negFluentInduc_1 =" (not " + childFluentsInduc_1 + ")"
                 # only_atom_operator = False
                 
                 
             negFluentInduc_2 = ""
-            if childFluentsInduc_2[1:7] == "holds_":
-                negFluentInduc_2 =" (not " + childFluentsInduc_2 + ")"
+            # if childFluentsInduc_2[1:7] == "holds_":
+            #     negFluentInduc_2 =" (not " + childFluentsInduc_2 + ")"
             #     only_atom_operator = False
             # 
             # proof_fluent = " (proof_operator_level)"

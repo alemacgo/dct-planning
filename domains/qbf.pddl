@@ -55,17 +55,17 @@
 	(:action establish_or_20_0
 		:parameters	(?x)
 		:precondition	 (and (holds_and_15 ?x)  (proof))
-		:effect		(and (holds_or_20 ?x) (not (holds_and_15 ?x)))
+		:effect		(and (holds_or_20 ?x))
 	)
 	(:action establish_or_20_1
 		:parameters	(?x)
 		:precondition	 (and (holds_and_19 ?x)  (proof))
-		:effect		(and (holds_or_20 ?x) (not (holds_and_19 ?x)))
+		:effect		(and (holds_or_20 ?x))
 	)
 	(:action establish_and_21
 		:parameters	(?c ?x)
 		:precondition	(and (n ?x ?c) (holds_or_20 ?x)  (proof))
-		:effect		(and (holds_and_21 ?c ?x)  (not (holds_or_20 ?x)))
+		:effect		(and (holds_and_21 ?c ?x) )
 	)
 	(:action establish_and_7
 		:parameters	(?x)
@@ -80,41 +80,42 @@
 	(:action establish_or_8_0
 		:parameters	(?x)
 		:precondition	 (and (holds_and_4 ?x)  (proof))
-		:effect		(and (holds_or_8 ?x) (not (holds_and_4 ?x)))
+		:effect		(and (holds_or_8 ?x))
 	)
 	(:action establish_or_8_1
 		:parameters	(?x)
 		:precondition	 (and (holds_and_7 ?x)  (proof))
-		:effect		(and (holds_or_8 ?x) (not (holds_and_7 ?x)))
+		:effect		(and (holds_or_8 ?x))
 	)
 	(:action establish_and_9
 		:parameters	(?c ?x)
 		:precondition	(and (p ?x ?c) (holds_or_8 ?x)  (proof))
-		:effect		(and (holds_and_9 ?c ?x)  (not (holds_or_8 ?x)))
+		:effect		(and (holds_and_9 ?c ?x) )
 	)
 	(:action establish_or_22_0
 		:parameters	(?c ?x)
 		:precondition	 (and (holds_and_9 ?c ?x)  (proof))
-		:effect		(and (holds_or_22 ?c ?x) (not (holds_and_9 ?c ?x)))
+		:effect		(and (holds_or_22 ?c ?x))
 	)
 	(:action establish_or_22_1
 		:parameters	(?c ?x)
 		:precondition	 (and (holds_and_21 ?c ?x)  (proof))
-		:effect		(and (holds_or_22 ?c ?x) (not (holds_and_21 ?c ?x)))
+		:effect		(and (holds_or_22 ?c ?x))
 	)
 	(:action establish_exists_23
 		:parameters	(?c ?x)
 		:precondition	 (and (holds_or_22 ?c ?x)  (proof))
-		:effect		(and (holds_exists_23 ?c) (not (holds_or_22 ?c ?x))))
+		:effect		(and (holds_exists_23 ?c))
+	)	
 	(:action establish_forall_24_base
 		:parameters	()
 		:precondition	 (and (holds_exists_23 zero)  (proof))
-		:effect		(and (holds_forall_24 zero)  (not (holds_exists_23 zero)))
+		:effect		(and (holds_forall_24 zero) )
 	)
 	(:action establish_forall_24_inductive
 		:parameters	( ?iv0 ?iv1)
 		:precondition	(and (holds_forall_24 ?iv0) (suc ?iv0 ?iv1) (holds_exists_23 ?iv1)  (proof))
-		:effect		(and  (not (holds_forall_24 ?iv0))  (not (holds_exists_23 ?iv1)) (holds_forall_24 ?iv1))
+		:effect		(and   (holds_forall_24 ?iv1))
 	)
 	(:action set_true_r
 		:parameters	(?x0)
@@ -128,7 +129,7 @@
 	)
 	(:action end_guess_r
 		:precondition	 (guess_r) 
-		:effect		(and (proof)(not (guess_r) ))
+		:effect		(and (proof)2(not (guess_r) ))
 	)
 	(:action establish_soexist_r
 		:precondition	(and (holds_forall_24  max))
