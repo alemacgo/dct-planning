@@ -83,7 +83,7 @@
 	)
 	(:action establish_soexist_r
 		:precondition	(and (holds_forall_24  max))
-		:effect	(and (not (proof_operator_level)) (not (holds_forall_24  max)) (holds_so-exists_r)) 
+		:effect	(and  (not (proof_operator_level)) (not (holds_forall_24  max)) (holds_so-exists_r)) 
 	)
 	(:action establish_forall_24_base
 		:parameters	()

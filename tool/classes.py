@@ -452,7 +452,7 @@ class SoWff(LogicalFormula):
             
         name = "establish_soexist_" + predicate        
         precondition = ":precondition\t(and " + self._childlist[2].get_fluent() + ")"
-        effects = ":effect\t(and" + notProofFluent + "(not " + self._childlist[2].get_fluent() + ") (holds_" + soexists_keyword +\
+        effects = ":effect\t(and " + notProofFluent + "(not " + self._childlist[2].get_fluent() + ") (holds_" + soexists_keyword +\
                   "_" + predicate +")) \n\t)"
         finalAction = "\n\t\t".join([prefix + name, precondition, effects])
 
