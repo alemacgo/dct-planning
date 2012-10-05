@@ -50,7 +50,7 @@ def get_action_list(formula_tree):
         notProofFluent = " (not (proof_operator_level)) "
     # use ljust!
     dummy_action = "(:action begin-proof\n\t\t:precondition\t(begin)\n\t\t:effect\t\t (and"+ baton + " (not (begin)))\n\t)"
-    dummy_action2 = "(:action finish-atom-proof\n\t\t:precondition\t(proof_atom_level)\n\t\t:effect\t\t (and (proof_operator_level))\n\t)"
+    dummy_action2 = "(:action finish-atom-proof\n\t\t:precondition\t(proof_atom_level)\n\t\t:effect\t\t (and (not (proof_atom_level) ) (proof_operator_level))\n\t)"
     
     goal_action = "(:action prove-goal\n\t\t:precondition\t (and " +\
             global_formulas[0].get_fluent() + ")\n\t\t:effect\t\t(holds_goal)\n\t)"

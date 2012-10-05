@@ -163,7 +163,7 @@
 	)
 	(:action finish-atom-proof
 		:precondition	(proof_atom_level)
-		:effect		 (and (proof_operator_level))
+		:effect		 (and (not (proof_atom_level) ) (proof_operator_level))
 	)
 	(:action prove-goal
 		:precondition	 (and (holds_so-forall_t))
