@@ -133,12 +133,12 @@
 	(:action establish_forall_24_base
 		:parameters	()
 		:precondition	 (and (holds_exists_23 zero)  (proof_operator_level))
-		:effect		(and (holds_forall_24 zero)  (not (holds_exists_23 zero)) (proof_atom_level))
+		:effect		(and (holds_forall_24 zero)  (not (holds_exists_23 zero)) (proof_atom_level) (not (proof_operator_level)))
 	)
 	(:action establish_forall_24_inductive
 		:parameters	( ?iv0 ?iv1)
 		:precondition	(and (holds_forall_24 ?iv0) (suc ?iv0 ?iv1) (holds_exists_23 ?iv1) (proof_operator_level))
-		:effect		(and  (not (holds_forall_24 ?iv0))  (not (holds_exists_23 ?iv1)) (holds_forall_24 ?iv1) (proof_atom_level))
+		:effect		(and  (not (holds_forall_24 ?iv0))  (not (holds_exists_23 ?iv1)) (holds_forall_24 ?iv1) (proof_atom_level) (not (proof_operator_level)))
 	)
 	(:action establish_exists_23
 		:parameters	(?c ?x)
