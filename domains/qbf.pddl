@@ -142,7 +142,8 @@
 				(forall (?ivDel0) (when (holds_and_19 ?ivDel0) (not (holds_and_19 ?ivDel0))))
 				(forall (?ivDel0) (when (holds_and_4 ?ivDel0) (not (holds_and_4 ?ivDel0))))
 				(forall (?ivDel0) (when (holds_and_7 ?ivDel0) (not (holds_and_7 ?ivDel0))))
-				(forall (?ivDel0) (when (holds_exists_23 ?ivDel0) (not (holds_exists_23 ?ivDel0)))))
+				(forall (?ivDel0) (when (holds_exists_23 ?ivDel0) (not (holds_exists_23 ?ivDel0))))
+				(forall () (when (holds_forall_24 ) (not (holds_forall_24 )))))
 	)
 	(:action zero_plus_one_t
 		:parameters	(?x0)

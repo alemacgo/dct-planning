@@ -341,11 +341,7 @@ class SoWff(LogicalFormula):
         global_fluents.add("(holds_so-forall_" + predicate + ")")
         
         
-        # If this is the final second order quantifier it needs delete
-        # the proof fluent
-        notProofFluent = ""
-        if (baton == "(proof)"):
-            notProofFluent = " (not (proof))" + self.get_delete_all_fowff()
+
             
         # Action that increments the quantifier of the relation whith the condition
         # that the subformula has already been prooved with the current quantifier
@@ -353,6 +349,11 @@ class SoWff(LogicalFormula):
         name = "change_for_coin_" + predicate
         parameters = ":parameters (" + zero_parameter + ")"   
         precondition = ":precondition\t(and" + iterateFluent + self._childlist[2].get_fluent() + zero_obj_predicate + ")"
+        # If this is the final second order quantifier it needs delete
+        # the proof fluent. Needs to be here because the call to get fluent must be made first
+        notProofFluent = ""
+        if (baton == "(proof)"):
+            notProofFluent = " (not (proof))" + self.get_delete_all_fowff()
         effects = ":effect\t(and" + " (not " + self._childlist[2].get_fluent() +\
                   ") (coin_" + predicate + arity*zero_obj + ") " + notProofFluent + ")\n\t)"
         
@@ -450,13 +451,16 @@ class SoWff(LogicalFormula):
         
         #Establish so-exist -> used when the subformula of so-exist
         #is proved using a guessed relation
-        notProofFluent = ""
-        if (baton == "(proof)"):
-            notProofFluent = " (not (proof))" + self.get_delete_all_fowff()
+
             
             
         name = "establish_soexist_" + predicate        
         precondition = ":precondition\t(and " + self._childlist[2].get_fluent() + ")"
+        
+        notProofFluent = ""
+        if (baton == "(proof)"):
+            notProofFluent = " (not (proof))" + self.get_delete_all_fowff()
+            
         effects = ":effect\t(and (not " + self._childlist[2].get_fluent() + ") (holds_" + soexists_keyword +\
                   "_" + predicate +") " + notProofFluent + ")\n\t)"
         finalAction = "\n\t\t".join([prefix + name, precondition, effects])
