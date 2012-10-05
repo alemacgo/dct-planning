@@ -38,7 +38,7 @@ def generate_fluents():
 # formula_tree should be the root of the syntax tree
 def get_action_list(formula_tree):
     action_list = []
-    for formula in global_formulas:
+    for formula in reversed(global_formulas):
         actions = formula.get_actions()
         if actions != None: # atoms do not have associated actions
             action_list += actions
@@ -50,12 +50,12 @@ def get_action_list(formula_tree):
         notProofFluent = " (not (proof_operator_level)) "
     # use ljust!
     dummy_action = "(:action begin-proof\n\t\t:precondition\t(begin)\n\t\t:effect\t\t (and"+ baton + " (not (begin)))\n\t)"
-    dummy_action2 = "(:action finish-atom-proof\n\t\t:precondition\t(proof_atom_level)\n\t\t:effect\t\t (and (not (proof_atom_level) ) (proof_operator_level))\n\t)"
+    # dummy_action2 = "(:action finish-atom-proof\n\t\t:precondition\t(proof_atom_level)\n\t\t:effect\t\t (and (not (proof_atom_level) ) (proof_operator_level))\n\t)"
     
     goal_action = "(:action prove-goal\n\t\t:precondition\t (and " +\
             global_formulas[0].get_fluent() + ")\n\t\t:effect\t\t(holds_goal)\n\t)"
     action_list.append(dummy_action)
-    action_list.append(dummy_action2)
+    # action_list.append(dummy_action2)
     
     action_list.append(goal_action)
 
@@ -66,8 +66,8 @@ def get_fluent_list():
     fluent_list.sort()
     fluent_list.append("(begin)")
     fluent_list.append("(holds_goal)")
-    fluent_list.append("(proof_atom_level)")
-    fluent_list.append("(proof_operator_level)")
+    fluent_list.append("(proof)")
+    # fluent_list.append("(proof_operator_level)")
     return "\t(:predicates\n\t\t" + "\n\t\t".join(fluent_list) + "\n\t)\n"
 
 def get_constants():

@@ -128,6 +128,7 @@ global_formulas = []
 
 # This set will contain fluents referenced by one or more actions
 global_fluents = set()
+fowff_fluents = set()
 
 # Function to 'instantiate' all ocurrences of a variable in a list
 # This is useful for the 'forall' fluents

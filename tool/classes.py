@@ -188,7 +188,15 @@ class SoWff(LogicalFormula):
 
     def collect_fluents(self):
         return [self.get_fluent()]
-                
+        
+    def get_delete_all_fowff(self):
+        predicates = ""
+        for fluents in fowff_fluents:
+            var_list = []
+            for i in range(0,fluents[1]):
+                var_list += ["?ivDel" + str(i)]
+            predicates += "\n\t\t\t\t(forall (" + " ".join(var_list) + ") (when " + fluents[0] + " ".join(var_list) + ") (not " + fluents[0] + " ".join(var_list) + "))))"
+        return predicates    
     # Find the fluent that activates the proof of the next subformula
     # in a metaforic way "pass the baton"
     # When begin generates de baton to pass to the first formula
@@ -203,7 +211,7 @@ class SoWff(LogicalFormula):
         # print self._childlist[2]._childlist[0]
         if isinstance(formula._childlist[0], FoWff):
             # Fluent to be added at each action of foWff                
-            baton = "(proof_atom_level)"
+            baton = "(proof)"
             
         elif isinstance(formula._childlist[0], Operator):
             # Fluent to be added to let the subformula second order quantifiers start
@@ -283,9 +291,6 @@ class SoWff(LogicalFormula):
             zero_obj = " ?ivzero"
             zero_parameter = zero_obj
             
-            
-            
-            
         # Zero plus one
         name = "zero_plus_one_" + predicate
         parameters = ":parameters\t(" + " ".join(variables_list) + ")"
@@ -295,8 +300,6 @@ class SoWff(LogicalFormula):
                             free_condition + ") (" + predicate + " " + " ".join(variables_list) +")" + baton + ")\n\t)"
         
         actions += "\n\t\t".join([prefix + name, parameters, precondition, effects]) + "\n\t"
-        
-
         
         #One plus One base case
         name = "one_plus_one_0_" + predicate
@@ -341,8 +344,8 @@ class SoWff(LogicalFormula):
         # If this is the final second order quantifier it needs delete
         # the proof fluent
         notProofFluent = ""
-        if (baton == "(proof_atom_level)"):
-            notProofFluent = " (not (proof_operator_level)) "
+        if (baton == "(proof)"):
+            notProofFluent = " (not (proof))" + self.get_delete_all_fowff()
             
         # Action that increments the quantifier of the relation whith the condition
         # that the subformula has already been prooved with the current quantifier
@@ -350,7 +353,8 @@ class SoWff(LogicalFormula):
         name = "change_for_coin_" + predicate
         parameters = ":parameters (" + zero_parameter + ")"   
         precondition = ":precondition\t(and" + iterateFluent + self._childlist[2].get_fluent() + zero_obj_predicate + ")"
-        effects = ":effect\t(and" + notProofFluent + "(not " + self._childlist[2].get_fluent() + ")(coin_" + predicate + arity*zero_obj + ") )\n\t)"
+        effects = ":effect\t(and" + " (not " + self._childlist[2].get_fluent() +\
+                  ") (coin_" + predicate + arity*zero_obj + ") " + notProofFluent + ")\n\t)"
         
         actions += "\n\t\t".join([prefix + name, parameters, precondition, effects]) + "\n\t"
         
@@ -447,13 +451,14 @@ class SoWff(LogicalFormula):
         #Establish so-exist -> used when the subformula of so-exist
         #is proved using a guessed relation
         notProofFluent = ""
-        if (baton == "(proof_atom_level)"):
-            notProofFluent = " (not (proof_operator_level)) "
+        if (baton == "(proof)"):
+            notProofFluent = " (not (proof))" + self.get_delete_all_fowff()
+            
             
         name = "establish_soexist_" + predicate        
         precondition = ":precondition\t(and " + self._childlist[2].get_fluent() + ")"
-        effects = ":effect\t(and " + notProofFluent + "(not " + self._childlist[2].get_fluent() + ") (holds_" + soexists_keyword +\
-                  "_" + predicate +")) \n\t)"
+        effects = ":effect\t(and (not " + self._childlist[2].get_fluent() + ") (holds_" + soexists_keyword +\
+                  "_" + predicate +") " + notProofFluent + ")\n\t)"
         finalAction = "\n\t\t".join([prefix + name, precondition, effects])
 
         global_fluents.add("(holds_" + soexists_keyword + "_" + predicate +")")
@@ -554,7 +559,7 @@ class FoWff(LogicalFormula):
                 fluent = "(" + relation._info[1:] +\
                          " " + " ".join(argument_list) + ")"
                 global_fluents.add(fluent)
-
+                
         elif operator == not_keyword:
             atom = self._childlist[1]
             relation = atom._childlist[0]
@@ -566,12 +571,13 @@ class FoWff(LogicalFormula):
                 fluent = "(not_" + relation._info[1:] +\
                          " " + " ".join(argument_list) + ")"
                 global_fluents.add(fluent)
-
+                
         elif operator in nary_operators or operator == exists_keyword:
             fluent = "(holds_" + operator + "_" + str(self.id) +\
                      " " + " ".join(argument_list) + ")"
             global_fluents.add(fluent)
-
+            fowff_fluents.add(("(holds_" + operator + "_" + str(self.id) + " ",len(argument_list)))
+            
         elif operator == forall_keyword:
             global_fluents.add(suc_fluent) #! manually add suc
             # regular forall fluent, called from outside
@@ -579,6 +585,8 @@ class FoWff(LogicalFormula):
                     " " + " ".join(argument_list) + " " +\
                      max_keyword + ")"
             global_fluents.add(fluent)
+            fowff_fluents.add(("(holds_" + operator + "_" + str(self.id) + " ",len(argument_list)))
+            
         else: pass # should not happen
 
         return fluent
@@ -607,7 +615,8 @@ class FoWff(LogicalFormula):
         operator = child._info
 
         prefix = "(:action "
-
+        proof_fluent = " (proof)"
+        
         if isinstance(child, Atom) or operator == not_keyword:
             return None
         elif operator == and_keyword:
@@ -616,18 +625,19 @@ class FoWff(LogicalFormula):
 
             precondition_fluents = []
             negFluents =[]
-            only_atom_operator = True
+            # only_atom_operator = True
             for child in self._childlist:
                 fluent = child.collect_fluents() 
                 precondition_fluents += fluent  
                 
                 if fluent and fluent[0][1:7] == "holds_":
                     negFluents += [" (not " + fluent[0] + ")"]
-                    only_atom_operator = False
-                    
-            proof_fluent = " (proof_operator_level)"
-            if (only_atom_operator):
-                proof_fluent = " (proof_atom_level)"
+            #         only_atom_operator = False
+            #         
+            # proof_fluent = " (proof_operator_level)"
+            # if (only_atom_operator):
+            #     proof_fluent = " (proof_atom_level)"
+                
             # print precondition_fluents
             prec = ":precondition\t(and " + " ".join(precondition_fluents) + " " + proof_fluent + ")"
             
@@ -646,14 +656,14 @@ class FoWff(LogicalFormula):
             operator_list = []
             for index, fluent in enumerate(precondition_fluents):
                 negFluent = ""
-                only_atom_operator = True
+                # only_atom_operator = True
                 if fluent[1:7] == "holds_":
                     negFluent =" (not " + fluent + ")"
-                    only_atom_operator = False
-
-                proof_fluent = " (proof_operator_level)"
-                if (only_atom_operator):
-                    proof_fluent = " (proof_atom_level)"
+                #     only_atom_operator = False
+                # 
+                # proof_fluent = " (proof_operator_level)"
+                # if (only_atom_operator):
+                #     proof_fluent = " (proof_atom_level)"
                 
                 prec = ":precondition\t (and " + fluent + " " + proof_fluent + ")"
                 eff = ":effect\t\t(and " + self.get_fluent() + negFluent + ")\n\t)"
@@ -671,15 +681,15 @@ class FoWff(LogicalFormula):
 
             childFluents = self._childlist[2].get_fluent() 
             negFluent = ""
-            only_atom_operator = True
+            # only_atom_operator = True
             
             if childFluents[1:7] == "holds_":
                 negFluent =" (not " + childFluents + ")"
-                only_atom_operator = False
-
-            proof_fluent = " (proof_operator_level)"
-            if (only_atom_operator):
-                proof_fluent = " (proof_atom_level)"
+            #     only_atom_operator = False
+            # 
+            # proof_fluent = " (proof_operator_level)"
+            # if (only_atom_operator):
+            #     proof_fluent = " (proof_atom_level)"
                 
             prec = ":precondition\t (and " + childFluents + " " + proof_fluent + ")"
             eff = ":effect\t\t(and "+ self.get_fluent() + negFluent + "))"
@@ -691,15 +701,15 @@ class FoWff(LogicalFormula):
             childFluentsBase = self._childlist[2].get_fluent(quantified_variable, zero_keyword)
             print childFluentsBase
             negFluentBase = ""
-            only_atom_operator = True
+            # only_atom_operator = True
             
             if childFluentsBase[1:7] == "holds_":
                 negFluentBase =" (not " + childFluentsBase + ")"
-                only_atom_operator = False
-
-            proof_fluent = " (proof_operator_level)"
-            if (only_atom_operator):
-                proof_fluent = " (proof_atom_level)"
+            #     only_atom_operator = False
+            # 
+            # proof_fluent = " (proof_operator_level)"
+            # if (only_atom_operator):
+            #     proof_fluent = " (proof_atom_level)"
                 
                 
             name = "establish_forall_" + str(self.id) + "_base"
@@ -719,21 +729,21 @@ class FoWff(LogicalFormula):
             childFluentsInduc_2 = self._childlist[2].get_fluent(quantified_variable, "?iv1")
 
             negFluentInduc_1 = ""
-            only_atom_operator = True
+            # only_atom_operator = True
             
             if childFluentsInduc_1[1:7] == "holds_":
                 negFluentInduc_1 =" (not " + childFluentsInduc_1 + ")"
-                only_atom_operator = False
+                # only_atom_operator = False
                 
                 
             negFluentInduc_2 = ""
             if childFluentsInduc_2[1:7] == "holds_":
                 negFluentInduc_2 =" (not " + childFluentsInduc_2 + ")"
-                only_atom_operator = False
-
-            proof_fluent = " (proof_operator_level)"
-            if (only_atom_operator):
-                proof_fluent = " (proof_atom_level)"
+            #     only_atom_operator = False
+            # 
+            # proof_fluent = " (proof_operator_level)"
+            # if (only_atom_operator):
+            #     proof_fluent = " (proof_atom_level)"
 
             parameters = ":parameters\t(" + " ".join(self.free_vars_set) +\
                     " ?iv0 ?iv1)"
