@@ -66,6 +66,8 @@ def get_fluent_list():
     fluent_list.sort()
     fluent_list.append("(begin)")
     fluent_list.append("(holds_goal)")
+    fluent_list.append("(proof_atom_level)")
+    fluent_list.append("(proof_operator_level)")
     return "\t(:predicates\n\t\t" + "\n\t\t".join(fluent_list) + "\n\t)\n"
 
 def get_constants():

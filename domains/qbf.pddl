@@ -39,6 +39,8 @@
 		(t ?x0)
 		(begin)
 		(holds_goal)
+		(proof_atom_level)
+		(proof_operator_level)
 	)
 
 	(:action zero_plus_one_t
