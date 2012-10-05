@@ -82,7 +82,7 @@
 		:effect		(and (proof_atom_level)(not (guess_r) ))
 	)
 	(:action establish_soexist_r
-		:precondition	(and (holds_forall_24  max))
+		:precondition	(and (holds_forall_24  max) (proof_operator_level))
 		:effect	(and  (not (proof_operator_level)) (not (holds_forall_24  max)) (holds_so-exists_r) (not (proof_atom_level))) 
 	)
 	(:action establish_forall_24_base
@@ -94,6 +94,11 @@
 		:parameters	( ?iv0 ?iv1)
 		:precondition	(and (holds_forall_24 ?iv0) (suc ?iv0 ?iv1) (holds_exists_23 ?iv1)  (proof_operator_level))
 		:effect		(and  (not (holds_forall_24 ?iv0))  (not (holds_exists_23 ?iv1)) (holds_forall_24 ?iv1) (proof_atom_level) (not (proof_operator_level)))
+	)
+	(:action establish_forall_24_inductive_0
+		:parameters	( ?iv0)
+		:precondition	(and (holds_forall_24 ?iv0) (suc ?iv0 max) (holds_exists_23 max)  (proof_operator_level))
+		:effect		(and  (not (holds_forall_24 ?iv0))  (not (holds_exists_23 ?iv1)) (holds_forall_24 ?iv1))
 	)
 	(:action establish_exists_23
 		:parameters	(?c ?x)
