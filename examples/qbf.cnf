@@ -1,0 +1,41 @@
+c qbfgen params: ./generators/blocksqbf/blocksqbf -c 20 -b 2 -bs 3 -bs 5 -bc 2 -bc 3
+c time: Wed Oct  3 14:15:20 2012
+c seed = 63304704
+c sort clauses = no
+c dup. resolve limit = 100
+c verbosity = 0
+c num blocks = 2
+c num clauses = 20
+c block_sizes[0] = 3
+c block_sizes[1] = 5
+c num vars = 8
+c perblock_nums[0] = 2
+c perblock_nums[1] = 3
+c clause len = 5
+c minblockids[0] = 1
+c maxblockids[0] = 3
+c minblockids[1] = 4
+c maxblockids[1] = 8
+p cnf 8 20
+a 1 2 3 0
+e 4 5 6 7 8 0
+-1 -3 -4 -6 8 0
+-1 -2 -6 -8 7 0
+2 1 -8 6 4 0
+1 -2 -7 5 -8 0
+1 2 -5 -8 -6 0
+1 2 6 -7 4 0
+2 1 -6 -5 4 0
+-2 -1 -6 -4 5 0
+1 2 6 -5 8 0
+-3 2 7 4 -6 0
+-1 2 8 5 -7 0
+3 -2 6 4 7 0
+3 -2 -7 4 -6 0
+2 -3 4 -7 8 0
+3 -1 6 -5 -8 0
+2 3 8 -7 4 0
+3 -1 -5 8 -6 0
+-2 3 5 8 6 0
+1 -2 7 4 5 0
+3 -2 6 -5 -7 0
