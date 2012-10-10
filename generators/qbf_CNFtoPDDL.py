@@ -3,7 +3,6 @@ from sys import argv
 import math
 
 def tokenize(input):
-    cnf_info = ""
     for line in input:
         if line[0] == 'c':
             continue    
