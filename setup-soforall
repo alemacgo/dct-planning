@@ -7,6 +7,5 @@ for i in `ls domains/so-forall/ | grep .dct | sed -e s/.dct$//`; do
     > /dev/null
         echo "Created domain for $i"
 done
-mkdir -p solutions
-./get_problem_directories_soforall.py
-./create_problems_soforall.py
+./scripts/so-forall/get_problem_directories_soforall.py
+./scripts/so-forall/create_problems_soforall.py
