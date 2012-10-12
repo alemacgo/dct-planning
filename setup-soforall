@@ -1,5 +1,8 @@
 #! /usr/bin/env bash
 rm -rf problems-soforall
+rm -rf condor_submits
+
+mkdir -p condor_submits
 for i in `ls domains/so-forall/ | grep .dct | sed -e s/.dct$//`; do    
     mkdir -p problems-soforall/$i
 
