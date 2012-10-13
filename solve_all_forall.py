@@ -19,7 +19,7 @@ def qbfaeBounds(problem):
     n_soforall = int(problem_info[1][:-1])
     n_clauses = int(problem_info[3][:-1])
     # print "N: " + str(n_clauses) + "   Nforall: " + str(n_soforall) + " bound1: " + str(pow(2,n_soforall)) + "*(" + str(n_clauses) + " + 9)"
-    return (pow(2,n_soforall)*(n_clauses + 9) + 3,pow(2,n_soforall)*(n_clauses + 10) + 3)
+    return (pow(2,n_soforall)*(n_clauses + 9) + 2,pow(2,n_soforall)*(n_clauses + 10) + 2)
 
 def qbfeaBounds(problem):
     # qbf__5e_1a_6c_0.pddl
@@ -27,7 +27,7 @@ def qbfeaBounds(problem):
     problem_info = problem.split("_")
     n_soforall = int(problem_info[2][:-1])
     n_clauses = int(problem_info[3][:-1])
-    return (pow(2,n_soforall)*(n_clauses + 8) + 5,pow(2,n_soforall)*(n_clauses + 8) + 6)
+    return (pow(2,n_soforall)*(n_clauses + 8) + 3,pow(2,n_soforall)*(n_clauses + 8) + 4)
 
 def stepSize(bounds):
     return "-S 1" # fixed for now, try every step
@@ -48,7 +48,7 @@ def parallelInstances(bounds):
     else:
         return "-A " + str(n+1)
 
-def solveProblems(list, file = None):
+def solveProblems(list, file = None):   
     # print list
     for problemFile in list:
         domain = getDomain(problemFile)
