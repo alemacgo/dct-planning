@@ -5,28 +5,29 @@ RUN = True
 import os, re, sys
 
 problems = "qbfae|qbfea"
-limits = "ulimit -t 1800; ulimit -m 3000;"
-plannerCommand = "planners/m/Mp -Q"
+limits = "ulimit -t 5400; ulimit -m 3000;"
+plannerCommand = "planners/m/M"
 output = ">"
 
 def getDomain(problem):
-    print re.search(problems, problem).group(0)
+    # print re.search(problems, problem).group(0)
     return re.search(problems, problem).group(0)
 
 def qbfaeBounds(problem):
     # qbf__1a_5e_6c_0.pddl
-    print "partition"
     problem_info = problem.split("_")
-    n_fowff = int(problem_info[1][:-1])
+    n_soforall = int(problem_info[1][:-1])
     n_clauses = int(problem_info[3][:-1])
-    print n_clauses
-    return (2^n_fowff*(n + 8) + 2*n_clauses + 3, 2^n_fowff*(n + 9) + 2*n_clauses + 3)
+    # print "N: " + str(n_clauses) + "   Nforall: " + str(n_soforall) + " bound1: " + str(pow(2,n_soforall)) + "*(" + str(n_clauses) + " + 9)"
+    return (pow(2,n_soforall)*(n_clauses + 9) + 3,pow(2,n_soforall)*(n_clauses + 10) + 3)
 
 def qbfeaBounds(problem):
-    # qbf__1a_5e_6c_0.pddl
-    print problem.partition("_")
-    n = int(re.search("\d+", problem).group(0))
-    return (n + 5, n + 5)
+    # qbf__5e_1a_6c_0.pddl
+    # print problem.partition("_")
+    problem_info = problem.split("_")
+    n_soforall = int(problem_info[2][:-1])
+    n_clauses = int(problem_info[3][:-1])
+    return (pow(2,n_soforall)*(n_clauses + 8) + 5,pow(2,n_soforall)*(n_clauses + 8) + 6)
 
 def stepSize(bounds):
     return "-S 1" # fixed for now, try every step
@@ -50,7 +51,6 @@ def parallelInstances(bounds):
 def solveProblems(list, file = None):
     # print list
     for problemFile in list:
-        
         domain = getDomain(problemFile)
         domainFile = "problems-soforall/" + domain + "/" + domain + ".pddl"
         nameParts = problemFile.rpartition("/")
@@ -59,11 +59,55 @@ def solveProblems(list, file = None):
     
         if domain == "qbfae":
             bounds = qbfaeBounds(problemFile)
-        if domain == "qbfea":
+        elif domain == "qbfea":
             bounds = qbfeaBounds(problemFile)
         else:
             raise ValueError
     
+        submit_file = open("condor_submits/" + nameParts[2].rpartition(".")[0] + ".submit", "w")
+        submit_file.write("# Experiment " + problemFile + "\n\n")
+        
+        submit_file.write("executable = /home-users/nlipo/blai/Aldo/dct-planning/planners/m/M\n")
+        submit_file.write("universe = vanilla\n")
+        submit_file.write("#Requirements = Memory >= 1928\nInitialDir = /home-users/nlipo/blai/Aldo\n")
+        submit_file.write("should_transfer_files = YES\n" +\
+                          "when_to_transfer_output = ON_EXIT \n" +\
+                           "transfer_input_files = \\\n" +\
+                           "/home-users/nlipo/blai/Aldo/dct-planning/" + problemFile + ",\\\n"+\
+                           "/home-users/nlipo/blai/Aldo/dct-planning/" + domainFile + "\n\n")
+        submit_file.write("arguments = -Q -t 5400 " + " ".join([showBounds(bounds), \
+                          stepSize(bounds), parallelInstances(bounds),
+                          domain + ".pddl", nameParts[2], "\n"]) + \
+                          "output = /home-users/nlipo/blai/Aldo/dct-planning/" + solutionFile + "\n" +\
+                          "queue")
+        
+        # ##
+        # ## Experiment: task46
+        # ##
+        # ## where trials in { 10, 50, 100, 500, 1000, 5000, 10000 }, par = 0.5, nexp = 10%
+        # ##
+        # 
+        # 
+        # #executable   = /home-users/nlipo/blai/learning-depth-first-search-read-only/race/race
+        # executable    = /home-users/nlipo/blai/Aldo/example.sh
+        # universe  = vanilla
+        # #Requirements = Memory >= 1928
+        # InitialDir    = /home-users/nlipo/blai/Aldo
+        # should_transfer_files = YES
+        # when_to_transfer_output   = ON_EXIT
+        # #transfer_input_files = \
+        # #/home-users/nlipo/blai/learning-depth-first-search-read-only/race/tracks/barto-small.track,\
+        # #/home-users/nlipo/blai/learning-depth-first-search-read-only/race/tracks/barto-big.track
+        # 
+        # #arguments = -D 0.5 -h 11 -s 0 -p 0.7 barto-big.track min-min aot-value 10 50 0.5 5
+        # arguments = -lR
+        # output = output.1
+        # queue
+        # arguments = -lR
+        # output = output.2
+        # queue
+
+        
         command = " ".join([limits, plannerCommand, showBounds(bounds), \
                 stepSize(bounds), parallelInstances(bounds), "\\\n",
                 domainFile, "\\\n", problemFile, "\\\n",
@@ -72,8 +116,8 @@ def solveProblems(list, file = None):
             prelude = "Solving " + problemFile + "...\n"
             epilogue = "Solved " + problemFile + ".\n"
 
-            print prelude
-            # os.system(command)
+            print command
+                    # os.system(command)
             print epilogue
         else:
             file.write(command + "\n")

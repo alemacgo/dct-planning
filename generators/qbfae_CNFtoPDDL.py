@@ -46,7 +46,7 @@ if argv[2] == "-e":
     e_vars = aux
 
 pddl_file.write("(define (problem p)\n")
-pddl_file.write("\t(:domain qbf)\n")
+pddl_file.write("\t(:domain qbfae)\n")
 pddl_file.write("\t(:objects ")
 
 if num_vars > 0: 

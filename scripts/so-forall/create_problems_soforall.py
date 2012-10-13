@@ -29,12 +29,12 @@ for i in qbf_0:
                 prob_name = "_".join(["qbf", i , j , k , str(seed)])
                 os.system("./generators/blocksqbf/blocksqbf -s " + str(seed) + " -c " + str(c*5 + 1) + " -b 2 -bs " + str(a) +\
                           " -bs " + str(e*5) + " -bc 1 -bc 2 > " + prob_name + ".cnf")
-                os.system("./generators/qbf_CNFtoPDDL.py problems-soforall/qbfae/" + "/".join([i, j, k])+ "/ -a " + prob_name + ".cnf")
+                os.system("./generators/qbfae_CNFtoPDDL.py problems-soforall/qbfae/" + "/".join([i, j, k])+ "/ -a " + prob_name + ".cnf")
                 os.system("rm " + prob_name + ".cnf")
                 prob_name = "_".join(["qbf", j , i , k , str(seed)])
                 os.system("./generators/blocksqbf/blocksqbf -s " + str(seed) + " -c " + str(c*5 + 1) + " -b 2 -bs " + str(e*5) +\
                           " -bs " + str(a) + " -bc 2 -bc 1 > " + prob_name + ".cnf")
-                os.system("./generators/qbf_CNFtoPDDL.py problems-soforall/qbfea/" + "/".join([j, i, k])+ "/ -e " + prob_name + ".cnf")
+                os.system("./generators/qbfea_CNFtoPDDL.py problems-soforall/qbfea/" + "/".join([j, i, k])+ "/ -e " + prob_name + ".cnf")
                 os.system("rm " + prob_name + ".cnf")
             c += 1
         e += 1
