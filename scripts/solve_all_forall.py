@@ -120,6 +120,7 @@ def solveProblems(list, file = None):
 find = """find problems-soforall | grep .pddl | grep -v qbfae.pddl | grep -v qbfea.pddl"""
 
 if __name__ == "__main__":
+    os.system("rm condor_submits.submit")
     # this should be split in two processes! fork
     pipe = os.popen(find)
     p0_fileList = []

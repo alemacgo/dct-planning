@@ -28,14 +28,16 @@ for i in qbf_0:
             for seed in range(3):
                 prob_name = "_".join(["qbf", i , j , k , str(seed)])
                 os.system("./generators/blocksqbf/blocksqbf -s " + str(seed) + " -c " + str(c*5 + 1) + " -b 2 -bs " + str(a) +\
-                          " -bs " + str(e*5) + " -bc 1 -bc 2 > " + prob_name + ".cnf")
-                os.system("./generators/qbfae_CNFtoPDDL.py problems-soforall/qbfae/" + "/".join([i, j, k])+ "/ -a " + prob_name + ".cnf")
-                os.system("rm " + prob_name + ".cnf")
+                          " -bs " + str(e*5) + " -bc 1 -bc 2 > problems-soforall/qbfae/" + "/".join([i, j, k])+ "/" + prob_name + ".qdimacs")
+                os.system("./generators/qbf_CNFtoPDDL.py problems-soforall/qbfae/" + "/".join([i, j, k])+ "/ -a problems-soforall/qbfae/" + "/".join([i, j, k])+ "/" + prob_name + ".qdimacs")
+                os.system("./sKizzo/sKizzo problems-soforall/qbfae/" + "/".join([i, j, k])+ "/" + prob_name + ".qdimacs > problems-soforall/qbfae/" + "/".join([i, j, k])+ "/" + prob_name +".result")
+                os.system("rm problems-soforall/qbfae/" + "/".join([i, j, k])+ "/" + prob_name + ".qdimacs")
                 prob_name = "_".join(["qbf", j , i , k , str(seed)])
                 os.system("./generators/blocksqbf/blocksqbf -s " + str(seed) + " -c " + str(c*5 + 1) + " -b 2 -bs " + str(e*5) +\
-                          " -bs " + str(a) + " -bc 2 -bc 1 > " + prob_name + ".cnf")
-                os.system("./generators/qbfea_CNFtoPDDL.py problems-soforall/qbfea/" + "/".join([j, i, k])+ "/ -e " + prob_name + ".cnf")
-                os.system("rm " + prob_name + ".cnf")
+                          " -bs " + str(a) + " -bc 2 -bc 1 > problems-soforall/qbfea/" + "/".join([j, i, k])+ "/" + prob_name + ".qdimacs")
+                os.system("./generators/qbf_CNFtoPDDL.py problems-soforall/qbfea/" + "/".join([j, i, k])+ "/ -e problems-soforall/qbfea/" + "/".join([j, i, k])+ "/" + prob_name + ".qdimacs")
+                os.system("./sKizzo/sKizzo problems-soforall/qbfea/" + "/".join([j, i, k])+ "/" + prob_name + ".qdimacs > problems-soforall/qbfea/" + "/".join([j, i, k])+ "/" + prob_name + ".result")  
+                os.system("rm problems-soforall/qbfea/" + "/".join([j, i, k])+ "/" + prob_name + ".qdimacs")
             c += 1
         e += 1
     a += 1

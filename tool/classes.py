@@ -195,9 +195,8 @@ class SoWff(LogicalFormula):
             var_list = []
             for i in range(0,fluents[1]):
                 var_list += ["?ivDel" + str(i)]
-            predicates += "\n\t\t\t\t(forall (" + " ".join(var_list) + ") (when " +\
-                          fluents[0] + " ".join(var_list) + ") (not " + fluents[0] +\
-                          " ".join(var_list) + "))))"
+            predicates += "\n\t\t\t\t(forall (" + " ".join(var_list) + ") (not " + fluents[0] +\
+                          " ".join(var_list) + ")))"
         return predicates    
     # Find the fluent that activates the proof of the next subformula
     # in a metaforic way "pass the baton"
