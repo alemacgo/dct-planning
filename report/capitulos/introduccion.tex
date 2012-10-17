@@ -4,8 +4,81 @@
 \label{Intro}
 \lhead{\emph{Introducción}} % Write in your own chapter title to set the page header
 \addcontentsline{toc}{chapter}{Introducción}
+% Descripción general
+En Ciencias de la Computación se entiende por \textbf{problemas de decisión}
+los problemas matemáticos en los que se plantea una pregunta sobre una entrada
+arbitraria, cuya respuesta puede ser afirmativa o negativa.
+Los problemas de decisión son interesantes porque permiten modelar y razonar
+sobre aplicaciones reales. Por ejemplo, el problema de decisión de
+$k$-colorabilidad pregunta si los vértices de un grafo son coloreables 
+con $k$ colores distintos, de modo de que a ningún par de vértices se les
+asigne el mismo color. En un compilador, la asignación de valores
+frecuentemente utilizados a registros para
+mejorar la eficiencia del código generado puede modelarse como
+$k$-colorabilidad: los vértices del grafo son las variables, y si dos variables
+se necesitan al mismo tiempo se coloca un arco entre ellas. Al encontrar una
+forma de colorear este grafo con $k$ colores se ha hallado una forma de
+utilizar $k$ registros distintos para almacenar las variables.
 
-Introducción.
-Alrededor de tres páginas.
+Los problemas de decisión pueden agruparse en distintas clases según su
+complejidad. Una importante clase de complejidad es \textbf{NP} (siglas de
+\textit{Nondeterministic Polynomial time}), a la cual pertenecen problemas
+interesantes como $k$-colorabilidad, satisfacibilidad proposicional
+(\textbf{SAT}) y hallar un camino \textit{hamiltoniano} en un grafo.
+
+El área de investigación de planificación automática estudia una forma general
+de resolución de problemas utilizando \textbf{planes}. En un problema de planificación
+se especifica un estado inicial, un estado final y un conjunto de acciones posibles,
+y el \textbf{planificador} construye una secuencia de acciones que conduce
+desde el estado inicial hasta el estado final, resolviendo el problema.
+
+% Concretar
+
+Este trabajo se enfoca en el desarrollo de una herramienta que permite
+traducir, o como suele decirse formalmente, \textbf{reducir} un problema de
+decisión perteneciente a la clase \textbf{NP}, codificado en un lenguaje
+basado en la lógica de segundo orden, a un problema de
+planificación automática. La motivación para realizar esta herramienta es que
+existen planificadores muy eficientes, pero no es trivial
+expresar un problema de decisión cualquiera en términos de estado inicial,
+final y acciones, como lo requieren los
+planificadores. A veces, la utilización de un lenguaje declarativo es una forma
+más concreta y directa para la descripción de un problema de decisión en
+particular. En estos casos, es preferible modelarlo en un lenguaje de más alto
+nivel y que la herramienta lo reduzca a un formato de entrada aceptado por
+los planificadores, los cuales pueden proceder entonces a computar su solución.
+
+% Trabajos anteriores
+Otros autores han utilizado la lógica de segundo orden como un lenguaje de
+programación declarativo anteriormente. \cite{cadoli:npspec}.
+
+% Objetivos generales y específicos
+
+% Organización
+
+1. RESULTADOS ESPECÍFICOS A LOS QUE SE QUIERE LLEGAR 
+(EL PRODUCTO QUE SE DESEA OBTENER) Y SU POSIBILIDAD DE APLICACIÓN: 
+
+Resultados:
+1. Una herramienta que procese la descripción lógica de un problema perteneciente a una clase de complejidad particular y que genere automáticamente un problema de planificación equivalente formulado en el lenguaje PDDL (Planning Domain Definition Language). 
+2. Una interfaz para este sistema que permita un acceso flexible y rápido al traductor.
+Posibilidad de Aplicación:
+Gracias al sistema propuesto, problemas cuya aplicación es ampliamente conocida
+en el área de computación, tales como hallar un clique de tamaño k o encontrar un camino hamiltoniano en un grafo, podrán ser expresados en un lenguaje conciso y ser traducidos en archivos de entrada para un planificador sin la intervención del usuario.
+
+2. ACTIVIDADES QUE INVOLUCRA EL PROYECTO: 
+a. Investigación sobre el material teórico que permiten relacionar la teoría de complejidad computacional con complejidad descriptiva (lógica)
+b. Especificación del lenguaje lógico propuesto para realizar formulaciones, gramática y semántica de las construcciones
+c. Definición de la traducción del lenguaje lógico a PDDL, demostración de la correctitud y completitud de esta equivalencia
+d. Desarrollo del analizador léxico y sintáctico que permita reconocer este lenguaje
+e. Implementación de algoritmos para el post-procesamiento del árbol sintáctico para la simplificación de la fórmula lógica a formas canónicas
+f. Implementación de la traducción definida anteriormente sobre el árbol sintáctico de la fórmula procesada
+g. Evaluación experimental del desempeño de planificadores (del estado del arte) sobre fórmulas que corresponden a varios dominios
+h. Programación de una herramienta integral web que sirva como una interfaz ante el usuario para acceder al sistema de traducción de forma cómoda
+
+3. PUNTOS DE INTERÉS QUE HAN DE SER TRATADOS DURANTE LA EJECUCIÓN DEL PROYECTO:
+a. Teoría de complejidad descriptiva
+b. Equivalencia entre clases de complejidad y fragmentos del lenguaje PDDL
+c. Traducciones válidas entre fórmulas lógicas y dominios de planificación, optimización de las traducciones para su resolución con planificadores actuales
 
 \cite{russell}
