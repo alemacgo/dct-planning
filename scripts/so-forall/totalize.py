@@ -1,153 +1,152 @@
 #! /usr/bin/env python
-from get_problem_directories_soforall import *
-import time as t
+from get_all_directories_soforall import *
 
-# echo QBF_AE
-# for j in 1a 2a 3a 4a 5a; do
-#     for i in 5e 10e 15e 20e; do
-#         echo QBF_AE+ $j $i
-#         grep 'PLAN FOUND' $directory/qbfae/$j/$i/*/* | wc | awk '{print $1}'
-#         echo QBF_AE- $j $i
-#         grep 'NOT FOUND' $directory/qbfae/$j/$i/*/* | wc | awk '{print $1}'
-#         echo QBF_AE time_out $j $i
-#         grep 'Timeout after 5400' $directory/qbfae/$j/$i/*/* | wc | awk '{print $1}'
-#         echo QBF_AE_time $j $i
-#         grep 'total time' $directory/qbfae/$j/$i/*/* | wc | awk '{print $1}'
-#         echo QBF_AE total $j $i
-#         ls ../problems-soforall/qbfae/$j/$i/* | grep '.pddl' | wc | awk '{print $1}'
-#     done
-# done
-# 
-# echo QBF_EA 
-# for i in 5e 10e 15e 20e; do
-#     for j in 1a 2a 3a 4a 5a; do
-#         echo QBF_EA+ $i $j
-#         grep 'PLAN FOUND' $directory/qbfea/$i/$j/*/* | wc | awk '{print $1}'
-#         echo QBF_EA- $i $j
-#         grep 'NOT FOUND' $directory/qbfea/$i/$j/*/* | wc | awk '{print $1}'
-#         echo QBF_AE time_out $i $j
-#         grep 'Timeout after 5400' $directory/qbfea/$i/$j/*/* | wc | awk '{print $1}'
-#         echo QBF_AE total $i $j
-#         ls ../problems-soforall/qbfea/$i/$j/* | grep '.pddl' | wc | awk '{print $1}'
-#     done
-# done
-# qbf
-# totalTime = []
-# totalResults = []
-# totalProblems = 0
-# totalOptimal = 0
-# totalLuckyIter = []
-# s = ""
-# f = open('table4.out', 'w')
-# for size in range(10, topSize+1):
-#   print "Size: " + str(size)
-#   sizeTimes = []
-#   sizeResults = []
-#   sizeOptimal = 0
-#   totalSizeProblems = 0
-#   sizeLuckyIter = []
-#   colorTime = [[],[],[],[],[],[],[],[]]
-#   colorResults = [[],[],[],[],[],[],[],[]]
-#   colorOptimal = [0,0,0,0,0,0,0,0]
-#   totalColorProblems = [0,0,0,0,0,0,0,0]
-#   colorLuckyIter = [[],[],[],[],[],[],[],[]]
-#   s =  "\multirow{9}{*}{" + str(size) + "x" + str(size) + "}"
-#   for colors in range(4,maxColors):
-#       print " Color: " + str(colors)
-#   
-#       s += " & " + str(colors)
-#       for rclSize in range(3,8):
-#           rclTimes = []
-#           rclResults = []
-#           rclOptimal = 0
-#           totalRclProblems = 0
-#           rclLuckyIter = []
-#               
-#           s += " & " + '{0:.2f}'.format(sum(rclTimes, 0.0) / len(rclTimes))
-#           s += " & " + '{0:.2f}'.format(sum(rclResults, 0.0) / len(rclResults))
-#           s += " & " + '{0:.2f}'.format(sum(rclLuckyIter, 0.0) / len(rclLuckyIter))
-#           #s += " & " + str (rclOptimal)
-#           colorTime[rclSize] += [sum(rclTimes, 0.0) / len(rclTimes)]
-#           colorResults[rclSize] += [sum(rclResults, 0.0) / len(rclResults)]
-#           colorLuckyIter[rclSize] += [sum(rclLuckyIter, 0.0) / len(rclLuckyIter)]
-#           colorOptimal[rclSize] += rclOptimal
-#           totalColorProblems[rclSize] += totalRclProblems
-#       s += "\\\\ \n"
-#   s += "\cline{3-17} \n & Totals"
-#   for i in range(3,8):
-#       s += " & " + '{0:.2f}'.format(sum(colorTime[i], 0.0) / len(colorTime[i]))
-#       s += " & " + '{0:.2f}'.format(sum(colorResults[i], 0.0) / len(colorResults[i]))
-#       s += " & " + '{0:.2f}'.format(sum(colorLuckyIter[i], 0.0) / len(colorLuckyIter[i]))
-#       #s += " & " + str(colorOptimal[i])
-#   s += "\\\\ \\\\ \n"
-#   f.write(s)
-
-fs = ""
-es = ""
-f = open('forallTable.out', 'w')
-
-a = 1
-for i in qbf_0:
-    e = 1
-    total_positive_i = 0
-    total_negative_i = 0
-    total_time_i = 0
-    total_i = 0
-    fs =  "\multirow{" + str(len(qbf_2)) + "}{*}{" + str(a) + "}"
-    
-    for j in qbf_1:
-        total_positive_j = 0
-        total_negative_j = 0
-        total_time_j = 0
-        total_j = 0   
-         
-        c = 1
-        fs =  " & " + str(e)  	
+first_text = """\\documentclass[a3paper]{article}\n\
+                \\usepackage[left=0.5cm,top=3cm,right=1cm,nohead,nofoot]{geometry}\n\
+                \\usepackage{nopageno}\n\
+                \\usepackage{lscape}\n\
+                \\usepackage{multirow}\n\
+                \\setlength{\\evensidemargin}{-1cm}\n\
+                \\setlength{\\oddsidemargin}{-1cm}\n\
+                \\pagestyle{plain}\n\
+                \\begin{document}\n"""
+                # \\begin{landscape}\n"""
+                
+def createTable(set0, set1, set2, domain, planner, separated, f):
+    fs = ""
         
-        for k in qbf_2:
-            if a + 5*e > c*5 + 1 :
-                fs += " & & & & "
-                c += 1
-                continue
-            dir_name = "solutions-soforall/qbfae/" + "/".join([i, j, k]) + "/*"
+    if separated:
+        f = open(domain + "_" + planner + "_table.tex", 'w')              
+        f.write(first_text)
+        
+    f.write("\\section*{\\centering \\Large \\underline{Tests - " + domain + "-" + planner + "}}\n" + \
+            "$ $\\\n")
+    f.write("   \\begin{tabular}{cc cccc" + (len(set2)-1)*"|cccc" + "}\n")
+    f.write("   A_vars & E_vars & \multicolumn{" + str(4*len(set2)) + "}{c}{Number of clauses}\\\\\n\\hline\n")
+    n_cline = str(4*len(set2)+2)
+    f.write("   & & " + "\multicolumn{4}{c}{" + "} & \multicolumn{4}{c}{".join(set2) + "} \\\\\\cline{3-" + n_cline + "}\n")
+    f.write("& " + "& Total & + & - & Avg. "*len(set2) + "\\\\\\\\\n")
+
+    total_positive = [0]*len(set2)
+    total_negative = [0]*len(set2)
+    total_time = [0]*len(set2)
+    total = [0]*len(set2)
+
+    a = 1
+    for i in set0:
+        e = 1
+        total_positive_i = [0]*len(set2)
+        total_negative_i = [0]*len(set2)
+        total_time_i = [0]*len(set2)
+        total_i = [0]*len(set2)
+
+        if domain == "qbfea":
+            fs =  "\multirow{" + str(len(set1)) + "}{*}{" + str(a*5) + "}"
+        else:
+            fs =  "\multirow{" + str(len(set1)) + "}{*}{" + str(a) + "}"
+    
+        for j in set1:
+         
+            c = 1
             
-            n_planF = int(os.popen("grep 'PLAN FOUND' " + dir_name + " | wc | awk '{print $1}'").readline())
-            n_planNf = int(os.popen("grep 'NOT FOUND' " + dir_name + " | wc | awk '{print $1}'").readline())
-            n_planTo = int(os.popen("grep 'Timeout after' " + dir_name + " | wc | awk '{print $1}'").readline())
-            n_planTotal = int(os.popen("ls problems-soforall/qbfae/" + "/".join([i, j, k]) + "/* | grep '.pddl' | wc | awk '{print $1}'").readline())
-            strTimes = os.popen("grep 'total time' " + dir_name + " | awk '{print $3}'").readlines()
-            times = 0.0
-            
-            if len(strTimes) == 0:
-                avg_time = 0
+            if domain == "qbfea":
+                fs +=  " & " + str(e)  + " "
             else:
-                t.sleep(4)
-                print strTimes
-                for i in strTimes:
-                    print i
-                #     times += float(i)
-                # avg_time = times/float(len(strTimes))
+                fs +=  " & " + str(e*5)  + " "
+        
+            for k in set2:
+                
+                if domain == "qbfea":
+                    count = 5*a + e
+                else:
+                    count = a + 5*e
+                    
+                if count > c*5 + 1 :
+                    fs += "& - & - & - & - "
+                    c += 1
+                    continue
+                dir_name = "solutions-soforall/" + domain + "/" + "/".join([i, j, k]) + "/*.out" + planner
+                problem_dir = "problems-soforall/" + domain + "/" + "/".join([i, j, k]) + "/*"
+                
+                print os.popen("grep 'OK, ' " + problem_dir + " | awk -F ',' '{print $1}'").readline()
+            
+                n_planF = int(os.popen("grep 'PLAN FOUND' " + dir_name + " | wc | awk '{print $1}'").readline())
+                n_planNf = int(os.popen("grep 'NOT FOUND' " + dir_name + " | wc | awk '{print $1}'").readline())
+                n_planTo = int(os.popen("grep 'Timeout after' " + dir_name + " | wc | awk '{print $1}'").readline())
+                n_planTotal = int(os.popen("ls " + problem_dir + " | grep '.pddl' | wc | awk '{print $1}'").readline())
+                strTimes = os.popen("grep 'total time' " + dir_name + " | awk '{print $3}'").readlines()
+                times = 0.0
+            
+                if len(strTimes) == 0:
+                    avg_time = 0
+                else:
+                    for l in strTimes:
+                        times += float(l)
+                    avg_time = times/float(len(strTimes))
 
                 
-            # fs += " & " + str(n_planNf + n_planF) + "/" + str(n_planTotal)
-            # fs += " & " + str(n_planF)
-            # fs += " & " + str(n_planNf)
-            # fs += " & " + str(avg_time)
-            # 
-            # total_positive_i += n_planF
-            # total_negative_i += n_planNf
-            # total_time_i += times
-            # # total_i += n_planTotal
-            # 
-            # total_positive_j += n_planF
-            # total_negative_j += n_planNf
-            # total_time_j += times
-            # total_j += n_planTotal
+                fs += " & " + str(n_planNf + n_planF) + "/" + str(n_planTotal)
+                fs += " & " + str(n_planF)
+                fs += " & " + str(n_planNf)
+                if n_planNf + n_planF == 0:
+                    fs += " & -"
+                else:
+                    fs += " & " + '{0:.2f}'.format(avg_time)
             
-            c += 1
-        fs += "\\\\ \\\\ \n"
-    	f.write(fs)
-        e += 1
-    a += 1
+                total_positive_i[c-1] += n_planF
+                total_negative_i[c-1] += n_planNf
+                total_time_i[c-1] += times
+                total_i[c-1] += n_planTotal
+            
+                total_positive[c-1] += n_planF
+                total_negative[c-1] += n_planNf
+                total_time[c-1] += times
+                total[c-1] += n_planTotal
+            
+                c += 1
+            fs += "	\\\\"
+            e += 1
+        f.write(fs + "\\cline{3-" + n_cline + "}\n")
+        fs ="\multicolumn{2}{c}{Total:} "
+        for l in range(0,len(set2)):
+            fs += "& " + str(total_positive_i[l] + total_negative_i[l]) + "/" + str(total_i[l])
+            fs += "& " + str(total_positive_i[l])
+            fs += "& " + str(total_negative_i[l])
+            if total_positive_i[l] + total_negative_i[l] == 0:
+                fs += "& 0" 
+                continue
+            fs += "& " + '{0:.2f}'.format(total_time_i[l]/float(total_positive_i[l] + total_negative_i[l]))
+        f.write(fs + "\\\\\\\\\n")
+        a += 1
     
+    f.write("\\end{tabular}\n")
+    if separated:
+        f.write("\\end{document}")
+        f.close()
+
+separated = False
+f = None
+
+if not separated:
+    f = open("results.tex", 'w')
+    f.write(first_text)
+
+createTable(qbf_0, qbf_1, qbf_2, "qbfae", "m", separated, f)
+createTable(qbf_0, qbf_1, qbf_2, "qbfae", "mp", separated, f)
+# createTable(qbf_0, qbf_1, qbf_2, "qbfae", "lama", separated)
+if not separated:
+    f.write("\\pagebreak\n")
+    
+createTable(qbf_1, qbf_0, qbf_2, "qbfea", "m", separated, f)
+createTable(qbf_1, qbf_0, qbf_2, "qbfea", "mp", separated, f)
+# createTable(qbf_1, qbf_0, qbf_2, "qbfea", "lama", separated)
+
+if separated:
+    os.system("pdflatex qbfae_m_table.tex; pdflatex qbfae_mp_table.tex; pdflatex qbfea_m_table.tex; pdflatex qbfea_mp_table.tex;")
+    os.system("pdftk qbfae_m_table.pdf qbfae_mp_table.pdf qbfea_m_table.pdf qbfea_mp_table.pdf cat output results.pdf")
+    os.system("rm *.aux; rm *.log; rm *.tex; rm qbfae_m_table.pdf qbfae_mp_table.pdf qbfea_m_table.pdf qbfea_mp_table.pdf")
+else:
+    f.write("\\end{document}")
+    f.close()
+    os.system("pdflatex results.tex; rm *.aux; rm *.log; open results.pdf ")
 

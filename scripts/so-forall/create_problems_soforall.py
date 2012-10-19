@@ -1,7 +1,7 @@
 #! /usr/bin/env python
 import os
 import re
-from get_problem_directories_soforall import *
+from get_all_directories_soforall import *
 
 def basename(s):
     return s.rpartition(".")[0].rpartition("/")[-1]
@@ -36,8 +36,9 @@ for i in qbf_0:
                 os.system("./generators/blocksqbf/blocksqbf -s " + str(seed) + " -c " + str(c*5 + 1) + " -b 2 -bs " + str(e*5) +\
                           " -bs " + str(a) + " -bc 2 -bc 1 > problems-soforall/qbfea/" + "/".join([j, i, k])+ "/" + prob_name + ".qdimacs")
                 os.system("./generators/qbf_CNFtoPDDL.py problems-soforall/qbfea/" + "/".join([j, i, k])+ "/ -e problems-soforall/qbfea/" + "/".join([j, i, k])+ "/" + prob_name + ".qdimacs")
-                os.system("./sKizzo/sKizzo problems-soforall/qbfea/" + "/".join([j, i, k])+ "/" + prob_name + ".qdimacs > problems-soforall/qbfea/" + "/".join([j, i, k])+ "/" + prob_name + ".result")  
-                os.system("rm problems-soforall/qbfea/" + "/".join([j, i, k])+ "/" + prob_name + ".qdimacs")
+                os.system("more problems-soforall/qbfea/" + "/".join([j, i, k])+ "/" + prob_name + ".qdimacs | tr a A | tr e a | tr A e > problems-soforall/qbfea/" + "/".join([j, i, k])+ "/" + prob_name + "1.qdimacs")
+                os.system("./sKizzo/sKizzo problems-soforall/qbfea/" + "/".join([j, i, k])+ "/" + prob_name + "1.qdimacs > problems-soforall/qbfea/" + "/".join([j, i, k])+ "/" + prob_name + ".result")  
+                os.system("rm problems-soforall/qbfea/" + "/".join([j, i, k])+ "/*.qdimacs")
             c += 1
         e += 1
     a += 1

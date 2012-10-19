@@ -10,10 +10,7 @@ else
     then
         rm -rf problems-soforall
         rm -rf solutions-soforall
-        rm -rf condor_submits
-        rm condor_submits.submit
 
-        mkdir -p condor_submits
         for i in `ls domains/so-forall/ | grep .dct | sed -e s/.dct$//`; do    
             mkdir -p problems-soforall/$i
 
@@ -28,13 +25,9 @@ else
     elif [ $1 = -solve ]; 
     then
         rm -rf solutions-soforall
-        rm -rf condor_submits
-        rm condor_submits.submit
     
-        ./scripts/so-forall/get_solution_directories_soforall.py
-        mkdir -p condor_submits
+        ./scripts/so-forall/get_solutions_directories_soforall.py
         ./scripts/so-forall/solve_all_forall.py
-        condor_submit condor_submits.submit
         
     elif [ $1 = -totalize ]; 
     then

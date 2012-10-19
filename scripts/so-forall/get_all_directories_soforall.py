@@ -1,12 +1,11 @@
 #! /usr/bin/env python
-import os
+import os, re, sys
 
 problems = ["qbf"]
 
-# qbf
 qbf_0 = ["1a", "2a", "3a", "4a", "5a"]
 qbf_1 = ["5e", "10e", "15e", "20e"]
-qbf_2 = ["6c", "11c", "16c", "21c"]
+qbf_2 = ["6c", "11c", "16c", "21c","26c","31c"]
 
 if __name__ == "__main__":
     
