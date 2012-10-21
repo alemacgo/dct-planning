@@ -19,10 +19,17 @@ def createTable(set0, set1, set2, domain, planner, separated, f):
         f = open(domain + "_" + planner + "_table.tex", 'w')              
         f.write(first_text)
         
+        
     f.write("\\section*{\\centering \\Large \\underline{Tests - " + domain + "-" + planner + "}}\n" + \
             "$ $\\\n")
     f.write("   \\begin{tabular}{cc cccc" + (len(set2)-1)*"|cccc" + "}\n")
-    f.write("   A_vars & E_vars & \multicolumn{" + str(4*len(set2)) + "}{c}{Number of clauses}\\\\\n\\hline\n")
+    
+    if domain == "qbfea":
+        quantifier_order = "E\_vars & A\_vars"
+    else:
+        quantifier_order = "A\_vars & E\_vars"
+        
+    f.write("   " + quantifier_order + "& \multicolumn{" + str(4*len(set2)) + "}{c}{Number of clauses}\\\\\n\\hline\n")
     n_cline = str(4*len(set2)+2)
     f.write("   & & " + "\multicolumn{4}{c}{" + "} & \multicolumn{4}{c}{".join(set2) + "} \\\\\\cline{3-" + n_cline + "}\n")
     f.write("& " + "& Total & + & - & Avg. "*len(set2) + "\\\\\\\\\n")
@@ -67,9 +74,7 @@ def createTable(set0, set1, set2, domain, planner, separated, f):
                     continue
                 dir_name = "solutions-soforall/" + domain + "/" + "/".join([i, j, k]) + "/*.out" + planner
                 problem_dir = "problems-soforall/" + domain + "/" + "/".join([i, j, k]) + "/*"
-                
-                print os.popen("grep 'OK, ' " + problem_dir + " | awk -F ',' '{print $1}'").readline()
-            
+                            
                 n_planF = int(os.popen("grep 'PLAN FOUND' " + dir_name + " | wc | awk '{print $1}'").readline())
                 n_planNf = int(os.popen("grep 'NOT FOUND' " + dir_name + " | wc | awk '{print $1}'").readline())
                 n_planTo = int(os.popen("grep 'Timeout after' " + dir_name + " | wc | awk '{print $1}'").readline())

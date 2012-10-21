@@ -19,7 +19,7 @@ else
                 echo "Created domain for $i"
         done
         ./scripts/so-forall/get_all_directories_soforall.py
-        ./scripts/so-forall/create_problems_soforall.py
+        ./scripts/so-forall/create_problems_soforall.py 30
         ./scripts/so-forall/solve_all_forall.py
     
     elif [ $1 = -solve ]; 

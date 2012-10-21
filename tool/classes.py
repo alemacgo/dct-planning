@@ -315,15 +315,15 @@ class SoWff(LogicalFormula):
         actions += "\n\t\t".join([prefix + name, parameters, precondition, effects]) + "\n\t"
                             
         #One plus one n-ary relations
-        for i in range(1,arity-1):
+        for i in range(1,arity):
             name = "one_plus_one_" + str(i) + "_" + predicate
-            parameters = ":parameters\t(" + " ".join(variables_list[:-i]) + "?iv0 ?iv1" + max_parameter + zero_parameter +")"
-            precondition = ":precondition\t(and" + iterateFluent + "(" + coin_predicate + " ".join(variables_list[:-i]) + " ?iv0" + (i-1)*max_obj + ") (" + \
-                             predicate + " " + " ".join(variables_list[:-i]) + " ?iv0" + (i-1)*max_obj + ") " + suc_predicate + max_obj_predicate + zero_obj_predicate + ")"
-            effects = ":effect\t(and (not (" + coin_predicate + " ".join(variables_list[:-i]) + " ?iv0" + (i-1)*max_obj + ")) " +\
-                       "(not ("+ predicate + " " + " ".join(variables_list[:-i]) + " ?iv0" + (i-1)*max_obj + ")) "+\
-                      "(not_" + predicate + " "  + " ".join(variables_list[:-i]) + " ?iv0" + (i-1)*max_obj + ") " +\
-                      "(" + coin_predicate + " ".join(variables_list[:-i]) + " ?iv1" + (i-1)*zero_obj + ") )\n\t)"
+            parameters = ":parameters\t(" + " ".join(variables_list[:-(i+1)]) + " ?iv0 ?iv1" + max_parameter + zero_parameter +")"
+            precondition = ":precondition\t(and" + iterateFluent + "(" + coin_predicate + " ".join(variables_list[:-(i+1)]) + " ?iv0" + (i)*max_obj + ") (" + \
+                             predicate + " " + " ".join(variables_list[:-(i+1)]) + " ?iv0" + (i)*max_obj + ") " + suc_predicate + max_obj_predicate + zero_obj_predicate + ")"
+            effects = ":effect\t(and (not (" + coin_predicate + " ".join(variables_list[:-(i+1)]) + " ?iv0" + (i)*max_obj + ")) " +\
+                       "(not ("+ predicate + " " + " ".join(variables_list[:-(i+1)]) + " ?iv0" + (i)*max_obj + ")) "+\
+                      "(not_" + predicate + " "  + " ".join(variables_list[:-(i+1)]) + " ?iv0" + (i)*max_obj + ") " +\
+                      "(" + coin_predicate + " ".join(variables_list[:-(i+1)]) + " ?iv1" + (i)*zero_obj + ") )\n\t)"
                       
             actions += "\n\t\t".join([prefix + name, parameters, precondition, effects]) + "\n\t"
         
