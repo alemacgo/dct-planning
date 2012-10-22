@@ -317,24 +317,31 @@ class SoWff(LogicalFormula):
         #One plus one n-ary relations
         for i in range(1,arity):
             name = "one_plus_one_" + str(i) + "_" + predicate
-            parameters = ":parameters\t(" + " ".join(variables_list[:-(i+1)]) + " ?iv0 ?iv1" + max_parameter + zero_parameter +")"
-            precondition = ":precondition\t(and" + iterateFluent + "(" + coin_predicate + " ".join(variables_list[:-(i+1)]) + " ?iv0" + (i)*max_obj + ") (" + \
-                             predicate + " " + " ".join(variables_list[:-(i+1)]) + " ?iv0" + (i)*max_obj + ") " + suc_predicate + max_obj_predicate + zero_obj_predicate + ")"
-            effects = ":effect\t(and (not (" + coin_predicate + " ".join(variables_list[:-(i+1)]) + " ?iv0" + (i)*max_obj + ")) " +\
-                       "(not ("+ predicate + " " + " ".join(variables_list[:-(i+1)]) + " ?iv0" + (i)*max_obj + ")) "+\
-                      "(not_" + predicate + " "  + " ".join(variables_list[:-(i+1)]) + " ?iv0" + (i)*max_obj + ") " +\
-                      "(" + coin_predicate + " ".join(variables_list[:-(i+1)]) + " ?iv1" + (i)*zero_obj + ") )\n\t)"
+            parameters = ":parameters\t(" + " ".join(variables_list[:-(i+1)]) + " ?iv0 ?iv1" +\
+                         " ?ivmax" + (" " + max_parameter).join([str(l) for l in range(0,i)]) +\
+                         " ?ivzero" + (" " + zero_parameter).join([str(l) for l in range(0,i)]) + ")"
+            precondition = ":precondition\t(and" + iterateFluent + "(" + coin_predicate + " ".join(variables_list[:-(i+1)]) +\
+                            " ?iv0 ?ivmax" + (" " + max_parameter).join([str(l) for l in range(0,i)]) + ") (" + \
+                             predicate + " " + " ".join(variables_list[:-(i+1)]) + " ?iv0 ?ivmax" + (" " + max_parameter).join([str(l) for l in range(0,i)]) +\
+                             ") " + suc_predicate +\
+                             "(so-forall_max_" + predicate + " ?ivmax" + (") (so-forall_max_" + predicate + " " + max_parameter).join([str(l) for l in range(0,i)]) +")" +\
+                              "(so-forall_zero_" + predicate + " ?ivzero" + (") (so-forall_zero_" + predicate + " " + zero_parameter).join([str(l) for l in range(0,i)]) +"))"
+            effects = ":effect\t(and (not (" + coin_predicate + " ".join(variables_list[:-(i+1)]) + " ?iv0 ?ivmax" + (" " + max_parameter).join([str(l) for l in range(0,i)]) + ")) " +\
+                       "(not ("+ predicate + " " + " ".join(variables_list[:-(i+1)]) + " ?iv0 ?ivmax" + (" " + max_parameter).join([str(l) for l in range(0,i)]) + ")) "+\
+                      "(not_" + predicate + " "  + " ".join(variables_list[:-(i+1)]) + " ?iv0 ?ivmax" + (" " + max_parameter).join([str(l) for l in range(0,i)]) + ") " +\
+                      "(" + coin_predicate + " ".join(variables_list[:-(i+1)]) + " ?iv1 ?ivzero" + (" " + zero_parameter).join([str(l) for l in range(0,i)]) + ") )\n\t)"
                       
             actions += "\n\t\t".join([prefix + name, parameters, precondition, effects]) + "\n\t"
         
         #Final case
         name = "one_plus_one_final_" + predicate
-        parameters = ":parameters (" + max_parameter + ")"
-        precondition = ":precondition\t(and" + iterateFluent + "("+ coin_predicate + arity*max_obj + ") (" + \
-                         predicate + " " + arity*max_obj + ") " + max_obj_predicate +")"
-        effects = ":effect\t(and (not" + iterateFluent + ") (not (" + coin_predicate + arity*max_obj + ")) " +\
-                   "(not ("+ predicate + " " + arity*max_obj + ")) " +\
-                  "(not_" + predicate + " " + arity*max_obj + ") " +\
+        parameters = ":parameters (?ivmax" + (" " + max_parameter).join([str(i) for i in range(0,arity)]) + ")"
+        precondition = ":precondition\t(and" + iterateFluent + "("+ coin_predicate + "?ivmax" + (" " + max_parameter).join([str(i) for i in range(0,arity)]) + ") (" + \
+                         predicate + " " + "?ivmax" + (" " + max_parameter).join([str(i) for i in range(0,arity)]) + ") " +\
+                         "(so-forall_max_" + predicate + " ?ivmax" + (") (so-forall_max_" + predicate + " " + max_parameter).join([str(i) for i in range(0,arity)]) +"))"
+        effects = ":effect\t(and (not" + iterateFluent + ") (not (" + coin_predicate + " ?ivmax" + (" " + max_parameter).join([str(i) for i in range(0,arity)]) + ")) " +\
+                   "(not ("+ predicate + " ?ivmax" + (" " + max_parameter).join([str(i) for i in range(0,arity)]) + ")) " +\
+                  "(not_" + predicate + " ?ivmax" + (" " + max_parameter).join([str(i) for i in range(0,arity)]) + ") " +\
                   "(holds_so-forall_" + predicate + ") )\n\t)"
                   
         actions += "\n\t\t".join([prefix + name, parameters, precondition, effects]) + "\n\t"
@@ -378,13 +385,15 @@ class SoWff(LogicalFormula):
         # @Dace: 9063340-45 - Situacion academica (Sencilla -18bsf - 5 dias habiles| rector 90bsf - 20 dias habiles)
         # Get predicate asosiated with the quantifier
         predicate = self._childlist[1]._childlist[0]._info
-        predicate = predicate[1:] # remove the '?'
         
-        if arity == 2: #Might be a function
+        if arity == 2: #Might be a function        
             if predicate in func_symbols:
                 func = True
             elif predicate in inj_symbols:
                 inj = True
+                
+        predicate = predicate[1:] # remove the '?'
+        
                 
         # Getting parameters of the actions depending on the relation arity
         variable = "?x"
@@ -409,12 +418,12 @@ class SoWff(LogicalFormula):
                         ":precondition\t" + guessFluent + "\n\t\t" +\
                         ":effect\t\t(and " + baton + " (not" + guessFluent + "))\n\t)"
         
-        free_condition = "(not_" + predicate + " " +\
+        free_condition = " (not_" + predicate + " " +\
                 " ".join(variables_list) + ")"
 
-        free_condition_functions = "(free_domain_" + predicate + " ?x0) "
+        free_condition_functions = " (free_domain_" + predicate + " ?x0) "
 
-        free_condition_injective = "(free_range_" + predicate + " ?x1) "
+        free_condition_injective = " (free_range_" + predicate + " ?x1) "
         
         #Set True
         precTrue = ":precondition\t(and " + free_condition + guessFluent
@@ -428,14 +437,14 @@ class SoWff(LogicalFormula):
         if inj or func: 
             #Adds for functions
             precTrue += free_condition_functions
-            effTrue +=  "(not " + free_condition_functions + "))\n\t)"
+            effTrue +=  " (not " + free_condition_functions + ")"
             effFalse += free_condition_functions 
             global_fluents.add(free_condition_functions)
             
             if inj:
                 #Adds for injective function            
-                precTrue += "\n\t\t" + free_condition_injective
-                effTrue += "\n\t\t(not " + free_condition_injective + ")"
+                precTrue += " " + free_condition_injective
+                effTrue += " (not " + free_condition_injective + ")"
                 effFalse += free_condition_injective
                 global_fluents.add(free_condition_injective)                        
 

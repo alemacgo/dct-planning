@@ -123,3 +123,39 @@ def generate_free_domain(n, funcName):
     
 def generate_free_range(n, funcName):
     return generate_all_1arity("free_range_" + funcName,n)
+    
+def generate_suc_forall(a_vars,maxim):
+    s = []
+    last = "zero"
+    so_forall_vars = []
+    for i in range (0, len(a_vars)-1):
+        if (abs(a_vars[i+1]) == 0):
+            break
+        var1 = abs(a_vars[i])
+        print var1
+        if var1 == 1:
+            var1 = "zero"
+        elif var1 == maxim:
+            var1 = "max"
+        else:
+            var1 = "obj" + str(var1 - 1)
+        
+        so_forall_vars += [var1]
+            
+        var2 = abs(a_vars[i+1])
+        if var2 == 1:
+            var2 = "zero"
+        elif var2 == maxim:
+            var2 = "max"
+        else:
+            var2 = "obj" + str(var2 - 1)
+            
+        last = var2
+        s.append("(so-forall_suc_t " + var1 + " " + var2 + ")")
+        
+    #(not_e) forall var
+    #t is forall relation
+    so_forall_vars += [last]
+    s.append("(so-forall_zero_t " + so_forall_vars[0] + ")")
+    s.append("(so-forall_max_t " + so_forall_vars[-1] + ")")
+    return s
