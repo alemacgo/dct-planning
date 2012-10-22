@@ -355,15 +355,17 @@ class SoWff(LogicalFormula):
         # that the subformula has already been prooved with the current quantifier
         # state
         name = "change_for_coin_" + predicate
-        parameters = ":parameters (" + zero_parameter + ")"   
-        precondition = ":precondition\t(and" + iterateFluent + self._childlist[2].get_fluent() + zero_obj_predicate + ")"
+        parameters = ":parameters (?ivzero" + (" " + zero_parameter).join([str(i) for i in range(0,arity)]) + ")"   
+        precondition = ":precondition\t(and" + iterateFluent + self._childlist[2].get_fluent() +\
+                       "(so-forall_zero_" + predicate + " ?ivzero" + (") (so-forall_zero_" + predicate +\
+                            " " + zero_parameter).join([str(l) for l in range(0,arity)]) +"))"
         # If this is the final second order quantifier it needs delete
         # the proof fluent. Needs to be here because the call to get fluent must be made first
         notProofFluent = ""
         if (baton == "(proof)"):
             notProofFluent = " (not (proof))" + self.get_delete_all_fowff()
         effects = ":effect\t(and" + " (not " + self._childlist[2].get_fluent() +\
-                  ") (coin_" + predicate + arity*zero_obj + ") " + notProofFluent + ")\n\t)"
+                  ") (coin_" + predicate + " ?ivzero" + (" " + zero_parameter).join([str(i) for i in range(0,arity)]) + ") " + notProofFluent + ")\n\t)"
         
         actions += "\n\t\t".join([prefix + name, parameters, precondition, effects]) + "\n\t"
         

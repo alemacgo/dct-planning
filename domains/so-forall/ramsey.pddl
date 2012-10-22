@@ -262,9 +262,9 @@
 		:effect	(and (not (iterate_t) ) (not (coin_t  ?ivmax0  ?ivmax1)) (not (t ?ivmax0  ?ivmax1)) (not_t ?ivmax0  ?ivmax1) (holds_so-forall_t) )
 	)
 	(:action change_for_coin_t
-		:parameters ( ?ivzero)
-		:precondition	(and (iterate_t) (holds_so-exists_f) (so-forall_zero_t ?ivzero))
-		:effect	(and (not (holds_so-exists_f)) (coin_t ?ivzero ?ivzero) )
+		:parameters (?ivzero0  ?ivzero1)
+		:precondition	(and (iterate_t) (holds_so-exists_f)(so-forall_zero_t ?ivzero0) (so-forall_zero_t  ?ivzero1))
+		:effect	(and (not (holds_so-exists_f)) (coin_t ?ivzero0  ?ivzero1) )
 	)
 	(:action init_so-forall_t
 		:precondition	(and (iterate_t) (begin_so-forall_t))
