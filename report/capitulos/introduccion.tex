@@ -21,7 +21,7 @@ forma de colorear este grafo con $k$ colores se ha hallado una forma de
 utilizar $k$ registros distintos para almacenar las variables.
 
 Los problemas de decisión pueden agruparse en distintas clases según su
-complejidad. Una importante clase de complejidad es \textbf{NP} (siglas de
+complejidad. Una importante clase de complejidad es NP (siglas de
 \textit{Nondeterministic Polynomial time}), a la cual pertenecen problemas
 interesantes como $k$-colorabilidad, satisfacibilidad proposicional
 (\textbf{SAT}) y hallar un camino \textit{hamiltoniano} en un grafo.
@@ -35,8 +35,8 @@ desde el estado inicial hasta el estado final, resolviendo el problema.
 % Concretar
 
 Este trabajo se enfoca en el desarrollo de una herramienta que permite
-traducir, o como suele decirse formalmente, \textbf{reducir} un problema de
-decisión perteneciente a la clase \textbf{NP}, codificado en un lenguaje
+traducir o, en lenguaje más formal, \textbf{reducir} un problema de
+decisión perteneciente a la clase NP, codificado en un lenguaje
 basado en la lógica de segundo orden, a un problema de
 planificación automática. La motivación para realizar esta herramienta es que
 existen planificadores muy eficientes, pero no es trivial
@@ -49,36 +49,81 @@ nivel y que la herramienta lo reduzca a un formato de entrada aceptado por
 los planificadores, los cuales pueden proceder entonces a computar su solución.
 
 % Trabajos anteriores
-Otros autores han utilizado la lógica de segundo orden como un lenguaje de
-programación declarativo anteriormente. \cite{cadoli:npspec}.
+Otros autores ya han utilizado fragmentos de la lógica de segundo orden como un lenguaje de
+programación declarativo. En \cite{reiter:cwa} se describe un
+lenguaje de reglas y consultas a bases de datos que es un subconjunto de
+PROLOG, llamado DATALOG. A su vez, \cite{cadoli:npspec} presenta una
+extensión de este lenguaje que permite la codificación de problemas NP y
+se desarrolla un método para compilar los problemas a código de PROLOG, el cual
+fue probado con pequeñas instancias del \textbf{problema de la mochila}
+(\textit{knapsack problem}) y el \textbf{problema del viajante}
+(\textit{traveling salesman problem}).
+
+Los autores de \cite{mitchell:npsearch} proponen, por su parte, el lenguaje de
+Extensión de Modelos (MX), que es conceptualmente muy cercano a la lógica de
+segundo orden. Este trabajo se enfoca en la descripción formal del lenguaje y
+en discutir la posibilidad de diseñar un solucionador. En esta sección, los
+autores aconsejan la realización de una traducción a otro lenguaje para el cual
+existan solucionadores: es precisamente esto lo que se ha hecho en el presente
+trabajo con la función que traduce descripciones declarativas a problemas
+de planificación, área para la cual existe una amplia variedad de solucionadores.
+
+%! Qué formato puede requerir este enfoque?
+Otro trabajo relacionado a este proyecto es \cite{cadoli:safedelay}. Los
+autores presentan una manera de razonar sobre los problemas de
+decisión, intentando reformularlos para hacerlos más fáciles de resolver. Se
+utilizan sistemas especializados para la modelación de restricciones y
+solucionadores provenientes de muchos sub-campos de Inteligencia Artificial.
+Sin embargo, dependiendo del solucionador, se podría requerir que la fórmula
+declarativa a solucionar esté en un formato particular, lo cual no es tan
+conveniente como un enfoque que independiente del dominio.
 
 % Objetivos generales y específicos
+El objetivo general del proyecto es permitir la resolución de problemas
+NP expresados a través de un lenguaje declarativo basado en la lógica
+de segundo orden. Al alcanzar este objetivo, problemas cuya aplicación es
+ampliamente conocida en Ciencias de la Computación podrán ser expresados
+en un lenguaje conciso y ser resueltos sin la intervención del usuario luego de
+la fase de modelación.
+
+A fin de lograr el objetivo general, se plantean las siguientes metas
+específicas:
+\begin{itemize}
+\item El desarrollo de una herramienta que procese la descripción lógica de un problema 
+NP y genere automáticamente un problema de planificación equivalente 
+formulado en el lenguaje PDDL (\textit{Planning Domain Definition Language}),
+de uso estándar en la comunidad de planificación automática.
+\item Una interfaz \textit{web} para este sistema que permita un acceso flexible
+y rápido al traductor.
+\end{itemize}
 
 % Organización
+Este trabajo está dividido en cinco capítulos. El primer capítulo aporta la
+fundamentación teórica sobre la que está basada la traducción, incluyendo una
+introducción a las áreas de planificación automática y complejidad descriptiva.
+En el segundo capítulo se describe el lenguaje lógico diseñado para la
+formulación de problemas a alto nivel, se presenta una reducción base de este
+lenguaje al lenguaje PDDL y se demuestran ciertas propiedades formales de la
+traducción. En el capítulo 3 se discuten algunas optimizaciones aplicadas sobre
+la función de reducción que permiten la generación de problemas de
+planificación menos complejos sin alterar las propiedades formales básicas de
+la traducción. El capítulo 4 trata sobre cómo fueron diseñados y llevados a
+cabo experimentos sobre diferentes problemas NP traducidos con la herramienta,
+además de ofrecer una discusión de los resultados obtenidos. Finalmente, el
+capítulo 5 contiene conclusiones, recomendaciones e ideas para trabajos
+futuros.
 
-1. RESULTADOS ESPECÍFICOS A LOS QUE SE QUIERE LLEGAR 
-(EL PRODUCTO QUE SE DESEA OBTENER) Y SU POSIBILIDAD DE APLICACIÓN: 
-
-Resultados:
-1. Una herramienta que procese la descripción lógica de un problema perteneciente a una clase de complejidad particular y que genere automáticamente un problema de planificación equivalente formulado en el lenguaje PDDL (Planning Domain Definition Language). 
-2. Una interfaz para este sistema que permita un acceso flexible y rápido al traductor.
-Posibilidad de Aplicación:
-Gracias al sistema propuesto, problemas cuya aplicación es ampliamente conocida
-en el área de computación, tales como hallar un clique de tamaño k o encontrar un camino hamiltoniano en un grafo, podrán ser expresados en un lenguaje conciso y ser traducidos en archivos de entrada para un planificador sin la intervención del usuario.
-
-2. ACTIVIDADES QUE INVOLUCRA EL PROYECTO: 
-a. Investigación sobre el material teórico que permiten relacionar la teoría de complejidad computacional con complejidad descriptiva (lógica)
-b. Especificación del lenguaje lógico propuesto para realizar formulaciones, gramática y semántica de las construcciones
-c. Definición de la traducción del lenguaje lógico a PDDL, demostración de la correctitud y completitud de esta equivalencia
-d. Desarrollo del analizador léxico y sintáctico que permita reconocer este lenguaje
-e. Implementación de algoritmos para el post-procesamiento del árbol sintáctico para la simplificación de la fórmula lógica a formas canónicas
-f. Implementación de la traducción definida anteriormente sobre el árbol sintáctico de la fórmula procesada
-g. Evaluación experimental del desempeño de planificadores (del estado del arte) sobre fórmulas que corresponden a varios dominios
-h. Programación de una herramienta integral web que sirva como una interfaz ante el usuario para acceder al sistema de traducción de forma cómoda
-
-3. PUNTOS DE INTERÉS QUE HAN DE SER TRATADOS DURANTE LA EJECUCIÓN DEL PROYECTO:
-a. Teoría de complejidad descriptiva
-b. Equivalencia entre clases de complejidad y fragmentos del lenguaje PDDL
-c. Traducciones válidas entre fórmulas lógicas y dominios de planificación, optimización de las traducciones para su resolución con planificadores actuales
-
-\cite{russell}
+%2. ACTIVIDADES QUE INVOLUCRA EL PROYECTO: 
+%a. Investigación sobre el material teórico que permiten relacionar la teoría de complejidad computacional con complejidad descriptiva (lógica)
+%b. Especificación del lenguaje lógico propuesto para realizar formulaciones, gramática y semántica de las construcciones
+%c. Definición de la traducción del lenguaje lógico a PDDL, demostración de la correctitud y completitud de esta equivalencia
+%d. Desarrollo del analizador léxico y sintáctico que permita reconocer este lenguaje
+%e. Implementación de algoritmos para el post-procesamiento del árbol sintáctico para la simplificación de la fórmula lógica a formas canónicas
+%f. Implementación de la traducción definida anteriormente sobre el árbol sintáctico de la fórmula procesada
+%g. Evaluación experimental del desempeño de planificadores (del estado del arte) sobre fórmulas que corresponden a varios dominios
+%h. Programación de una herramienta integral web que sirva como una interfaz ante el usuario para acceder al sistema de traducción de forma cómoda
+%
+%3. PUNTOS DE INTERÉS QUE HAN DE SER TRATADOS DURANTE LA EJECUCIÓN DEL PROYECTO:
+%a. Teoría de complejidad descriptiva
+%b. Equivalencia entre clases de complejidad y fragmentos del lenguaje PDDL
+%c. Traducciones válidas entre fórmulas lógicas y dominios de planificación, optimización de las traducciones para su resolución con planificadores actuales

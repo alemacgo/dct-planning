@@ -5,9 +5,13 @@
 %\usepackage[spanish]{hyphenat}
 \usepackage{hyphenat}
 
-%\usepackage[square, numbers, comma, sort&compress]{natbib}
+\usepackage[square, numbers, comma, sort&compress]{natbib}
 \usepackage{verbatim}
+\usepackage{tikz}
+\usepackage{fancyvrb}
+\usepackage{enumerate}
 \usepackage{paquetes/vector}
+\usepackage{color}
 \usepackage{hyperref}
 \usepackage{amsthm}
 \usepackage{amsfonts}
@@ -15,7 +19,6 @@
 \usepackage{algorithm}
 \usepackage{float}
 \usepackage{epigraph}
-\usepackage{natbib}
 \usepackage[utf8]{inputenc}
 \usepackage[fixlanguage]{babelbib}
 %\usepackage[letterpaper, inner=3cm, outer=2cm]{geometry}
@@ -34,12 +37,19 @@
 \renewcommand{\spanishtablename}{Tabla}
 \renewcommand*\listtablename{Lista de Tablas}
 \newcommand\listsymbolname{Acrónimos}
+\newcommand{\tup}[1]{\langle #1 \rangle}
 \floatname{algorithm}{Algoritmo}
-
-% Definiciones para definicions, teoremas y lemas
-\theoremstyle{definition} \newtheorem{definicion}{Definición}
-\theoremstyle{plain} \newtheorem{teorema}{Teorema}
-\theoremstyle{plain} \newtheorem{lema}{Lema}
+\newcommand{\A}{\ensuremath{\mathcal{A}}}
+\newcommand{\LPO}{\text{LPO}}
+\newcommand{\LSO}{\text{LSO}}
+\newcommand{\SO}{\ensuremath{\text{SO}}}
+\newcommand{\SOE}{\ensuremath{\text{SO}\exists}}
+\newcommand{\SOA}{\ensuremath{\text{SO}\forall}}
+\newcommand{\SOEA}{\ensuremath{\text{SO}\exists\forall}}
+\newcommand{\SOAEA}{\ensuremath{\text{SO}\forall\exists\forall}}
+\newcommand{\Q}{\ensuremath{\mathcal{Q}}}
+\newcommand{\struc}{\text{STRUC}}
+\renewcommand{\models}{\vDash}
 
 \parindent 3ex % Agrega sangrías de 3 espacios (3 veces el espacio de la x)
 \setlength{\baselineskip}{1.5pt} % Interlineado 1.5
@@ -154,6 +164,13 @@ Agradecimientos aquí.
 \listofsymbols{ll}  % Include a list of Abbreviations (a table of two columns)
 {
 % \textbf{Acronym} & \textbf{W}hat (it) \textbf{S}tands \textbf{F}or \\
+\textbf{LPO} & \textbf{L}ógica de \textbf{P}rimer \textbf{O}rden\\
+\textbf{LSO} & \textbf{L}ógica de \textbf{S}egundo \textbf{O}rden\\
+\textbf{LSO} & \textbf{T}eoría de \textbf{C}omplejidad \textbf{D}escriptiva\\
+\textbf{NP} & \textbf{N}ondeterministic \textbf{P}olynomial time\\
+\textbf{PDDL} & \textbf{P}lanning \textbf{D}omain \textbf{D}efinition \textbf{L}anguage \\
+\textbf{SAT} & boolean \textbf{SAT}isfiability\\
+\textbf{TCD} & \textbf{T}eoría de \textbf{C}omplejidad \textbf{D}escriptiva\\
 }
 
 %% ----------------------------------------------------------------

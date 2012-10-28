@@ -1,18 +1,329 @@
 % Chapter 2
 
-\chapter{Marco Teórico}
+\chapter{Marco teórico}
 \label{Chapter1}
-\lhead{Capítulo 1. \emph{Marco Teórico}}
+\lhead{Capítulo 1. \emph{Marco teórico}}
+
+Este capítulo presenta brevemente los conceptos teóricos básicos para el
+desarrollo de este trabajo. Primero se explican los fundamentos de la
+planificación automática, área que provee un formalismo al cual se pueden
+traducir problemas de decisión. Luego, se define la disciplina de complejidad
+descriptiva, que clasifica distintos fragmentos de lógica de segundo orden
+según su complejidad computacional y permite establecer garantías sobre la
+dificultad de resolver problemas formulados en un lenguaje lógico.
+
+%! trabajos previos?
+%Finalmente, se expondrán trabajos 
 
 \section{Planificación automática}
-\subsection{STRIPS}
-\subsection{Complejidad computacional de subconjuntos de STRIPS}
+La planificación automática es un campo de investigación dentro de la Inteligencia
+Artificial. Su enfoque se basa en descubrir un plan de acciones a seguir para
+lograr un objetivo concreto \citep{russell:book}. En este trabajo se manejará
+la concepción \textbf{clásica} de planificación, en la cual todas las acciones
+tienen una consecuencia determinística y observable en ambientes estáticos (es
+decir, que sólo cambian con el resultado de las acciones aplicadas).
+
+Los investigadores de esta área han diseñado una representación compacta para
+expresar problemas de planificación de cualquier dominio, llamado PDDL 
+(\textit{Planning Domain Definition Language}) que describe todo lo necesario
+para especificar un problema: el estado inicial, las acciones posibles con sus
+precondiciones y efectos, y el estado meta.
+
+Cada estado se representa con un conjunto de proposiciones, que pueden ser
+átomos o símbolos relacionales instanciados. Por ejemplo, en un problema de
+planificación canónico llamado \textit{mundo de bloques}, una mano
+robótica intenta apilar bloques enumerados de manera de que todos los bloques
+estén en una sola pila ordenados de forma ascendente. Cada bloque puede tener a
+lo sumo un bloque encima suyo, y la mano sólo puede cargar un bloque a la vez.
+En este caso, proposiciones válidas que pueden ser parte de un estado son,
+por ejemplo,
+\texttt{manoVacía}, \texttt{sobre(0, mesa)}, \texttt{sobre(1, mesa)}, \texttt{libre(0),
+\texttt{libre(1)}}.
+La Figura \ref{blocksworld_inicial} ilustra un estado cuyas únicas
+proposiciones ciertas son estas mencionadas anteriormente.
+\begin{figure}[h!]
+\centering
+\includegraphics[width=0.4\textwidth]{figuras/blocksworld_inicial.png}
+\caption{Posible estado para un problema en \textit{mundo de bloques}.}
+\label{blocksworld_inicial}
+\end{figure}
+
+Una acción en PDDL especifica qué debe ser cierto sobre el estado actual para
+que la acción sea aplicable. 
+Este conjunto comprende las \textbf{precondiciones}. Asimismo,
+la acción declara qué proposiciones en el mundo cambian cuando es aplicada,
+lo cual constituye sus \textbf{efectos}. Para una notación
+simplificada, PDDL permite la utilización de \textbf{parámetros} en los
+símbolos relacionales que describen sus precondiciones y efectos. Estos
+parámetros pueden ser instanciados en cualquier átomo. Volviendo al
+ejemplo anterior, un conjunto de acciones podría ser:
+\begin{Verbatim}[commandchars=\\\{\},
+codes={\catcode`$=3\catcode`^=7}]
+(:acción recoger_bloque
+    :parámetros (b)
+    :precondiciones (manoVacía $\land$ libre(b))
+    :efectos (enMano(b) $\land \neg$ manoVacía)
+)
+
+(:acción colocar_sobre
+    :parámetros (b1, b2)
+    :precondiciones (enMano(b1) $\land$ libre(b2))
+    :efectos (sobre(b1, b2) $\land$ manoVacía $\land$
+              $\neg$ enMano(b1) $\land \neg$ libre(b2))
+)
+\end{Verbatim}
+
+Teniendo en cuenta esta especificación, el lector puede hacer el ejercicio de
+generar una secuencia ordenada de acciones que resuelva este ejemplo
+concreto, es decir, que conduzca desde el estado ilustrado en la Figura
+\ref{blocksworld_inicial} hasta un estado en el cual los bloques estén ``apilados en
+orden''. La solución se presenta a continuación. Como es costumbre, sólo se
+mencionan las proposiciones verdaderas en cada estado. Se ha coloreado de azul
+las nuevas proposiciones que han resultado de aplicar una acción.
+\begin{Verbatim}[commandchars=\\\{\},
+codes={\catcode`$=3\catcode`^=7}]
+estado: sobre(0, mesa) $\land$ sobre(1, mesa) $\land$ libre(0) $\land$ libre(1)
+        $\land$ manoVacía
+\textit{acción: recoger_bloque(1)}
+estado:{\color{blue} enMano(1)} $\land$ sobre(0, mesa) $\land$ libre(0) $\land$ libre(1)
+\textit{acción: colocar_sobre(1, 0)}
+estado:{\color{blue} sobre(1, 0)} $\land$ sobre(0, mesa) $\land$ {\color{blue}manoVacía} $\land$ libre(1)
+\end{Verbatim}
+
+La Figura \ref{blocksworld_final} es una representación de este estado final.
+
+\begin{figure}[h!]
+\centering
+\includegraphics[width=0.4\textwidth]{figuras/blocksworld_final.png}
+\caption{Estado final para un problema en \textit{mundo de bloques},
+luego de aplicar una secuencia de acciones al estado en la Figura \ref{blocksworld_inicial}.}
+\label{blocksworld_final}
+\end{figure}
+
+En resumen, pues, un \textbf{problema de planificación} es expresado utilizando
+el lenguaje PDDL, que especifica su \textbf{estado inicial}, \textbf{acciones}
+(precondiciones y efectos de cada una) y \textbf{estado final}.
+Un \textbf{plan} es una secuencia ordenada de acciones que resuelve el problema
+de planificación.
+
+Cuando se busca resolver varias instancias de un problema general se suelen
+agrupar los problemas de planificación en dominios. Dos problemas del mismo
+dominio comparten el mismo conjunto de acciones, mas no necesariamente el
+estado inicial o el estado meta. Por esto se dice que \textit{mundo de bloques}
+es un \textbf{dominio de planificación}, y el término \textbf{problema} se refiere a
+una instancia particular con estados inicial y final definidos, en
+el cual pueden utilizarse las acciones del dominio al que pertenece.
+
+\subsection{Complejidad en planificación}
+Sea PLANSAT el problema de decisión que pregunta si existe algún plan que
+resuelve un problema de planificación. Según el formalismo que se ha definido
+en la sección anterior,
+PLANSAT es \textbf{decidible} porque el número de estados es finito:
+un algoritmo basado en búsqueda desde el estado inicial que aplique
+todas las acciones posibles en cada estado acabará examinando todo el espacio y
+determinando si existe tal plan.
+
+PLANSAT pertenece a la clase de complejidad PSPACE \cite{ghallab:book}.
+PSPACE es la clase de problemas que pueden ser resueltos por una máquina de
+Turing determinística con una cantidad polinomial (en $n$, donde $n$ es el
+tamaño del problema) de espacio en memoria. Los problemas PSPACE son, en
+general, más difíciles de resolver que los problemas NP, los cuales a su vez
+son problemas combinatorios complejos para los cuales se cree que no existen
+soluciones generales eficientes. Como en muchos otros dominios de inteligencia
+artificial, los planificadores dependen de
+heurísticas de búsqueda para dar con las soluciones a problemas pequeños en un 
+período de tiempo razonable.
+
+%! proof?
+Una restricción interesante a PLANSAT es no permitir efectos negativos en las
+acciones. Si este es el caso, cualquier predicado instanciado que se haya 
+agregado permanece cierto durante todo el plan, de modo que no es necesario
+que el operador instanciado sea aplicado más de una vez.
+Esto tiene como consecuencia que PLANSAT sin efectos 
+negativos pertenezca a la clase NP \cite{ghallab:book}.
 
 \section{Complejidad Descriptiva}
+La Teoría de Complejidad Descriptiva (TCD) es un área de investigación en la
+intersección entre matemáticas y las ciencias de la computación 
+que estudia la teoría de complejidad desde un punto de vista matemático, 
+sin utilizar modelos de computación como máquinas de Turing. La TCD surgió
+cuando se demostró que la clase de complejidad NP corresponde
+exactamente con la clase de problemas descriptibles en lógica de segundo orden
+existencial \cite{fagin:spectra}. En los últimos años se ha establecido una
+correspondencia entre las clases de complejidad más importantes y lenguajes
+lógicos con distintos niveles de expresividad \cite{immerman:book}. En esta
+sección se describen los elementos sintácticos de estos lenguajes, repasando
+conceptos relevantes de la lógica, y se explica la interpretación formal de
+las fórmulas construidas con estos lenguajes.
+
 \subsection{Lenguajes}
+Cada lenguaje lógico está construido a partir de un conjunto de símbolos, o
+\textbf{vocabulario}.
+El vocabulario se suele dividir en símbolos lógicos puros como `$\land$',
+`$\exists$', etc., símbolos de puntuación como `$($' y `$)$', símbolos
+relacionales, símbolos funcionales y constantes. Los símbolos lógicos y de
+puntuación pertenecen a todos los lenguajes, mientras que los símbolos
+relacionales, funcionales y constantes varían de un lenguaje a otro. De modo
+que es conveniente definir la firma de un lenguaje como el conjunto finito de
+relaciones, funciones y constantes permitidas en las fórmulas. Las firmas son
+denotadas por tuplas como $\sigma=\tup{P^1,Q^2,f^1,A,B}$, que contiene dos
+símbolos relacionales $P$ y $Q$ de aridades 1 y 2, respectivamente, un símbolo
+funcional $f$ de aridad 1, y dos constantes $A$ y $B$.
+
+En la TCD, si se considera que el dominio y rango de los símbolos funcionales
+es finito, estos pueden reemplazarse por símbolos relacionales
+equivalentes: en lugar de representar que $y$ es la imagen de $x$ utilizando
+$f(x) = y$, se utiliza la proposición lógica $F(x, y)$.
+Por esta razón se omiten los símbolos funcionales en lo sucesivo.
+
+\subsubsection{Lógica de segundo orden}
+Se denota con $\LPO(\sigma)$ y $\LSO(\sigma)$ a los conjuntos de todas las
+fórmulas de lógica de primer y segundo orden basadas en la firma $\sigma$.
+La única diferencia entre la LPO y la LSO es que en esta última se permite la
+cuantificación sobre los símbolos relacionales. La fórmulas que forman parte
+de LSO están descritas en la Definición \ref{lso_def}.
+
+\begin{definition} Una fórmula pertenece a lógica de segundo orden (LSO) si y
+sólo si puede construirse mediante las siguientes reglas.
+\label{lso_def}
+\begin{enumerate}
+%! por que superset?
+\item Cualquier fórmula $\LPO(\tau)$, dado $\tau\supseteq\sigma$, es una
+fórmula $\LSO(\sigma)$.
+\item Si $\Phi$ and $\Psi$ son fórmulas $\LSO(\sigma)$, entonces también lo
+son:
+ \begin{itemize}
+    \item $(\Phi)$
+    \item $\neg\Phi$
+    \item $\Phi\land\Psi$
+    \item $\Phi\lor\Psi$
+    \item $\Phi\Rightarrow\Psi$
+  \end{itemize}
+\item Si la relación $R^a\notin\sigma$ y $\Phi$ es una fórmula $\LSO(\sigma)$,
+  entonces `$(\exists R)\Phi$' y `$(\forall R)\Phi$' son fórmulas $\LSO(\sigma)$.
+\end{enumerate}
+%\caption{Hola}
+%\label{a}
+\end{definition}
+
+Sólo se considerará en el resto del trabajo las fórmulas sin variables libres,
+o \textbf{sentencias}, pues son aquellas cuya semántica está bien definida.
+También, entre las fórmulas de segundo orden, sólo se tratarán aquellas que
+sean de la forma
+\[ \Phi = (\Q_1R_1^{a_1})(\Q_2R_2^{a_2})\cdots(\Q_nR_n^{a_n})\psi \]
+donde cada $\Q_i \in \{\exists,\forall\}$, y
+$\psi$ es una sentencia de primer orden sobre $\sigma\ \cup\ \{R_1^{a_1},\ldots,R_n^{a_n}\}$.
+Esta forma es universal: todas las sentencias de segundo orden pueden llevarse
+a una equivalente que cumpla con esta restricción.
+Si todos los $\Q_i$ son cuantificadores existenciales, puede decirse que
+$\Phi$ es una sentencia \textbf{existencial de segundo orden}.
+La clase de todas las sentencias existenciales de segundo orden, también
+llamada el \textbf{fragmento existencial de la LSO}, es denotado por \SOE. Se
+define \SOA\ análogamente para el cuantificador universal,
+y si existe un $k$, $1<k<n$, tal que $\Q_i=\exists$ para todo $i<k$
+y $\Q_i=\forall$ para todo $i\geq k$, entonces la sentencia
+pertenece al segmento \SOEA, y así sucesivamente.
+
 \subsection{Estructuras de primer orden}
-\subsubsection{Orden y aritmética}
+%! interpretación? explicar más?
+Las fórmulas lógicas son interpretadas con respecto a \textbf{estructuras de primer
+orden}. Una estructura de primer orden se define sobre la firma
+$\sigma=\tup{R_1^{a_1},\ldots,R_s^{a_s},\\c_1,\ldots,c_t}$, donde cada $R_i$ es
+un símbolo relacional de aridad $a_i$, y cada $c_j$ es una constante. 
+La estructura de primer orden es una tupla
+$\A=\tup{|\A|,R_1^\A,\ldots,R_s^\A,c_1^\A,\\\ldots,c_t^\A}$ con un universo
+no vacío $|\A|$, donde cada $R_i^\A\subseteq|\A|^{a_i}$ es un subconjunto de
+$a_i$-tuplas de $|\A|$, llamado la \textbf{interpretación} de $R_i$, y cada
+$c_j^\A\in|\A|$ es un elemento de $|\A|$ (llamado la interpretación de $c_j$).
+Sin pérdida de generalidad, puede asumirse que el universo siempre es de la
+forma $|\A|=\{0,1,\ldots,n-1\}$.
+La TCD sólo está interesada en estructuras de universo finito, la clase de
+todas las estructuras finitas de la firma $\sigma$ se denota por $\struc[\sigma]$.
+
 \subsection{Semántica formal}
+%! LSO o LPO?
+La Definición \ref{semantica_def} describe bajo qué circunstancias una fórmula $\Phi$ en
+$\LSO(\sigma)$ satisface una estructura $\A$, o $\A \models \Phi$, tal como es
+presentado en \cite{immerman:book}.
+
+\begin{definition}
+\label{semantica_def}
+Sea $\A \in \struc[\sigma]$, y sea $i$ una interpretación sobre $\A$ cuyo
+dominio incluye todas las variables libres relevantes. 
+Se define inductivamente cuándo una fórmula 
+$\Phi \in \LSO(\Phi)$ es cierta en $(\A, i)$:
+\begin{gather*}
+(\A, i) \models t_1 = t_2 \iff i(t_1) = i(t_2)\\
+(\A, i) \models R_j(t_1,...,t_{a_j}) \iff \tup{i(t_1),...,i(t_{a_j})} \in R_j^\A\\
+(\A, i) \models \neg \Phi \iff \mbox{no es cierto que } (A, i) \models \Phi\\
+(\A, i) \models \Phi \land \Psi \iff (\A, i) \models \Phi \mbox{ y } (\A, i) \models \Psi\\
+(\A, i) \models \Phi \lor \Psi \iff (\A, i) \models \Phi \mbox{ o } (\A, i) \models \Psi\\
+(\A, i) \models \Phi \Rightarrow \Psi \iff \neg(\A, i) \models \Phi \lor (\A, i) \models \Psi\\
+(\A, i) \models (\exists x) \Phi \iff \mbox{existe } a \in |\A| 
+\mbox{ tal que } (\A, i, a/x) \models \Phi,\\
+\hspace{5cm} \mbox{donde } (i, a/x)(y) = \left\{
+     \begin{array}{lr}
+       i(y) & \mbox{si } y \not= x\\
+       a & \mbox{si } y = x
+     \end{array}
+   \right.\\
+(\A, i) \models (\forall x) \Phi \iff \mbox{no es cierto que } 
+    (\A, i) \models (\exists x) \neg \Phi
+\end{gather*}
+\end{definition}
+
+Como ejemplo, sea $\sigma=\tup{E^2,s,t}$ y
+$\A=\tup{|\A|,E^\A,s^\A,t^\A}$, donde $|\A|=\{0,1,2\}$,
+$E^\A=\{(0,1),(1,2)\}$, $s^\A=0$ y $t^\A=2$.
+Nótese que la firma $\sigma$ puede ser utilizada para describir grafos
+dirigidos con vértices $s$ y $t$, y la relación $E(x, y)$ indica que hay un
+arco entre los vértices $x$ y $y$. $\A$ corresponde al grafo mostrado en la
+Figura \ref{grafo_simple}.
+
+\shorthandoff{<>."}
+\begin{figure}[h]
+\begin{center}
+\begin{tikzpicture}[shorten >=1pt, thick]%[shorten >=1pt,node distance=2cm,>=stealth',thick]
+  \node [shape=circle,fill=black,inner sep=1.5pt,label=below:$s$] (q0) at (0,0) {};
+  \node [shape=circle,fill=black,inner sep=1.5pt,label=below:$1$] (q1) at (2,0) {};
+  \node [shape=circle,fill=black,inner sep=1.5pt,label=below:$t$] (q2) at (4,0) {};
+  \path[->] (q0) edge (q1) (q1) edge (q2);
+\end{tikzpicture}
+\end{center}
+\caption{el grafo dirigido que corresponde a la estructura $\A=\tup{|\A|,E^\A,s^\A,t^\A}$
+donde $|\A|=\{0,1,2\}$, $E^\A=\{(0,1),(1,2)\}$, $s^\A=0$ y $t^\A=2$.}
+\label{grafo_simple}
+\end{figure}
+
+Puede verificarse mediante semántica formal si $\A\models\Phi$, donde $\Phi$
+es una fórmula arbitraria de $\LPO(\sigma)$. A continuación se comprueba si dos
+$\Phi$ particulares satisfacen la estructura \A.
+
+\begin{enumerate}
+\item $\A\models^?(\exists x)(E(s,x)\land E(x,t))$
+\begin{center}
+\begin{tabular}{lll}
+&[def. de E en \A] & $E(0, 1) \land E(1, 2)$\\
+$\Rightarrow$ & $[s^\A = 0]$ & $E(s, 1) \land E(1, 2)$\\
+$\Rightarrow$ & $[t^\A = 2]$ & $E(s, 1) \land E(1, t)$\\
+$\Rightarrow$ & $[\mbox{testigo, } x = 1]$ & $(\exists x)(E(s, x) \land E(x, t))$\\
+&\qed & $\A \models \Phi$
+\end{tabular}
+\end{center}
+
+\item $\A\models^?(\forall x)(\exists y)E(x,y)$
+\begin{center}
+\begin{tabular}{lll}
+&[def. de E en \A] & $\neg E(2, 0) \land \neg E(2, 1) \land \neg E(2, 2)$\\
+$\Rightarrow$ & $[|\A| = \{0,1,2\}]$ & $(\forall y) (\neg E(2, y))$\\
+$=$ & [De Morgan] & $\neg (\exists y) (E(2, y))$\\
+$\Rightarrow$ & $[\mbox{testigo, } x = 2]$ & $(\exists x) (\neg (\exists y) (E(x, y)))$\\
+$=$ & [De Morgan] & $\neg (\forall x) (\exists y) (E(x, y))$\\
+&\qed & $\A \nvDash \Phi$
+\end{tabular}
+\end{center}
+\end{enumerate}
+
 \subsection{Clases de complejidad}
 %\subsubsection{Equivalencias con complejidad en planificación automática}
 
