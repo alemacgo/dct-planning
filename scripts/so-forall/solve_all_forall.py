@@ -2,9 +2,9 @@
 RUN = False
 RUN = True
 
-import os, re, sys
+import os, re, sys, math
 
-problems = "qbfae|qbfea"
+problems = "qbf3eae|qbf3aea|qbfae|qbfea"
 limits = "ulimit -t 5400; ulimit -m 3000;"
 plannerCommand = "planners/m/M"
 output = ">"
@@ -16,13 +16,39 @@ def qbfaeBounds(problem):
     problem_info = problem.split("_")
     n_soforall = int(problem_info[1][:-1])
     n_clauses = int(problem_info[3][:-1])
-    return (pow(2,n_soforall)*(n_clauses + 9) + 2,pow(2,n_soforall)*(n_clauses + 10) + 2)
+    # return (pow(2,n_soforall)*(n_clauses + 10) + 1, pow(2,n_soforall)*(n_clauses + 11) + 1)
+    # return (int(math.floor(pow(2,n_soforall)*(n_clauses + 10) + 1 + (pow(2,n_soforall)*1/2))), pow(2,n_soforall)*(n_clauses + 11) + 1)
+    return (pow(2,n_soforall)*(n_clauses + 11) + 1, pow(2,n_soforall)*(n_clauses + 11) + 1)
+    
+def qbfeaeBounds(problem):
+    # print problem
+    
+    problem_info = problem.split("_")
+    n_soforall = int(problem_info[2][:-1])
+    n_clauses = int(problem_info[4][:-1])
+    # print "N_for: " + str(n_soforall) + "N_clau: " + str(n_clauses)
+    
+    # return (pow(2,n_soforall)*(n_clauses + 10) + 1, pow(2,n_soforall)*(n_clauses + 11) + 1)
+    # return (int(math.floor(pow(2,n_soforall)*(n_clauses + 10) + 1 + (pow(2,n_soforall)*1/2))), pow(2,n_soforall)*(n_clauses + 11) + 1)
+    return (pow(2,n_soforall)*(n_clauses + 11) + 1 + 3, pow(2,n_soforall)*(n_clauses + 11) + 1 + 3)
 
 def qbfeaBounds(problem):
     problem_info = problem.split("_")
     n_soforall = int(problem_info[2][:-1])
     n_clauses = int(problem_info[3][:-1])
-    return (pow(2,n_soforall)*(n_clauses + 8) + 3,pow(2,n_soforall)*(n_clauses + 8) + 4)
+    return (pow(2,n_soforall)*(n_clauses + 8) + 3, pow(2,n_soforall)*(n_clauses + 8) + 4)
+    
+def qbfaeaBounds(problem):
+    # print problem
+    
+    problem_info = problem.split("_")
+    n_soforall_2 = int(problem_info[1][:-1])
+    n_soforall_1 = int(problem_info[3][:-1])
+    n_clauses = int(problem_info[4][:-1])
+    # print "N_for1: " + str(n_soforall_1) + "N_for2: " + str(n_soforall_2) + "N_clau: " + str(n_clauses)
+    # return (pow(2,n_soforall_2)*(pow(2,n_soforall_1)*(n_clauses + 8) + 4 )+ 1, pow(2,n_soforall_2)*(pow(2,n_soforall_1)*(n_clauses + 8) + 5) + 1)
+    
+    return (pow(2,n_soforall_2)*(pow(2,n_soforall_1)*(n_clauses + 8) + 5 )+ 1, pow(2,n_soforall_2)*(pow(2,n_soforall_1)*(n_clauses + 8) + 5) + 1)
 
 def stepSize(bounds):
     return "-S 1" # fixed for now, try every step
@@ -31,12 +57,12 @@ def showBounds(bounds):
     return "-F " + str(bounds[0]) + " -T " + str(bounds[1])
 
 def parallelInstances(bounds):
-
-    n = bounds[1] - bounds[0]
-    if n > 3:
-        return "-A 4"
-    else:
-        return "-A " + str(n+1)
+    return "-A 1"
+    # n = bounds[1] - bounds[0]
+    # if n > 3:
+    #     return "-A 4"
+    # else:
+    #     return "-A " + str(n+1)
 
 def solveProblems(list, file = None):   
     # print list
@@ -66,8 +92,14 @@ def solveProblems(list, file = None):
     
         if domain == "qbfae":
             bounds = qbfaeBounds(problemFile)
-        elif domain == "qbfea":
+        elif domain == "qbfea":         
             bounds = qbfeaBounds(problemFile)
+        elif domain == "qbf3eae":
+            bounds = qbfeaeBounds(problemFile)
+            continue
+        elif domain == "qbf3aea":
+            bounds = qbfaeaBounds(problemFile)
+            continue
         else:
             raise ValueError
         
@@ -102,7 +134,7 @@ def solveProblems(list, file = None):
     
         
         
-find = """find problems-soforall | grep .pddl | grep -v qbfae.pddl | grep -v qbfea.pddl"""
+find = """find problems-soforall | grep .pddl | grep -v qbfae.pddl | grep -v qbfea.pddl | grep -v qbf3aea.pddl | grep -v qbf3eae.pddl"""
 
 if __name__ == "__main__":
     # this should be split in two processes! fork

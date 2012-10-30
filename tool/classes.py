@@ -195,8 +195,11 @@ class SoWff(LogicalFormula):
             var_list = []
             for i in range(0,fluents[1]):
                 var_list += ["?ivDel" + str(i)]
-            predicates += "\n\t\t\t\t(forall (" + " ".join(var_list) + ") (not " + fluents[0] +\
+            if len(var_list):
+                predicates += "\n\t\t\t\t(forall (" + " ".join(var_list) + ") (not " + fluents[0] +\
                           " ".join(var_list) + ")))"
+            else:
+                predicates += "\n\t\t\t\t(not " + fluents[0] + "))"
         return predicates    
     # Find the fluent that activates the proof of the next subformula
     # in a metaforic way "pass the baton"
@@ -348,9 +351,6 @@ class SoWff(LogicalFormula):
         
         global_fluents.add("(holds_so-forall_" + predicate + ")")
         
-        
-
-            
         # Action that increments the quantifier of the relation whith the condition
         # that the subformula has already been prooved with the current quantifier
         # state
@@ -461,11 +461,12 @@ class SoWff(LogicalFormula):
         strue = "\n\t\t".join([prefix + name_true, parameters, precTrue, effTrue])
         sfalse = "\n\t\t".join([prefix + name_false, parameters, precFalse, effFalse])
         
+        dummy_guess = (prefix + "dummy_guess_" + predicate + "\n\t\t" +\
+                       ":precondition\t" + guessFluent + "\n\t\t" +\
+                       ":effect\t" + guessFluent + ")")
+        
         #Establish so-exist -> used when the subformula of so-exist
         #is proved using a guessed relation
-
-            
-            
         name = "establish_soexist_" + predicate        
         precondition = ":precondition\t(and " + self._childlist[2].get_fluent() + ")"
         
@@ -479,7 +480,7 @@ class SoWff(LogicalFormula):
 
         global_fluents.add("(holds_" + soexists_keyword + "_" + predicate +")")
 
-        return [strue + "\n\t" + sfalse + "\n\t" + guess_action + "\n\t" + finalAction]
+        return [strue + "\n\t" + sfalse + "\n\t" + guess_action + "\n\t" + dummy_guess + "\n\t" + finalAction]
         
     # make readable
     def get_actions(self):

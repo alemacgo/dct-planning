@@ -23,6 +23,9 @@ def get_prob(s):
 random.seed(int(argv[1]))
 print argv[1]
 
+print "Generating Problems"
+
+print " QBFAE - QBFEA"
 a = 1
 for i in qbf_0:
     e = 1
@@ -33,6 +36,7 @@ for i in qbf_0:
                 c += 1
                 continue
             for seed in range(5):
+                
                 rnd = math.ceil(random.random() * 100)
                 prob_name = "_".join(["qbf", i , j , k , str(seed)])
                 os.system("./generators/blocksqbf/blocksqbf -s " + str(int(seed + rnd)) + " -c " + str(c*5 + 1) + " -b 2 -bs " + str(a) +\
@@ -40,6 +44,7 @@ for i in qbf_0:
                 os.system("./generators/qbf_CNFtoPDDL.py problems-soforall/qbfae/" + "/".join([i, j, k])+ "/ -a problems-soforall/qbfae/" + "/".join([i, j, k])+ "/" + prob_name + ".qdimacs")
                 os.system("./sKizzo/sKizzo problems-soforall/qbfae/" + "/".join([i, j, k])+ "/" + prob_name + ".qdimacs > problems-soforall/qbfae/" + "/".join([i, j, k])+ "/" + prob_name +".result")
                 os.system("rm problems-soforall/qbfae/" + "/".join([i, j, k])+ "/" + prob_name + ".qdimacs")
+                
                 prob_name = "_".join(["qbf", j , i , k , str(seed)])
                 os.system("./generators/blocksqbf/blocksqbf -s " + str(int(seed + rnd)) + " -c " + str(c*5 + 1) + " -b 2 -bs " + str(e*5) +\
                           " -bs " + str(a) + " -bc 2 -bc 1 > problems-soforall/qbfea/" + "/".join([j, i, k])+ "/" + prob_name + ".qdimacs")
@@ -50,6 +55,65 @@ for i in qbf_0:
             c += 1
         e += 1
     a += 1
+    
+#QBF EAE
+print " QBFEAE"
+
+e1_i = 1
+for e1 in qbf3_e:
+    a1_i = 1
+    for a1 in qbf3_a:
+        e2_i = 1
+        for e2 in qbf3_e:
+            c_i = 1
+            for c in qbf_2:
+                if a1_i + e1_i*5 + e2_i*5 > c_i*10:
+                     c_i += 1
+                     continue
+                for seed in range (3):
+                    rnd = math.ceil(random.random() * 100)          
+                    prob_name = "_".join(["qbf3eae", e1, a1, e2, c, str(seed)])
+                    prob_path = "/".join(["qbf3eae", e1, a1, e2, c]) + "/"
+                    os.system("./generators/blocksqbf/blocksqbf -s " + str(int(seed + rnd)) + " -c " + str(c_i*10) + " -b 3 -bs " + str(e1_i*5) +\
+                              " -bs " + str(a1_i) + " -bs " + str(e2_i*5) + " -bc 1 -bc 1 -bc 1 > problems-soforall/" + prob_path + prob_name + ".qdimacs")
+                    os.system("./generators/qbf3_CNFtoPDDL.py problems-soforall/" + prob_path + " -a problems-soforall/" + prob_path + prob_name + ".qdimacs")
+                    os.system("./sKizzo/sKizzo problems-soforall/" + prob_path + prob_name + "1.qdimacs > problems-soforall/" + prob_path + prob_name + ".result")  
+                    os.system("rm problems-soforall/" + prob_path + "*.qdimacs")
+                c_i += 1
+            e2_i += 1
+        a1_i +=1
+    e1_i += 1
+
+#QBF 3 AEA
+
+print " QBFAEA"
+
+a1_i = 1
+for a1 in qbf3_a2:
+    e1_i = 1
+    for e1 in qbf3_e2:
+        a2_i = 1
+        for a2 in qbf3_a2:
+            c_i = 1
+            for c in qbf_2:
+                if a1_i + e1_i*5 + a2_i > c_i*10:
+                    c_i += 1
+                    continue
+                for seed in range (3):
+                    rnd = math.ceil(random.random() * 100)          
+                    prob_name = "_".join(["qbf3aea", a1, e1, a2, c, str(seed)])
+                    prob_path = "/".join(["qbf3aea", a1, e1, a2, c]) + "/"
+                    os.system("./generators/blocksqbf/blocksqbf -s " + str(int(seed + rnd)) + " -c " + str(c_i*10) + " -b 3 -bs " + str(a1_i) +\
+                              " -bs " + str(e1_i*5) + " -bs " + str(a2_i) + " -bc 1 -bc 2 -bc 1 > problems-soforall/" + prob_path + prob_name + ".qdimacs")
+                    os.system("./generators/qbf3_CNFtoPDDL.py problems-soforall/" + prob_path + " -e problems-soforall/" + prob_path + prob_name + ".qdimacs")
+                    os.system("more problems-soforall/" + prob_path + prob_name + ".qdimacs | tr a A | tr e a | tr A e > problems-soforall/" + prob_path + prob_name + "1.qdimacs")
+                    os.system("./sKizzo/sKizzo problems-soforall/" + prob_path + prob_name + "1.qdimacs > problems-soforall/" + prob_path + prob_name + ".result")  
+                    os.system("rm problems-soforall/" + prob_path + "*.qdimacs")
+                c_i += 1
+            a2_i += 1
+        e1_i +=1
+    a1_i += 1
+
     
 print "Created problems-soforall"
 
