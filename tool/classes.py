@@ -881,7 +881,17 @@ class ListTerm(SyntaxTree):
 
 class Var(Leaf):
     node_type = "<VAR>"
-
+    var_type = ''
+    
+    def _show(self, depth, color = True):
+        if color:
+            print depth*" |    " + color_blue + self.node_type + ": "\
+                + color_green + str(self._info) + " " + self.var_type +\
+                color_normal   
+        else:
+            print depth*" |    " + self.node_type + ": "\
+                + str(self._info) + " " + self.var_type
+                
     def assign_free_variables(self): 
         return set([self._info])
 
@@ -890,12 +900,41 @@ class Const(Leaf):
 
 class Rel(Leaf):
     node_type = "<REL>"
+    var_type = []
+    # 
+    # def __init__(self, info, var_type):
+    #     SyntaxTree.__init__(self)
+    #     self._info = info
+    
+    def _show(self, depth, color = True):
+        if not self.var_type:
+            if color:
+                print depth*" |    " + color_blue + self.node_type + ": "\
+                    + color_green + str(self._info) +\
+                    color_normal   
+            else:
+                print depth*" |    " + self.node_type + ": "\
+                    + str(self._info)
+        else:
+
+            if color:
+                print depth*" |    " + color_blue + self.node_type + ": "\
+                    + color_green + str(self._info) + " " + ", ".join(self.var_type) +\
+                    color_normal   
+            else:
+                print depth*" |    " + self.node_type + ": "\
+                    + str(self._info) + " " + ", ".join(self.var_type)
     
 class Func(Leaf):
     node_type = "<FUNC>"
+    var_type = []
 
 class Int(Leaf):
     node_type = "<int>"
+    
+class Types(Leaf):
+    node_type = "<types>"
+    
     
 class Operator(Leaf):
     def _show(self, depth, color = True):

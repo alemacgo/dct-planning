@@ -30,6 +30,12 @@ all_symbols = {'<': (2, 0), '<=': (2, 0), '>': (2, 0), '>=': (2, 0), \
         'suc': (2, 0), '=' : (2, 0)}
 symbols = {'suc': (2,0)}
 
+#Types have all the possible variable types, and var_types have the mapping
+# of a certain variable to a type
+types = set()
+rel_vars_types = {}
+# vars_types = {}
+
 # Final symbol table with the fluents to include (which can be used in the
 # instance or be automatically generated)
 # [(symbol, arity)]
@@ -45,6 +51,7 @@ constants_set = set([max_keyword, zero_keyword])
 # Regular expressions for defining the terminal symbols
 variables = re.compile("\A\?[a-z]\w*\Z")
 integers = re.compile("\A-?\d+\Z")
+types_regex = re.compile("\A(\@[a-z]\w*)\Z")
 relations = re.compile("\A(\?[a-z]\w*|" + '|'.join(predefined_relations) + ')\Z')
 constants = re.compile("\A(" + '|'.join(constants_set) + ')\Z')  # quick, remove later
 #functions = re.compile("\A[a-z]\w*\Z")
