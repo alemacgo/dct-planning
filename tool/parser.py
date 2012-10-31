@@ -21,6 +21,8 @@ def read_signature(signature):
     # print signature
     try:
         number_of_relations = int(signature[0])
+        number_of_types = int(signature[number_of_relations + 1])
+        
     except ValueError:
         raise SignatureError(
         "the first non-whitespace character should be an integer"
@@ -46,7 +48,6 @@ def read_signature(signature):
                 else:                   #Regular function
                     symbols[rel_name] = (2, 1)
                     func_symbols.add(rel_name)
-    
         except IndexError:
             raise SignatureError("wrong formatting")
         except ValueError:

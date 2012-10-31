@@ -96,10 +96,8 @@ def solveProblems(list, file = None):
             bounds = qbfeaBounds(problemFile)
         elif domain == "qbf3eae":
             bounds = qbfeaeBounds(problemFile)
-            continue
         elif domain == "qbf3aea":
             bounds = qbfaeaBounds(problemFile)
-            continue
         else:
             raise ValueError
         
