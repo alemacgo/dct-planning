@@ -314,7 +314,7 @@ $\Rightarrow$ & $[\mbox{testigo, } x = 1]$ & $(\exists x)(E(s, x) \land E(x, t))
 \item $\A\models^?(\forall x)(\exists y)E(x,y)$
 \begin{center}
 \begin{tabular}{lll}
-&[def. de E en \A] & $\neg E(2, 0) \land \neg E(2, 1) \land \neg E(2, 2)$\\
+&[def. de $E$ en \A] & $\neg E(2, 0) \land \neg E(2, 1) \land \neg E(2, 2)$\\
 $\Rightarrow$ & $[|\A| = \{0,1,2\}]$ & $(\forall y) (\neg E(2, y))$\\
 $=$ & [De Morgan] & $\neg (\exists y) (E(2, y))$\\
 $\Rightarrow$ & $[\mbox{testigo, } x = 2]$ & $(\exists x) (\neg (\exists y) (E(x, y)))$\\
@@ -324,7 +324,129 @@ $=$ & [De Morgan] & $\neg (\forall x) (\exists y) (E(x, y))$\\
 \end{center}
 \end{enumerate}
 
+También pueden interpretarse fórmulas de \LSO \ con respecto a una estructura.
+Por ejemplo, la sentencia
+\[ \Phi_{\textsc{2Col}} = (\exists R^1)(\forall xy)[E(x,y)\Rightarrow \neg (R(x) \iff R(y))] \]
+es válida en \A, pues la relación $R = \{1\}$ la hace verdadera:
+\begin{center}
+\begin{tabular}{lll}
+&[suponiendo $R = \{1\}$] & $R(1) \land \neg R(0) \land \neg R(2)$\\
+$=$ & [def. de $E$ en \A] & $R(1) \land \neg R(0) \land \neg R(2) \land 
+E(0, 1) \land E(1, 2)$\\
+$=$ & [agrupación] & $(E(0, 1) \land \neg R(0) \land R(1)) \land
+(E(1, 2) \land R(1) \land \neg R(2))$\\
+%! que poner aqui?
+$\Rightarrow$ & [?] & $E(0, 1) \Rightarrow (\neg R(0) \iff R(1))\ \land$\\
+&&$E(1, 2) \Rightarrow (R(1) \iff \neg R(2))$\\
+$=$ & [inequivalencia] & $E(0, 1) \Rightarrow \neg(R(0) \iff R(1))\ \land$\\
+&&$E(1, 2) \Rightarrow \neg(R(1) \iff R(2))$\\
+$\Rightarrow$ & [generalización] & $(\forall xy)(E(x, y) \Rightarrow \neg(R(x) \iff R(y)))$\\
+&\qed & $\A \models \Phi_{\textsc{2Col}}$
+\end{tabular}
+\end{center}
+De hecho, esta fórmula es válida en una estructura $\A \in \struc[\sigma]$ si y
+sólo si el grafo dirigido codificado por \A \ es 2-coloreable. La Figura
+\ref{grafo_coloreado} muestra una 2-coloración del grafo correspondiente a \A
+\ inducida por $R$.
+
+\begin{figure}[h]
+\begin{center}
+\begin{tikzpicture}[shorten >=1pt, thick]%[shorten >=1pt,node distance=2cm,>=stealth',thick]
+  \node [shape=circle,fill=black,inner sep=1.5pt,label=below:$s$] (q0) at (0,0) {};
+  \node [shape=circle,fill=blue,inner sep=1.5pt,label=below:$1$] (q1) at (2,0) {};
+  \node [shape=circle,fill=black,inner sep=1.5pt,label=below:$t$] (q2) at (4,0) {};
+  \path[->] (q0) edge (q1) (q1) edge (q2);
+\end{tikzpicture}
+\end{center}
+\caption{El grafo dirigido de la Figura \ref{grafo_simple}, coloreado
+utilizando la relación $R$. Los nodos para los cuales $R$ es verdadera son
+azules, los otros son negros.}
+\label{grafo_coloreado}
+\end{figure}
+
+\subsection{Abreviaciones sintácticas}
+Con frecuencia es necesario cuantificar sobre una función de aridad $k$ ($f^k$)
+lugar de una relación. Esto puede hacerse cuantificando sobre una relación de
+aridad $k+1$ ($F^{k+1}$) y agregando fórmulas de primer orden que garanticen
+que $F$ represente a $f$. Por ejemplo, una función parcial unaria $f$ puede ser
+representada por la relación binaria $F$ y la fórmula
+\[ \psi_{fun} = (\forall xyy')(F(x, y) \land F(x, y') \Rightarrow y = y'). \]
+
+De igual forma, se puede representar una función inyectiva añadiendo a las
+proposiciones la fórmula anterior más
+
+\[ \psi_{iny} = (\forall xx'y)(F(x, y) \land F(x', y) \Rightarrow x = x'). \]
+
+Finalmente, si es necesario que la función sea total debe agregarse
+\[ \psi_{tot} = (\forall x)(\exists y)(F(x, y)). \]
+
+Se utilizarán las abreviaciones de la siguiente tabla para denotar distintos
+tipos de funciones.
+
+\begin{tabular}{ll}
+$(\exists F \in \text{Fun})$ & función total\\
+$(\exists F \in \text{Inj})$ & función total inyectiva\\
+$(\exists F \in \text{PFun})$ & función parcial\\
+$(\exists F \in \text{PInj})$ & función parcial inyectiva\\
+\end{tabular}
+
 \subsection{Clases de complejidad}
+El ejemplo anterior evidencia que una sentencia puede describir una colección
+de estructuras discretas finitas (como grafos dirigidos) que satisfacen
+una cierta propiedad (como 2-colorabilidad). 
+
+En la TCD, un problema de decisión corresponde a una clase de estructuras de
+primer orden que satisface a una sentencia, y por lo tanto los problemas de
+decisión pueden ser \textbf{modelados con fórmulas lógicas de segundo orden}.
+El trabajo de Fagin \cite{fagin:spectra} estableció que todos los problemas de
+decisión en NP pueden ser caracterizados por la clase de estructuras que
+satisfacen una sentencia de segundo orden existencial, es decir,
+$\text{NP}=\SOE$.
+
+Esta lista muestra los resultados más importantes de la TCD sobre la
+caracterización de clases de complejidad \cite{immerman:book}:
+\begin{itemize}
+\item Espacio logarítmico no determinista (NL) es igual a la \LPO\ extendida con
+un operador de clausura transitiva.
+\item Espacio polinomial (P) es igual a las sentencias Horn de segundo orden
+(SO-Horn).
+\item Tiempo polinomial no determinista (NP) es igual a \SOE.
+\item Co-NP es igual a \SOA.
+\item La jerarquía de tiempo polinomial (PH) es igual a la lógica 
+de segundo orden (\LSO) completa.
+\item Espacio polinomial (PSPACE) es igual a la lógica de segundo orden
+extendida con un operador de clausura transitiva.
+\end{itemize}
+
+%A transitive-closure operator is a \emph{syntactic construct}
+%whose interpretation coincides with the transitive closure of
+%a relation. Thus, it is not surprising that NL equals FO(TC)
+%because checking the existence of a path from node $s$ to
+%node $t$ in a digraph with designated vertices $s$ and $t$ is
+%NL-complete \cite{sipser:book}, and this property
+%holds whenever $s$ is related to $t$ in the transitive closure
+%of the edge relation.
+
+%Consideremos, por ejemplo, el problema de satisfacibilidad
+%proposicional (SAT). Una instancia de SAT es una fórmula en forma normal
+%conjuntiva con $m$ cláusulas sobre $n$ variables proposicionales, donde una
+%cláusula es un subconjunto de literales positivos y negativos. 
+%Sean $P^2$, $N^2$ dos símbolos relacionales que describen las ocurrencias
+%positivas y negativas de los literales en las cláusulas: $P(x, y)$ expresa que
+%la variable $x$ aparece positiva en la cláusula $y$. Respectivamente, $N(x, y)$ expresa
+%su ocurrencia negativa.
+%Por ejemplo, $(p\lor \neg q\lor r)\land(\neg p\lor \neg r)\land(\neg p\lor q)$
+%es codificado como $\A=\tup{|\A|,N^\A,P^\A}$, donde $|\A|=\{0,1,2\}$,
+%$N^\A=\{(1,0),(0,1),(2,1),(0,2)\}$ y $P^\A=\{(0,0),(2,0),(1,2)\}$.
+%
+%On the other hand, a truth-assignment is a subset of true propositions
+%and the existence of a truth assignment (satisfiability) can be
+%expressed with the \SOE\ sentence $\Phi_\SAT$:\footnote{This
+%sentence assumes that $m\geq n$. If not, add tautological clauses to the CNF.}
+%\[ (\exists T^1)(\forall y)(\exists x)[(P(x,y)\land T(x))\lor(N(x,y)\land\neg T(x))] \]
+%
+% Otro ejemplo: camino hamiltoniano
+
 %\subsubsection{Equivalencias con complejidad en planificación automática}
 
-\section{Trabajos previos}
+%\section{Trabajos previos}

@@ -24,7 +24,10 @@ Los problemas de decisión pueden agruparse en distintas clases según su
 complejidad. Una importante clase de complejidad es NP (siglas de
 \textit{Nondeterministic Polynomial time}), a la cual pertenecen problemas
 interesantes como $k$-colorabilidad, satisfacibilidad proposicional
-(\textbf{SAT}) y hallar un camino \textit{hamiltoniano} en un grafo.
+(\textbf{SAT}) y hallar un camino \textit{hamiltoniano} en un grafo. Otra clase
+más general de problemas de interés para este trabajo es PH (\textit{polynomial hierarchy}),
+que incluye problemas computacionalmente más complejos como formas restringidas de
+\textit{quantified boolean formula} (QBF).
 
 El área de investigación de planificación automática estudia una forma general
 de resolución de problemas utilizando \textbf{planes}. En un problema de planificación
@@ -36,9 +39,9 @@ desde el estado inicial hasta el estado final, resolviendo el problema.
 
 Este trabajo se enfoca en el desarrollo de una herramienta que permite
 traducir o, en lenguaje más formal, \textbf{reducir} un problema de
-decisión perteneciente a la clase NP, codificado en un lenguaje
-basado en la lógica de segundo orden, a un problema de
-planificación automática. La motivación para realizar esta herramienta es que
+decisión perteneciente a la clase PH codificado en lógica de segundo orden,
+a un problema de planificación automática. 
+La motivación para realizar esta herramienta es que
 existen planificadores muy eficientes, pero no es trivial
 expresar un problema de decisión cualquiera en términos de estado inicial,
 final y acciones, como lo requieren los
@@ -80,8 +83,9 @@ conveniente como un enfoque que independiente del dominio.
 
 % Objetivos generales y específicos
 El objetivo general del proyecto es permitir la resolución de problemas
-NP expresados a través de un lenguaje declarativo basado en la lógica
-de segundo orden. Al alcanzar este objetivo, problemas cuya aplicación es
+de la jerarquía polinomial (PH) expresados a través de un lenguaje declarativo basado en 
+la lógica de segundo orden, asegurando que la complejidad del problema
+resultante no será mayor a la del problema original. Al alcanzar este objetivo, problemas cuya aplicación es
 ampliamente conocida en Ciencias de la Computación podrán ser expresados
 en un lenguaje conciso y ser resueltos sin la intervención del usuario luego de
 la fase de modelación.
@@ -90,7 +94,7 @@ A fin de lograr el objetivo general, se plantean las siguientes metas
 específicas:
 \begin{itemize}
 \item El desarrollo de una herramienta que procese la descripción lógica de un problema 
-NP y genere automáticamente un problema de planificación equivalente 
+PH y genere automáticamente un problema de planificación equivalente 
 formulado en el lenguaje PDDL (\textit{Planning Domain Definition Language}),
 de uso estándar en la comunidad de planificación automática.
 \item Una interfaz \textit{web} para este sistema que permita un acceso flexible
