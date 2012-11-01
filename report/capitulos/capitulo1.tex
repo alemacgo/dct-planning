@@ -11,6 +11,8 @@ traducir problemas de decisión. Luego, se define la disciplina de complejidad
 descriptiva, que clasifica distintos fragmentos de lógica de segundo orden
 según su complejidad computacional y permite establecer garantías sobre la
 dificultad de resolver problemas formulados en un lenguaje lógico.
+Finalmente, se explican dos ejemplos de problemas NP fácilmente modelables
+con el formalismo lógico propuesto.
 
 %! trabajos previos?
 %Finalmente, se expondrán trabajos 
@@ -366,7 +368,7 @@ azules, los otros son negros.}
 
 \subsection{Abreviaciones sintácticas}
 Con frecuencia es necesario cuantificar sobre una función de aridad $k$ ($f^k$)
-lugar de una relación. Esto puede hacerse cuantificando sobre una relación de
+en lugar de una relación. Esto puede hacerse cuantificando sobre una relación de
 aridad $k+1$ ($F^{k+1}$) y agregando fórmulas de primer orden que garanticen
 que $F$ represente a $f$. Por ejemplo, una función parcial unaria $f$ puede ser
 representada por la relación binaria $F$ y la fórmula
@@ -427,18 +429,19 @@ extendida con un operador de clausura transitiva.
 %holds whenever $s$ is related to $t$ in the transitive closure
 %of the edge relation.
 
-%Consideremos, por ejemplo, el problema de satisfacibilidad
-%proposicional (SAT). Una instancia de SAT es una fórmula en forma normal
-%conjuntiva con $m$ cláusulas sobre $n$ variables proposicionales, donde una
-%cláusula es un subconjunto de literales positivos y negativos. 
-%Sean $P^2$, $N^2$ dos símbolos relacionales que describen las ocurrencias
-%positivas y negativas de los literales en las cláusulas: $P(x, y)$ expresa que
-%la variable $x$ aparece positiva en la cláusula $y$. Respectivamente, $N(x, y)$ expresa
-%su ocurrencia negativa.
-%Por ejemplo, $(p\lor \neg q\lor r)\land(\neg p\lor \neg r)\land(\neg p\lor q)$
-%es codificado como $\A=\tup{|\A|,N^\A,P^\A}$, donde $|\A|=\{0,1,2\}$,
-%$N^\A=\{(1,0),(0,1),(2,1),(0,2)\}$ y $P^\A=\{(0,0),(2,0),(1,2)\}$.
-%
+\section{Modelación de problemas}
+Consideremos, por ejemplo, el problema de satisfacibilidad
+proposicional (SAT). Una instancia de SAT es una fórmula en forma normal
+conjuntiva con $m$ cláusulas sobre $n$ variables proposicionales, donde una
+cláusula es un subconjunto de literales positivos y negativos. 
+Sean $P^2$, $N^2$ dos símbolos relacionales que describen las ocurrencias
+positivas y negativas de los literales en las cláusulas: $P(x, y)$ expresa que
+la variable $x$ aparece positiva en la cláusula $y$. Respectivamente, $N(x, y)$ expresa
+su ocurrencia negativa.
+Por ejemplo, $(p\lor \neg q\lor r)\land(\neg p\lor \neg r)\land(\neg p\lor q)$
+es codificado como $\A=\tup{|\A|,N^\A,P^\A}$, donde $|\A|=\{0,1,2\}$,
+$N^\A=\{(1,0),(0,1),(2,1),(0,2)\}$ y $P^\A=\{(0,0),(2,0),(1,2)\}$.
+
 %On the other hand, a truth-assignment is a subset of true propositions
 %and the existence of a truth assignment (satisfiability) can be
 %expressed with the \SOE\ sentence $\Phi_\SAT$:\footnote{This
