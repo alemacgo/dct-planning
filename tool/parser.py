@@ -337,12 +337,15 @@ def parse_rel(tokens, relation, arity):
         if not types_regex.match(rel_type):
             raise SyntaxError(lineNumber, rel_type, '<type>')
         rel_types += [rel_type]
+        types.add(rel_type)
+        
         
     if arity == 'func' or arity == 'inj':
         quantified_relations[relation] = arity
         fun = Func(relation)
         if n_types_to_get:
             fun.var_type = rel_types
+            rel_vars_types[relation] = rel_types
             
         return [fun, Int(2)]
     else:
@@ -351,6 +354,7 @@ def parse_rel(tokens, relation, arity):
         r = Rel(relation)
         if n_types_to_get:
             r.var_type = rel_types
+            rel_vars_types[relation] = rel_types
 
         return [r, Int(arity)]
 
@@ -394,6 +398,7 @@ def parse_list_var(tokens, next_token):
     
     v = Var(next_token)
     v.var_type = varType
+    types.add(varType)
     next_var = [v]
 
     next_token = tokens.next()

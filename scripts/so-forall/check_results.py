@@ -43,7 +43,6 @@ def check(planner):
             for e2 in qbf3_e:
                 for c in qbf_2:
                     if int(a1[:-1]) + int(e1[:-1]) + int(e2[:-1]) > int(c[:-1]):
-                        c_i += 1
                         continue
                     for seed in range (3):
                         prob_name = "_".join(["qbf3eae", e1, a1, e2, c, str(seed)])
@@ -57,7 +56,6 @@ def check(planner):
             for a2 in qbf3_a2:
                 for c in qbf_2:
                     if int(a1[:-1]) + int(e1[:-1]) + int(a2[:-1]) > int(c[:-1]):
-                        c_i += 1
                         continue
                         prob_name = "_".join(["qbf3aea", a1, e1, a2, c, str(seed)])
                         prob_path = "/".join(["qbf3aea", a1, e1, a2, c]) + "/"

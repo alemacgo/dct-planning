@@ -1,6 +1,6 @@
-5
-(?N 2)
-(?P 2)
-(?IST0 1)
-(?ISE0 1)
-(?IST1 1)
+2
+@var
+@cls
+2
+(?N 2 @var @cls)
+(?P 2 @var @cls)

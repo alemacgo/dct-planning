@@ -1,5 +1,6 @@
-3
-(?N 2)
-(?P 2)
-(?E 1)
-
+2
+@var
+@cls
+2
+(?N 2 @var @cls)
+(?P 2 @var @cls)

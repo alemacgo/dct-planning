@@ -61,12 +61,23 @@ def get_action_list(formula_tree):
 
     return "\n\t" + "\n\t".join(action_list) + "\n"  
 
+def generateTypeFluents(v_type):
+        return ["(" + v_type[1:] + " ?x0)",\
+                "(" + v_type[1:] + "_suc ?x0 ?x1)",\
+                "(" + v_type[1:] + "_max ?x0)",\
+                "(" + v_type[1:] + "_min ?x0)"]
+
 def get_fluent_list():
     fluent_list = list(generate_fluents())
     fluent_list.sort()
     fluent_list.append("(begin)")
     fluent_list.append("(holds_goal)")
     fluent_list.append("(proof)")
+    for i in types:
+        fluent_list.append("(" + i[1:] + " ?x0)")
+        fluent_list.append("(" + i[1:] + "_suc ?x0 ?x1)")
+        fluent_list.append("(" + i[1:] + "_max ?x0)")
+        fluent_list.append("(" + i[1:] + "_min ?x0)")
     # fluent_list.append("(proof_operator_level)")
     return "\t(:predicates\n\t\t" + "\n\t\t".join(fluent_list) + "\n\t)\n"
 
@@ -92,5 +103,7 @@ def generate_pddl(pddl, domain_name, formula_tree):
     pddl.write(")")
 
     print "wrote pddl file"
+    print rel_vars_types
+    
     pddl.close()
               
