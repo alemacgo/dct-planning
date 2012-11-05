@@ -95,20 +95,18 @@ def solveProblems(list, file = None):
         solutionFile = "solutions-soforall/" + nameParts[0].partition("/")[2] + "/" + \
                        nameParts[2].rpartition(".")[0]
     
-        if domain == "qbfae" and a1:
+        if domain == "qbfae":
             bounds = qbfaeBounds(problemFile)
-            a1 = not a1
-        elif domain == "qbfea" and a2:  
+        elif domain == "qbfea":  
             bounds = qbfeaBounds(problemFile)
-            a2 = not a2
-        elif domain == "qbf3eae" and a3:
-            bounds = qbfeaeBounds(problemFile)
-            a3 = not a3
-        elif domain == "qbf3aea" and a4:
-            bounds = qbfaeaBounds(problemFile)
-            a4 = not a4
-        else:
             continue
+        elif domain == "qbf3eae":
+            bounds = qbfeaeBounds(problemFile)
+            continue
+        elif domain == "qbf3aea":
+            bounds = qbfaeaBounds(problemFile)
+            continue
+        else:
             print domain
             raise ValueError
         

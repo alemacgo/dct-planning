@@ -8,7 +8,7 @@ DEBUG = False
 #       Check assign_free_variables_set readability/efficiency
 
 from globals import *
-
+import re
 # Classes
 """
 SyntaxTree: 
@@ -227,7 +227,10 @@ class SoWff(LogicalFormula):
                 baton = " (iterate_" + childPredicate + ") (begin_so-forall_" + childPredicate + ") "
                 global_fluents.add("(begin_so-forall_" + childPredicate + ")")
         return baton
-        
+    
+    def hasIvmax(self, fluent):
+        return re.search("ivmax", fluent)
+            
     def getTypeFluent(self, v_type, variables):
         return " ".join(["(" + v_type[1:] + " " + i + ")" for i in variables])
         
@@ -299,13 +302,13 @@ class SoWff(LogicalFormula):
         # 
         # elif mode == "suc_special":
             #Need to block variables named iv*
-        suc_predicate = " (so-forall_suc_" + predicate + " ?iv0 ?iv1)"
-        max_obj_predicate = " (so-forall_max_" + predicate + " ?ivmax)"
-        zero_obj_predicate = " (so-forall_zero_" + predicate + " ?ivzero)"
-        
-        global_fluents.add(suc_predicate)
-        global_fluents.add(max_obj_predicate)
-        global_fluents.add(zero_obj_predicate)
+        # suc_predicate = " (so-forall_suc_" + predicate + " ?iv0 ?iv1)"
+        # max_obj_predicate = " (so-forall_max_" + predicate + " ?ivmax)"
+        # zero_obj_predicate = " (so-forall_zero_" + predicate + " ?ivzero)"
+        # 
+        # global_fluents.add(suc_predicate)
+        # global_fluents.add(max_obj_predicate)
+        # global_fluents.add(zero_obj_predicate)
         max_obj = " ?ivmax"
         max_parameter = max_obj
         zero_obj = " ?ivzero"
@@ -370,7 +373,7 @@ class SoWff(LogicalFormula):
         parameters = ":parameters (?ivmax" + (" " + max_parameter).join([str(i) for i in range(0,arity)]) + ")"
         precondition = ":precondition\t(and" + iterateFluent + "("+ coin_predicate + "?ivmax" + (" " + max_parameter).join([str(i) for i in range(0,arity)]) + ") (" + \
                          predicate + " " + "?ivmax" + (" " + max_parameter).join([str(i) for i in range(0,arity)]) + ") " +\
-                         max_conditions + " " + types_condition
+                         max_conditions + " " + types_condition + ")"
         effects = ":effect\t(and (not" + iterateFluent + ") (not (" + coin_predicate + " ?ivmax" + (" " + max_parameter).join([str(i) for i in range(0,arity)]) + ")) " +\
                    "(not ("+ predicate + " ?ivmax" + (" " + max_parameter).join([str(i) for i in range(0,arity)]) + ")) " +\
                   "(not_" + predicate + " ?ivmax" + (" " + max_parameter).join([str(i) for i in range(0,arity)]) + ") " +\
@@ -386,17 +389,22 @@ class SoWff(LogicalFormula):
         zero_conditions = "".join([self.getZeroFluent(t[0], t[1]) for t in zip(r_types, [zero_parameter + str(l) for l in range(0,arity)])])
         types_condition = "".join(["(" + str(t[0][1:]) + " " + str(t[1]) + ") " for t in zip(r_types, [zero_parameter + str(l) for l in range(0,arity)])])
         
+        childFluent = self._childlist[2].get_fluent()
+        possibleParameter = ""
         name = "change_for_coin_" + predicate
-        parameters = ":parameters (?ivzero" + (" " + zero_parameter).join([str(i) for i in range(0,arity)]) + ")"   
-        precondition = ":precondition\t(and" + iterateFluent + self._childlist[2].get_fluent() +\
-                       zero_conditions + " " + types_condition
+        if self.hasIvmax(childFluent):
+            possibleParameter = " ?ivmax"
+        parameters = ":parameters (?ivzero" + (" " + zero_parameter).join([str(i) for i in range(0,arity)]) + possibleParameter +")"   
+        precondition = ":precondition\t(and" + iterateFluent + childFluent +\
+                       zero_conditions + " " + types_condition + ")"
         # If this is the final second order quantifier it needs delete
         # the proof fluent. Needs to be here because the call to get fluent must be made first
         notProofFluent = ""
         if (baton == "(proof)"):
             notProofFluent = " (not (proof))" + self.get_delete_all_fowff()
-        effects = ":effect\t(and" + " (not " + self._childlist[2].get_fluent() +\
-                  ") (coin_" + predicate + " ?ivzero" + (" " + zero_parameter).join([str(i) for i in range(0,arity)]) + ") " + notProofFluent + ")\n\t)"
+        else:
+            notProofFluent = "(not " + childFluent + ")"
+        effects = ":effect\t(and (coin_" + predicate + " ?ivzero" + (" " + zero_parameter).join([str(i) for i in range(0,arity)]) + ") " + notProofFluent + ")\n\t)"
         
         actions += "\n\t\t".join([prefix + name, parameters, precondition, effects]) + "\n\t"
         
@@ -501,14 +509,18 @@ class SoWff(LogicalFormula):
         
         #Establish so-exist -> used when the subformula of so-exist
         #is proved using a guessed relation
-        name = "establish_soexist_" + predicate        
-        precondition = ":precondition\t(and " + self._childlist[2].get_fluent() + ")"
+        
+        childFluent = self._childlist[2].get_fluent()            
+        name = "establish_soexist_" + predicate       
+        if self.hasIvmax(childFluent):
+            name += "\n\t\t:parameters\t(?ivmax)"
+        precondition = ":precondition\t(and " + childFluent + ")"
         
         notProofFluent = ""
         if (baton == "(proof)"):
             notProofFluent = " (not (proof))" + self.get_delete_all_fowff()
             
-        effects = ":effect\t(and (not " + self._childlist[2].get_fluent() + ") (holds_" + soexists_keyword +\
+        effects = ":effect\t(and (holds_" + soexists_keyword +\
                   "_" + predicate +") " + notProofFluent + ")\n\t)"
         finalAction = "\n\t\t".join([prefix + name, precondition, effects])
 
@@ -632,6 +644,13 @@ class FoWff(LogicalFormula):
             ## if the relation is predefined, handle it here!
             if relation._info in predefined_relations:
                 fluent = get_relation_neg(relation._info, argument_list)
+            elif relation._info in rel_vars_types:
+                fluent2 = "(not_" + relation._info[1:] +\
+                         " " + " ".join(argument_list) + ")"
+                global_fluents.add(fluent2)
+                
+                fluent = "".join(["(" + str(t[0][1:]) + " " + str(t[1]) + ") " for t in zip(rel_vars_types[relation._info], argument_list)]) +\
+                         fluent2
             else:
                 fluent = "(not_" + relation._info[1:] +\
                          " " + " ".join(argument_list) + ")"

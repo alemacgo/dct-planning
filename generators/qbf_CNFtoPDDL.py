@@ -60,21 +60,24 @@ if num_vars > 0:
     # pddl_file.write("\t\t(var_min var" + str(1) + ")\n")
     # pddl_file.write("\t\t(var_max var" + str(num_vars) + ")\n")
     # pddl_file.write("".join(["\t\t(suc_var var" + str(t[0]) + " var" + str(t[1]) +")\n" for t in zip (range(1,num_vars), range(2,num_vars + 1))]))
-    pddl_file.write("\t\t(cla_min cls" + str(1) + ")\n")
-    pddl_file.write("\t\t(cla_max cls" + str(num_cls) + ")\n")
-    pddl_file.write("".join(["\t\t(suc_cls cls" + str(t[0]) + " cls" + str(t[1]) +")\n" for t in zip (range(1,num_cls), range(2,num_cls + 1))]))
+    pddl_file.write("\t\t(cls_min cls" + str(1) + ")\n")
+    pddl_file.write("\t\t(cls_max cls" + str(num_cls) + ")\n")
+    pddl_file.write("".join(["\t\t(cls_suc cls" + str(t[0]) + " cls" + str(t[1]) +")\n" for t in zip (range(1,num_cls), range(2,num_cls + 1))]))
     
     i = 0
     for a_list in a_vars:
+        pddl_file.write("\t\t(not_a" + str(i) + " var" + (")\n\t\t(not_a" + str(i) + " var").join(a_list) + ")\n")
         pddl_file.write("\t\t(isa" + str(i) + " var" + (")\n\t\t(isa" + str(i) + " var").join(a_list) + ")\n")
         pddl_file.write("\t\t(isa" + str(i) + "_min var" + a_list[0] + ")\n")
         pddl_file.write("\t\t(isa" + str(i) + "_max var" + a_list[-1] + ")\n")
-        pddl_file.write("".join(["\t\t(suc_isa" + str(i) + " var" + t[0] + " var" + t[1] +")\n" for t in zip (a_list[:-1], a_list[1:])]))
+        pddl_file.write("".join(["\t\t(isa" + str(i) + "_suc var" + t[0] + " var" + t[1] +")\n" for t in zip (a_list[:-1], a_list[1:])]))
         i += 1
     
     i = 0
     for e_list in e_vars:
         pddl_file.write("\t\t(ise" + str(i) + " var" + (")\n\t\t(ise" + str(i) + " var").join(e_list) + ")\n")
+        pddl_file.write("\t\t(not_e" + str(i) + " var" + (")\n\t\t(not_e" + str(i) + " var").join(e_list) + ")\n")
+        
         i += 1
          
     clause  = 1

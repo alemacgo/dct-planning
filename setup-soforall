@@ -34,6 +34,13 @@ else
     elif [ $1 = -totalize ]; 
     then
         ./scripts/so-forall/totalize.py
+    elif [ $1 = -domains ]; 
+    then
+        for i in `ls domains/so-forall/ | grep .dct | sed -e s/.dct$//`; do    
+            tool/soplan.py --output=problems-soforall/$i/$i.pddl domains/so-forall/$i.dct\
+            > /dev/null
+                echo "Created domain for $i"
+        done
     else
         echo "Correct usage <./setup-soforall -all|-solve|-totalize>"
     fi

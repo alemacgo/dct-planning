@@ -12,6 +12,7 @@ def generate_fluents():
     variable_basename = "?x"
     for fluent in global_fluents:
         fluent = fluent.replace('(', '').replace(')', '').split()
+        print fluent
         name = fluent[0]
         arguments = fluent[1:]
         index = 0
