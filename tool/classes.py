@@ -228,8 +228,12 @@ class SoWff(LogicalFormula):
                 global_fluents.add("(begin_so-forall_" + childPredicate + ")")
         return baton
     
-    def hasIvmax(self, fluent):
-        return re.search("ivmax", fluent)
+    def getIvmax(self, fluent):
+        if fluent:
+            ivmax = re.search("\?ivmax_[0-9A-Fa-f]+", fluent)
+            if ivmax:
+                return " " + ivmax.group(0)
+        return ""
             
     def getTypeFluent(self, v_type, variables):
         return " ".join(["(" + v_type[1:] + " " + i + ")" for i in variables])
@@ -390,11 +394,8 @@ class SoWff(LogicalFormula):
         types_condition = "".join(["(" + str(t[0][1:]) + " " + str(t[1]) + ") " for t in zip(r_types, [zero_parameter + str(l) for l in range(0,arity)])])
         
         childFluent = self._childlist[2].get_fluent()
-        possibleParameter = ""
         name = "change_for_coin_" + predicate
-        if self.hasIvmax(childFluent):
-            possibleParameter = " ?ivmax"
-        parameters = ":parameters (?ivzero" + (" " + zero_parameter).join([str(i) for i in range(0,arity)]) + possibleParameter +")"   
+        parameters = ":parameters (?ivzero" + (" " + zero_parameter).join([str(i) for i in range(0,arity)]) + self.getIvmax(childFluent) +")"   
         precondition = ":precondition\t(and" + iterateFluent + childFluent +\
                        zero_conditions + " " + types_condition + ")"
         # If this is the final second order quantifier it needs delete
@@ -460,12 +461,9 @@ class SoWff(LogicalFormula):
                         ":effect\t\t(and " + baton + " (not" + guessFluent + "))\n\t)"
         
         free_condition = " (not_" + predicate + " " +\
-                " ".join(variables_list) + ")"
-                
+                " ".join(variables_list) + ")"  
         types_condition = "".join(["(" + str(t[0][1:]) + " " + str(t[1]) + ") " for t in zip(r_types, variables_list)])
-
         free_condition_functions = " (free_domain_" + predicate + " ?x0) "
-
         free_condition_injective = " (free_range_" + predicate + " ?x1) "
         
         #Set True
@@ -512,8 +510,7 @@ class SoWff(LogicalFormula):
         
         childFluent = self._childlist[2].get_fluent()            
         name = "establish_soexist_" + predicate       
-        if self.hasIvmax(childFluent):
-            name += "\n\t\t:parameters\t(?ivmax)"
+        parameters = ":parameters\t(" + self.getIvmax(childFluent) + ")"
         precondition = ":precondition\t(and " + childFluent + ")"
         
         notProofFluent = ""
@@ -522,7 +519,7 @@ class SoWff(LogicalFormula):
             
         effects = ":effect\t(and (holds_" + soexists_keyword +\
                   "_" + predicate +") " + notProofFluent + ")\n\t)"
-        finalAction = "\n\t\t".join([prefix + name, precondition, effects])
+        finalAction = "\n\t\t".join([prefix + name, parameters, precondition, effects])
 
         global_fluents.add("(holds_" + soexists_keyword + "_" + predicate +")")
 
@@ -667,21 +664,18 @@ class FoWff(LogicalFormula):
             
             global_fluents.add(suc_fluent) #! manually add suc
             # regular forall fluent, called from outside
-            fluent = "(holds_" + operator + "_" + str(self.id) +\
-                    " " + " ".join(argument_list) + " ?ivmax) (" + v_type[1:] + " ?ivmax) " +\
-                    self.getMaxFluent(v_type, "?ivmax")
-                    
-
+            ivmax = " ?ivmax_" + str(self.id)
+            
+            fluent = "(holds_" + operator + "_" + str(self.id) + " " + " ".join(argument_list) + ivmax + ")"
             global_fluents.add(fluent)
+            fluent += " (" + v_type[1:] + ivmax + ") " + self.getMaxFluent(v_type, ivmax)  
+
             fowff_fluents.add(("(holds_" + operator + "_" + str(self.id) + " ",len(argument_list) + 1))
     
         else: pass # should not happen
 
         return fluent
 
-	# def get_notAtoms_fluents(list):
-		
-		
     # new
     # intended to be used with ?iv1 or zero
     def get_forall_fluent(self, var, const):
@@ -697,6 +691,13 @@ class FoWff(LogicalFormula):
 
     def collect_fluents(self):
         return [self.get_fluent()]
+        
+    def getIvmax(self, fluent):
+        if fluent:
+            ivmax = re.search("\?ivmax_[0-9A-Fa-f]+", fluent)
+            if ivmax:
+                return " " + ivmax.group(0)
+        return ""
     
     def get_actions(self):
         child = self._childlist[0]
@@ -709,102 +710,64 @@ class FoWff(LogicalFormula):
             return None
         elif operator == and_keyword:
             name = "establish_and_" + str(self.id)
-            parameters = ":parameters\t(" + " ".join(self.free_vars_set) + ")"
+            parameters = ":parameters\t(" + " ".join(self.free_vars_set) 
 
             precondition_fluents = []
-            negFluents =[]
-            # only_atom_operator = True
             for child in self._childlist:
                 fluent = child.collect_fluents() 
                 precondition_fluents += fluent  
+                if fluent:
+                    parameters += self.getIvmax(fluent[0])
                 
-                # if fluent and fluent[0][1:7] == "holds_":
-                #     negFluents += [" (not " + fluent[0] + ")"]
-            #         only_atom_operator = False
-            #         
-            # proof_fluent = " (proof_operator_level)"
-            # if (only_atom_operator):
-            #     proof_fluent = " (proof_atom_level)"
+            parameters += ")"
                 
             # print precondition_fluents
             prec = ":precondition\t(and " + " ".join(precondition_fluents) + " " + proof_fluent + ")"
+            eff = ":effect\t\t(and " + self.get_fluent() + ")\n\t)"
             
-            eff = ":effect\t\t(and " + self.get_fluent() + " " + " ".join(negFluents) + ")\n\t)"
             return ["\n\t\t".join([prefix + name, parameters, prec, eff])]
         elif operator == or_keyword:
             precondition_fluents = []
-            
             for child in self._childlist:
                 precondition_fluents += child.collect_fluents() 
 
             name = "establish_or_" + str(self.id)
-            parameters = ":parameters\t(" + " ".join(self.free_vars_set) + ")"
+            parameters = ":parameters\t(" + " ".join(self.free_vars_set)
             
-
             operator_list = []
             for index, fluent in enumerate(precondition_fluents):
-                negFluent = ""
-                # only_atom_operator = True
-                # if fluent[1:7] == "holds_":
-                #     negFluent =" (not " + fluent + ")"
-                #     only_atom_operator = False
-                # 
-                # proof_fluent = " (proof_operator_level)"
-                # if (only_atom_operator):
-                #     proof_fluent = " (proof_atom_level)"
-                
+                newParameters = parameters + self.getIvmax(fluent) + ")"
                 prec = ":precondition\t (and " + fluent + " " + proof_fluent + ")"
-                eff = ":effect\t\t(and " + self.get_fluent() + negFluent + ")\n\t)"
+                eff = ":effect\t\t(and " + self.get_fluent() + ")\n\t)"
                 operator_list.append("\n\t\t".join([prefix + name +\
-                        "_" + str(index), parameters, prec, eff]))
+                        "_" + str(index), newParameters, prec, eff]))
 
             return operator_list
         elif operator == exists_keyword:
             # only one-variable exists for now
             quantified_variable = self._childlist[1]._childlist[0]._info
             v_type = self._childlist[1]._childlist[0].var_type        
-
+            
             name = "establish_exists_" + str(self.id)
             parameters = ":parameters\t(" + " ".join(self.free_vars_set) +\
-                    " " + quantified_variable + ")" # added quantified var
-
+                    " " + quantified_variable  
+                                    
             childFluents = self._childlist[2].get_fluent() 
-            negFluent = ""
-            # only_atom_operator = True
-            
-            # if childFluents[1:7] == "holds_":
-            #     negFluent =" (not " + childFluents + ")"
-            #     only_atom_operator = False
-            # 
-            # proof_fluent = " (proof_operator_level)"
-            # if (only_atom_operator):
-            #     proof_fluent = " (proof_atom_level)"
-                
+            parameters += self.getIvmax(childFluents) + ")"
             prec = ":precondition\t (and " + childFluents + " " + proof_fluent +\
                     "(" + v_type[1:] + " " + quantified_variable + "))"
-            eff = ":effect\t\t(and "+ self.get_fluent() + negFluent + ")\n\t)"
+            eff = ":effect\t\t(and "+ self.get_fluent() + ")\n\t)"
 
             return ["\n\t\t".join([prefix + name, parameters, prec, eff])]
         elif operator == forall_keyword:
             quantified_variable = self._childlist[1]._childlist[0]._info
             v_type = self._childlist[1]._childlist[0].var_type        
-            
-            childFluentsBase = self._childlist[2].get_fluent(quantified_variable, "?ivzero")
-            print childFluentsBase
-            negFluentBase = ""
-            # only_atom_operator = True
-            
-            # if childFluentsBase[1:7] == "holds_":
-            #     negFluentBase =" (not " + childFluentsBase + ")"
-            #     only_atom_operator = False
-            # 
-            # proof_fluent = " (proof_operator_level)"
-            # if (only_atom_operator):
-            #     proof_fluent = " (proof_atom_level)"
-                
+            childFluentsBase = self._childlist[2].get_fluent(quantified_variable, "?ivzero")  
             suc_condition = self.getSucFluent(v_type[1:] )
+            
+            #Base function
             name = "establish_forall_" + str(self.id) + "_base"
-            parameters = ":parameters\t(" + " ".join(self.free_vars_set) + " ?ivzero)"
+            parameters = ":parameters\t(" + " ".join(self.free_vars_set) + " ?ivzero" + self.getIvmax(childFluentsBase) + ")" 
             prec = ":precondition\t (and " + childFluentsBase + " " + proof_fluent + " (" + v_type[1:] + " ?ivzero)"+\
                      self.getZeroFluent(v_type, "?ivzero") + ")"
             eff = ":effect\t\t(and " + self.get_forall_fluent(quantified_variable, "?ivzero") + ")\n\t)"
@@ -812,38 +775,17 @@ class FoWff(LogicalFormula):
             fluent_1 = "\n\t\t".join([prefix + name, parameters, prec, eff])
 
             name = "establish_forall_" + str(self.id) + "_inductive"
-
+            
+            # Inductive function
             # Variables iv0 and iv1 represent two steps
             # of the induction, where suc(iv0) = iv1
-
             childFluentsInduc_1 = self.get_forall_fluent(quantified_variable, "?iv0")
             childFluentsInduc_2 = self._childlist[2].get_fluent(quantified_variable, "?iv1")
 
-            negFluentInduc_1 = ""
-            # only_atom_operator = True
-            
-            # if childFluentsInduc_1[1:7] == "holds_":
-            #     negFluentInduc_1 =" (not " + childFluentsInduc_1 + ")"
-                # only_atom_operator = False
-                
-                
-            negFluentInduc_2 = ""
-            # if childFluentsInduc_2[1:7] == "holds_":
-            #     negFluentInduc_2 =" (not " + childFluentsInduc_2 + ")"
-            #     only_atom_operator = False
-            # 
-            # proof_fluent = " (proof_operator_level)"
-            # if (only_atom_operator):
-            #     proof_fluent = " (proof_atom_level)"
-
-            parameters = ":parameters\t(" + " ".join(self.free_vars_set) +\
-                    " ?iv0 ?iv1)"
+            parameters = ":parameters\t(" + " ".join(self.free_vars_set) + " ?iv0 ?iv1" + self.getIvmax(childFluentsInduc_1) + self.getIvmax(childFluentsInduc_2) + ")" 
             prec = ":precondition\t(and " + childFluentsInduc_1 + " " + self.getSucFluent(v_type) + " " + \
                     childFluentsInduc_2 + " " + proof_fluent + " (" + v_type[1:] + " ?iv0) (" + v_type[1:] + " ?iv1))"
-
-            eff = ":effect\t\t(and " + negFluentInduc_1 + " " + negFluentInduc_2 + " " +\
-                    self.get_forall_fluent(quantified_variable, "?iv1") + ")\n\t)"
-
+            eff = ":effect\t\t(and " + self.get_forall_fluent(quantified_variable, "?iv1") + ")\n\t)"
             fluent_2 = "\n\t\t".join([prefix + name, parameters, prec, eff])
 
             return [fluent_1, fluent_2]

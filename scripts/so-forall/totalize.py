@@ -141,6 +141,11 @@ if __name__ == "__main__":
     f.write("\\pagebreak\n")    
     
     addQbf2Table(qbf_1, qbf_0, qbf_2, "qbfea", "m", "E\_vars & A\_vars", f)
+    
+    f.write("\\pagebreak\n")    
+    
+    
+    addQbf2Table([i[:-1] + "e" for i in qbf_0], [i[:-1] + "a" for i in qbf_1], qbf_2, "nqbfae", "m", "E\_vars & A\_vars", f)
     # createTableQbf(qbf_1, qbf_0, qbf_2, "qbfea", "mp", "E\_vars & A\_vars")
 
     f.write("\\end{document}")

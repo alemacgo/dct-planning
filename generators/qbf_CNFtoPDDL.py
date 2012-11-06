@@ -3,7 +3,7 @@ from sys import argv
 import math
 import re
 
-problems = "qbf3eae|qbf3aea|qbfae|qbfea"
+problems = "qbf3eae|qbf3aea|qbfae|qbfea|nqbfae"
 
 def getDomain(problem):
     return re.search(problems, problem).group(0)
@@ -41,6 +41,10 @@ pddl_file = open(argv[1] + filename.split("/")[-1] + ".pddl", "w")
 pddl_file.write("(define (problem p)\n")
 pddl_file.write("\t(:domain " + getDomain(filename) + ")\n")
 pddl_file.write("\t(:objects ")
+
+invert = False
+if getDomain(filename) == "nqbfae":
+    invert = True
 
 if num_vars > 0: 
         
@@ -87,6 +91,9 @@ if num_vars > 0:
             if number == 0:
                 continue
             
+            if invert:
+                number = -1 * number
+                
             if number > 0:
                 signo = "P"
             else:

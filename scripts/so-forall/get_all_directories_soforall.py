@@ -29,6 +29,10 @@ if __name__ == "__main__":
                     continue
                 os.system("mkdir -p problems-soforall/qbfae/" + "/".join([i, j, c]))
                 os.system("mkdir -p solutions-soforall/qbfae/" + "/".join([i, j, c]))
+                
+                os.system("mkdir -p problems-soforall/nqbfae/" + "/".join([i[:-1] + "e", j[:-1] + "a", c]))
+                os.system("mkdir -p solutions-soforall/nqbfae/" + "/".join([i[:-1] + "e", j[:-1] + "a", c]))
+                
                 os.system("mkdir -p problems-soforall/qbfea/" + "/".join([j, i, c]))
                 os.system("mkdir -p solutions-soforall/qbfea/" + "/".join([j, i, c]))
 

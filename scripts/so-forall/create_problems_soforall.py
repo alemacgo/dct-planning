@@ -45,6 +45,10 @@ for i in qbf_0:
                 prob_path = "/".join(["problems-soforall", "qbfae", i, j, c]) + "/"
                 runBash(prob_path, prob_name, False, seed, c[:-1], [i[:-1], j[:-1]], ["1","2"])
                 
+                prob_name = "_".join(["qbf", i[:-1] + "e", j[:-1] + "a", c, str(seed)])
+                prob_path = "/".join(["problems-soforall", "nqbfae", i[:-1] + "e", j[:-1] + "a", c]) + "/"
+                runBash(prob_path, prob_name, True, seed, c[:-1], [i[:-1], j[:-1]], ["1","2"])
+                
                 #QBF EA
                 prob_name = "_".join(["qbf", j , i , c , str(seed)])
                 prob_path = "/".join(["problems-soforall", "qbfea", j, i, c]) + "/"

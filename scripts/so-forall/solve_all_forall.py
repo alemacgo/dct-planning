@@ -4,7 +4,7 @@ RUN = True
 
 import os, re, sys, math
 
-problems = "qbf3eae|qbf3aea|qbfae|qbfea"
+problems = "qbf3eae|qbf3aea|qbfae|qbfea|nqbfae"
 limits = "-t 5400 -r 7200 -m 2048 "
 plannerCommand = "planners/m/M"
 output = ">"
@@ -16,20 +16,12 @@ def qbfaeBounds(problem):
     problem_info = problem.split("_")
     n_soforall = int(problem_info[1][:-1])
     n_clauses = int(problem_info[3][:-1])
-    # return (pow(2,n_soforall)*(n_clauses + 10) + 1, pow(2,n_soforall)*(n_clauses + 11) + 1)
-    # return (int(math.floor(pow(2,n_soforall)*(n_clauses + 10) + 1 + (pow(2,n_soforall)*1/2))), pow(2,n_soforall)*(n_clauses + 11) + 1)
     return (pow(2,n_soforall)*(n_clauses + 9) + 1, pow(2,n_soforall)*(n_clauses + 9) + 1)
     
 def qbfeaeBounds(problem):
-    # print problem
-    
     problem_info = problem.split("_")
     n_soforall = int(problem_info[2][:-1])
     n_clauses = int(problem_info[4][:-1])
-    # print "N_for: " + str(n_soforall) + "N_clau: " + str(n_clauses)
-    
-    # return (pow(2,n_soforall)*(n_clauses + 10) + 1, pow(2,n_soforall)*(n_clauses + 11) + 1)
-    # return (int(math.floor(pow(2,n_soforall)*(n_clauses + 10) + 1 + (pow(2,n_soforall)*1/2))), pow(2,n_soforall)*(n_clauses + 11) + 1)
     return (pow(2,n_soforall)*(n_clauses + 9) + 1 + 3, pow(2,n_soforall)*(n_clauses + 9) + 1 + 3)
 
 def qbfeaBounds(problem):
@@ -45,9 +37,6 @@ def qbfaeaBounds(problem):
     n_soforall_2 = int(problem_info[1][:-1])
     n_soforall_1 = int(problem_info[3][:-1])
     n_clauses = int(problem_info[4][:-1])
-    # print "N_for1: " + str(n_soforall_1) + "N_for2: " + str(n_soforall_2) + "N_clau: " + str(n_clauses)
-    # return (pow(2,n_soforall_2)*(pow(2,n_soforall_1)*(n_clauses + 8) + 4 )+ 1, pow(2,n_soforall_2)*(pow(2,n_soforall_1)*(n_clauses + 8) + 5) + 1)
-    
     return (pow(2,n_soforall_2)*(pow(2,n_soforall_1)*(n_clauses + 6) + 5 ) + 1, pow(2,n_soforall_2)*(pow(2,n_soforall_1)*(n_clauses + 6) + 5) + 1)
 
 def stepSize(bounds):
@@ -96,10 +85,13 @@ def solveProblems(list, file = None):
                        nameParts[2].rpartition(".")[0]
     
         if domain == "qbfae":
+            continue
             bounds = qbfaeBounds(problemFile)
+        elif domain == "nqbfae":
+            continue
+            bounds = qbfeaBounds(problemFile)
         elif domain == "qbfea":  
             bounds = qbfeaBounds(problemFile)
-            continue
         elif domain == "qbf3eae":
             bounds = qbfeaeBounds(problemFile)
             continue
