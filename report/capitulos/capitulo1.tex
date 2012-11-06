@@ -39,6 +39,7 @@ estén en una sola pila ordenados de forma ascendente. Cada bloque puede tener a
 lo sumo un bloque encima suyo, y la mano sólo puede cargar un bloque a la vez.
 En este caso, proposiciones válidas que pueden ser parte de un estado son,
 por ejemplo,
+%! sobre mesa
 \texttt{manoVacía}, \texttt{sobre(0, mesa)}, \texttt{sobre(1, mesa)}, \texttt{libre(0),
 \texttt{libre(1)}}.
 La Figura \ref{blocksworld_inicial} ilustra un estado cuyas únicas
@@ -208,8 +209,9 @@ son:
 %\label{a}
 \end{definition}
 
-Sólo se considerará en el resto del trabajo las fórmulas sin variables libres,
-o \textbf{sentencias}, pues son aquellas cuya semántica está bien definida.
+Sólo se considerará en el resto del trabajo las fórmulas sin variables o
+predicados libres,
+llamadas \textbf{sentencias}.
 También, entre las fórmulas de segundo orden, sólo se tratarán aquellas que
 sean de la forma
 \[ \Phi = (\Q_1R_1^{a_1})(\Q_2R_2^{a_2})\cdots(\Q_nR_n^{a_n})\psi \]
