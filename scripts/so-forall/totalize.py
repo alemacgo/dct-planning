@@ -1,5 +1,5 @@
 #! /usr/bin/env python
-from get_all_directories_soforall import *
+from dirs_all import *
 
 first_text = """\\documentclass[a1paper]{article}\n\
                 \\usepackage[left=0.5cm,top=3cm,right=1cm,nohead,nofoot]{geometry}\n\
@@ -128,7 +128,7 @@ def addQbf3Table (set0, set1, set2, clauses_set, domain, planner, quantifier_ord
 if __name__ == "__main__":
     f = open("resultsQbf.tex", 'w')
     f.write(first_text)
-    addQbf3Table(qbf3_e, qbf3_a, qbf3_e, qbf_2, "qbf3eae", "m", "E\_vars & A\_vars & E\_vars", f)
+    addQbf3Table(qbf3_e0, qbf3_a0, qbf3_e1, qbf_2, "qbf3eae", "m", "E\_vars & A\_vars & E\_vars", f)
     f.write("\\pagebreak\n")    
     
     addQbf3Table(qbf3_a2, qbf3_e2, qbf3_a2, qbf_2, "qbf3aea", "m", "A\_vars & E\_vars & A\_vars", f)

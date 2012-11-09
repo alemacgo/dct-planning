@@ -9,6 +9,7 @@ def getDomain(problem):
     return re.search(problems, problem).group(0)
 
 def tokenize(input):
+    
     a_vars = []
     e_vars = []
     for line in input:
@@ -47,11 +48,11 @@ if getDomain(filename) == "nqbfae":
     invert = True
 
 if num_vars > 0: 
-        
-    for i in range(1,num_vars + 1):
+    maxim = max(num_vars,num_cls)
+    for i in range(1,maxim + 1):
         pddl_file.write("\t\t\tvar"+ str(i)+" \n")
-    for i in range(1, num_cls + 1):
-        pddl_file.write("\t\t\tcls"+ str(i)+" \n")
+    # for i in range(1, num_cls + 1):
+    #     pddl_file.write("\t\t\tcls"+ str(i)+" \n")
     pddl_file.write("\n\t)\n")
     
     pddl_file.write("\t(:init\n\t\t(begin)\n")
@@ -59,14 +60,20 @@ if num_vars > 0:
     for i in range(1,num_vars + 1):
         pddl_file.write("\t\t(var var"+ str(i)+")\n")
     for i in range(1, num_cls + 1):
-        pddl_file.write("\t\t(cls cls"+ str(i)+")\n")
+        pddl_file.write("\t\t(cls var"+ str(i)+")\n")
     
     # pddl_file.write("\t\t(var_min var" + str(1) + ")\n")
     # pddl_file.write("\t\t(var_max var" + str(num_vars) + ")\n")
     # pddl_file.write("".join(["\t\t(suc_var var" + str(t[0]) + " var" + str(t[1]) +")\n" for t in zip (range(1,num_vars), range(2,num_vars + 1))]))
-    pddl_file.write("\t\t(cls_min cls" + str(1) + ")\n")
-    pddl_file.write("\t\t(cls_max cls" + str(num_cls) + ")\n")
-    pddl_file.write("".join(["\t\t(cls_suc cls" + str(t[0]) + " cls" + str(t[1]) +")\n" for t in zip (range(1,num_cls), range(2,num_cls + 1))]))
+    if invert:
+        pddl_file.write("\t\t(var_min var" + str(1) + ")\n")
+        pddl_file.write("\t\t(var_max var" + str(num_vars) + ")\n")
+        pddl_file.write("".join(["\t\t(var_suc var" + str(t[0]) + " var" + str(t[1]) +")\n" for t in zip (range(1,num_vars), range(2,num_vars + 1))]))
+        
+    else:
+        pddl_file.write("\t\t(cls_min var" + str(1) + ")\n")
+        pddl_file.write("\t\t(cls_max var" + str(num_cls) + ")\n")
+        pddl_file.write("".join(["\t\t(cls_suc var" + str(t[0]) + " var" + str(t[1]) +")\n" for t in zip (range(1,num_cls), range(2,num_cls + 1))]))
     
     i = 0
     for a_list in a_vars:
@@ -86,6 +93,7 @@ if num_vars > 0:
          
     clause  = 1
     for i in tokens:
+        vars_in_clause = set()
         for j in i:
             number = int(j)
             if number == 0:
@@ -100,10 +108,14 @@ if num_vars > 0:
                 signo = "N"
             
             number = abs(number)
-            
-            pddl_file.write("\t\t("+ signo + " var" + str(number) + " cls" + str(clause) + ")\n")
-        
+            vars_in_clause.add(number)
+            pddl_file.write("\t\t("+ signo + " var" + str(number) + " var" + str(clause) + ")\n")        
+        if invert:
+            for k in range(1,num_vars + 1):
+                if not (k in vars_in_clause):
+                    pddl_file.write("\t\t(notin var" + str(k) + " var" + str(clause) + ")\n") 
         clause += 1
+        
     
     pddl_file.write("\t)\n")
     
