@@ -14,8 +14,6 @@ dificultad de resolver problemas formulados en un lenguaje lógico.
 Finalmente, se explican dos ejemplos de problemas NP fácilmente modelables
 con el formalismo lógico propuesto.
 
-%! trabajos previos?
-%Finalmente, se expondrán trabajos 
 
 \section{Planificación automática}
 La planificación automática es un campo de investigación dentro de la Inteligencia
@@ -39,8 +37,7 @@ estén en una sola pila ordenados de forma ascendente. Cada bloque puede tener a
 lo sumo un bloque encima suyo, y la mano sólo puede cargar un bloque a la vez.
 En este caso, proposiciones válidas que pueden ser parte de un estado son,
 por ejemplo,
-%! sobre mesa
-\texttt{manoVacía}, \texttt{sobre(0, mesa)}, \texttt{sobre(1, mesa)}, \texttt{libre(0),
+\texttt{manoVacía}, \texttt{sobreMesa(0)}, \texttt{sobreMesa(1)}, \texttt{libre(0),
 \texttt{libre(1)}}.
 La Figura \ref{blocksworld_inicial} ilustra un estado cuyas únicas
 proposiciones ciertas son estas mencionadas anteriormente.
@@ -65,7 +62,7 @@ codes={\catcode`$=3\catcode`^=7}]
 (:acción recoger_bloque
     :parámetros (b)
     :precondiciones (manoVacía $\land$ libre(b))
-    :efectos (enMano(b) $\land \neg$ manoVacía)
+    :efectos (enMano(b) $\land \neg$ manoVacía $\land \neg $sobreMesa(b))
 )
 
 (:acción colocar_sobre
@@ -82,15 +79,18 @@ concreto, es decir, que conduzca desde el estado ilustrado en la Figura
 \ref{blocksworld_inicial} hasta un estado en el cual los bloques estén ``apilados en
 orden''. La solución se presenta a continuación. Como es costumbre, sólo se
 mencionan las proposiciones verdaderas en cada estado. Se ha coloreado de azul
-las nuevas proposiciones que han resultado de aplicar una acción.
+las nuevas proposiciones que han resultado de aplicar una acción
+(\textit{adds}), y de rojo a las proposiciones que dejaron de ser ciertas en el
+siguiente estado producto de la acción aplicada (\textit{deletes}).
 \begin{Verbatim}[commandchars=\\\{\},
 codes={\catcode`$=3\catcode`^=7}]
-estado: sobre(0, mesa) $\land$ sobre(1, mesa) $\land$ libre(0) $\land$ libre(1)
-        $\land$ manoVacía
+estado: sobreMesa(0) $\land$ {\color{red} sobreMesa(1)} $\land$ libre(0) $\land$ libre(1)
+        $\land$ {\color{red} manoVacía}
 \textit{acción: recoger_bloque(1)}
-estado:{\color{blue} enMano(1)} $\land$ sobre(0, mesa) $\land$ libre(0) $\land$ libre(1)
+estado:{\color{blue} enMano(1)} $\land$ sobreMesa(0) $\land$ {\color{red}
+libre(0)} $\land$ libre(1)
 \textit{acción: colocar_sobre(1, 0)}
-estado:{\color{blue} sobre(1, 0)} $\land$ sobre(0, mesa) $\land$ {\color{blue}manoVacía} $\land$ libre(1)
+estado:{\color{blue} sobre(1, 0)} $\land$ sobreMesa(0) $\land$ {\color{blue}manoVacía} $\land$ libre(1)
 \end{Verbatim}
 
 La Figura \ref{blocksworld_final} es una representación de este estado final.
@@ -137,7 +137,7 @@ artificial, los planificadores dependen de
 heurísticas de búsqueda para dar con las soluciones a problemas pequeños en un 
 período de tiempo razonable.
 
-%! proof?
+%! Prueba?
 Una restricción interesante a PLANSAT es no permitir efectos negativos en las
 acciones. Si este es el caso, cualquier predicado instanciado que se haya 
 agregado permanece cierto durante todo el plan, de modo que no es necesario
@@ -190,7 +190,7 @@ de LSO están descritas en la Definición \ref{lso_def}.
 sólo si puede construirse mediante las siguientes reglas.
 \label{lso_def}
 \begin{enumerate}
-%! por que superset?
+
 \item Cualquier fórmula $\LPO(\tau)$, dado $\tau\supseteq\sigma$, es una
 fórmula $\LSO(\sigma)$.
 \item Si $\Phi$ and $\Psi$ son fórmulas $\LSO(\sigma)$, entonces también lo
@@ -237,44 +237,12 @@ un símbolo relacional de aridad $a_i$, y cada $c_j$ es una constante.
 La estructura de primer orden es una tupla
 $\A=\tup{|\A|,R_1^\A,\ldots,R_s^\A,c_1^\A,\\\ldots,c_t^\A}$ con un universo
 no vacío $|\A|$, donde cada $R_i^\A\subseteq|\A|^{a_i}$ es un subconjunto de
-$a_i$-tuplas de $|\A|$, llamado la \textbf{interpretación} de $R_i$, y cada
-$c_j^\A\in|\A|$ es un elemento de $|\A|$ (llamado la interpretación de $c_j$).
+$a_i$-tuplas de $|\A|$, y cada
+$c_j^\A\in|\A|$ es un elemento de $|\A|$.
 Sin pérdida de generalidad, puede asumirse que el universo siempre es de la
 forma $|\A|=\{0,1,\ldots,n-1\}$.
 La TCD sólo está interesada en estructuras de universo finito, la clase de
 todas las estructuras finitas de la firma $\sigma$ se denota por $\struc[\sigma]$.
-
-\subsection{Semántica formal}
-%! LSO o LPO?
-La Definición \ref{semantica_def} describe bajo qué circunstancias una fórmula $\Phi$ en
-$\LSO(\sigma)$ satisface una estructura $\A$, o $\A \models \Phi$, tal como es
-presentado en \cite{immerman:book}.
-
-\begin{definition}
-\label{semantica_def}
-Sea $\A \in \struc[\sigma]$, y sea $i$ una interpretación sobre $\A$ cuyo
-dominio incluye todas las variables libres relevantes. 
-Se define inductivamente cuándo una fórmula 
-$\Phi \in \LSO(\Phi)$ es cierta en $(\A, i)$:
-\begin{gather*}
-(\A, i) \models t_1 = t_2 \iff i(t_1) = i(t_2)\\
-(\A, i) \models R_j(t_1,...,t_{a_j}) \iff \tup{i(t_1),...,i(t_{a_j})} \in R_j^\A\\
-(\A, i) \models \neg \Phi \iff \mbox{no es cierto que } (A, i) \models \Phi\\
-(\A, i) \models \Phi \land \Psi \iff (\A, i) \models \Phi \mbox{ y } (\A, i) \models \Psi\\
-(\A, i) \models \Phi \lor \Psi \iff (\A, i) \models \Phi \mbox{ o } (\A, i) \models \Psi\\
-(\A, i) \models \Phi \Rightarrow \Psi \iff \neg(\A, i) \models \Phi \lor (\A, i) \models \Psi\\
-(\A, i) \models (\exists x) \Phi \iff \mbox{existe } a \in |\A| 
-\mbox{ tal que } (\A, i, a/x) \models \Phi,\\
-\hspace{5cm} \mbox{donde } (i, a/x)(y) = \left\{
-     \begin{array}{lr}
-       i(y) & \mbox{si } y \not= x\\
-       a & \mbox{si } y = x
-     \end{array}
-   \right.\\
-(\A, i) \models (\forall x) \Phi \iff \mbox{no es cierto que } 
-    (\A, i) \models (\exists x) \neg \Phi
-\end{gather*}
-\end{definition}
 
 Como ejemplo, sea $\sigma=\tup{E^2,s,t}$ y
 $\A=\tup{|\A|,E^\A,s^\A,t^\A}$, donde $|\A|=\{0,1,2\}$,
@@ -299,7 +267,71 @@ donde $|\A|=\{0,1,2\}$, $E^\A=\{(0,1),(1,2)\}$, $s^\A=0$ y $t^\A=2$.}
 \label{grafo_simple}
 \end{figure}
 
-Puede verificarse mediante semántica formal si $\A\models\Phi$, donde $\Phi$
+La siguiente definición será de utilidad para trabajar sobre la semántica
+formal.
+\begin{definition}
+Una \textbf{interpretación} $i$ sobre $\A$ es una función cuyos
+dominios y rangos son los siguientes:
+\begin{gather*}
+\text{variables} \longrightarrow |\A|\\
+R^k \not\in \sigma \longrightarrow |\A|^k\\
+\end{gather*}
+Como ejemplo, dos posibles interpretaciones de la fórmula 
+$(\exists xy) (T(x, y))$ son $i(x) = 0$ e $i(T) = \tup{0,2}$.
+\end{definition}
+
+\subsection{Semántica formal}
+La Definición \ref{semantica_def} describe bajo qué circunstancias una fórmula $\Phi$ en
+$\LSO(\sigma)$ satisface una estructura $\A$, o $\A \models \Phi$, tal como es
+presentado en \cite{immerman:book}.
+
+\begin{definition}
+\label{semantica_def}
+Sea $\A \in \struc[\sigma]$, y sea $i$ una interpretación sobre $\A$ cuyo
+dominio incluye todas las variables libres relevantes. 
+Se definen inductivamente las condiciones necesarias y suficientes para que 
+una fórmula $\Phi \in \LSO(\Phi)$ sea cierta en $(\A, i)$ (sea cierta en \A\ bajo la
+interpretación $i$):
+\[
+\begin{array}{lcl}
+(\A, i) \models x = y & \iff & i(x) = i(y)\\
+(\A, i) \models R(x_1,...,x_{k}) & \iff & \tup{i(x_1),...,i(x_{k})} \in R^{\A, i}\\
+&&\mbox{donde } R^{\A, i}= \left\{
+    \begin{array}{lr}
+       R^\A & \mbox{si } R \in \sigma\\
+       i(R) & \mbox{si } R \not\in \sigma
+     \end{array}
+   \right.\\
+(\A, i) \models \neg \Phi & \iff & \mbox{no es cierto que } (A, i) \models \Phi\\
+(\A, i) \models \Phi \land \Psi & \iff & (\A, i) \models \Phi \mbox{ y } (\A, i) \models \Psi\\
+(\A, i) \models \Phi \lor \Psi & \iff & (\A, i) \models \Phi \mbox{ o } (\A, i) \models \Psi\\
+(\A, i) \models \Phi \Rightarrow \Psi & \iff & (\A, i) \nvDash \Phi \lor (\A, i) \models \Psi\\
+(\A, i) \models (\exists x) \Phi & \iff & \mbox{existe } a \in |\A| 
+\mbox{ tal que } (\A, i, a/x) \models \Phi,\\
+&&\mbox{donde } (i, a/x)(y) = \left\{
+     \begin{array}{lr}
+       a & \mbox{si } y = x\\
+       i(y) & \mbox{si } y \not= x
+     \end{array}
+   \right.\\
+(\A, i) \models (\forall x) \Phi & \iff &
+    (\A, i) \nvDash (\exists x) \neg \Phi\\
+(\A, i) \models (\exists R) \Phi & \iff & \mbox{existe } S \subseteq |\A|^k
+\mbox{ tal que } (\A, i, S/R) \models \Phi,\\
+&&\mbox{donde } (i, S/R)(T) = \left\{
+     \begin{array}{lr}
+       S & \mbox{si } T = R\\
+       i(T) & \mbox{si } T \not= R
+     \end{array}
+   \right.\\
+(\A, i) \models (\forall R) \Phi & \iff &
+    (\A, i) \nvDash (\exists R) \neg \Phi\\
+\end{array}
+\]
+\end{definition}
+
+Volviendo al ejemplo anterior de \A, puede verificarse mediante semántica 
+formal si $\A\models\Phi$, donde $\Phi$
 es una fórmula arbitraria de $\LPO(\sigma)$. A continuación se comprueba si dos
 $\Phi$ particulares satisfacen la estructura \A.
 
