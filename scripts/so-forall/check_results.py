@@ -43,7 +43,7 @@ def check(planner):
                     prob_name_ae = "_".join(["qbf", i , j , c , str(seed)])
                     prob_path_ae = "qbfae/" + "/".join([i, j, c]) + "/"
                     
-                    prob_name_nae = "_".join(["qbf", j[:-1] + "a" , i[:-1] + "e" , c , str(seed)])
+                    prob_name_nae = "_".join(["qbf",j[:-1] + "a" , i[:-1] + "e", c , str(seed)])
                     prob_path_nae = "nqbfae/" + "/".join([j[:-1] + "a" , i[:-1] + "e" , c]) + "/"
                     
                     prob_name_ea = "_".join(["qbf", j , i , c , str(seed)])

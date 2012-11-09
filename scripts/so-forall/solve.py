@@ -72,20 +72,20 @@ def solveProblems(list, file = None):
                        nameParts[2].rpartition(".")[0]
     
         if domain == "qbfae":
-            # continue
+            continue
             bounds = qbfaeBounds(problemFile)
         elif domain == "nqbfae":
             continue
             bounds = qbfeaBounds(problemFile)
         elif domain == "qbfea":  
-            # continue
+            continue
             bounds = qbfeaBounds(problemFile)
         elif domain == "qbf3eae":
             continue
             bounds = qbfeaeBounds(problemFile)
         elif domain == "qbf3aea":
             bounds = qbfaeaBounds(problemFile)
-            continue
+            # continue
         else:
             print domain
             raise ValueError
