@@ -18,7 +18,7 @@ con el formalismo lógico propuesto.
 \section{Planificación automática}
 La planificación automática es un campo de investigación dentro de la Inteligencia
 Artificial. Su enfoque se basa en descubrir un plan de acciones a seguir para
-lograr un objetivo concreto \citep{russell:book}. En este trabajo se manejará
+lograr un objetivo concreto \cite{russell:book}. En este trabajo se manejará
 la concepción \textbf{clásica} de planificación, en la cual todas las acciones
 tienen una consecuencia determinística y observable en ambientes estáticos (es
 decir, que sólo cambian con el resultado de las acciones aplicadas).
@@ -270,14 +270,13 @@ donde $|\A|=\{0,1,2\}$, $E^\A=\{(0,1),(1,2)\}$, $s^\A=0$ y $t^\A=2$.}
 La siguiente definición será de utilidad para trabajar sobre la semántica
 formal.
 \begin{definition}
-Una \textbf{interpretación} $i$ sobre $\A$ es una función cuyos
-dominios y rangos son los siguientes:
-\begin{gather*}
-\text{variables} \longrightarrow |\A|\\
-R^k \not\in \sigma \longrightarrow |\A|^k\\
-\end{gather*}
+Una \textbf{interpretación} $i$ sobre $\A$ es una función que asigna
+elementos del conjunto de variables, $\text{VAR}$,
+a elementos de $|\A|$; o asigna a relaciones $R^k$, donde $R \not\in \sigma$, a
+tuplas en $|\A|^k$.
+
 Como ejemplo, dos posibles interpretaciones de la fórmula 
-$(\exists xy) (T(x, y))$ son $i(x) = 0$ e $i(T) = \tup{0,2}$.
+$(\exists xy) (T(x, y))$ son $i(x) = 1$ e $i(T) = \tup{0,2}$.
 \end{definition}
 
 \subsection{Semántica formal}

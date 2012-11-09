@@ -2,10 +2,11 @@
 \graphicspath{{figuras/}}
 
 \usepackage[spanish]{babel}
-%\usepackage[spanish]{hyphenat}
+\usepackage[utf8]{inputenc}
+\usepackage[fixlanguage]{babelbib}
 \usepackage{hyphenat}
 
-\usepackage[square, numbers, comma, sort&compress]{natbib}
+\usepackage{natbib}
 \usepackage{verbatim}
 \usepackage{tikz}
 \usepackage{fancyvrb}
@@ -24,8 +25,7 @@
 \usepackage{array}
 \usepackage{tabularx}
 \usepackage{caption}
-\usepackage[utf8]{inputenc}
-\usepackage[fixlanguage]{babelbib}
+%:%s/\(bibitem.\+\)and/\1y/g
 %\usepackage[letterpaper, inner=3cm, outer=2cm]{geometry}
 %\addtolength[\topmargin]{-1.5cm}
 %\addtolength[\textheight]{4cm}
@@ -291,7 +291,8 @@ $\Rightarrow$ & implicación lógica
 %% ----------------------------------------------------------------
 \label{Bibliography}
 \lhead{\emph{Bibliografía}}  % Change the left side page header to "Bibliography"
-\bibliographystyle{alpha}  % Use the "unsrtnat" BibTeX style
+\bibliographystyle{aaai}  % Use the "unsrtnat" BibTeX style
+
 %the Bibliography 
 \bibliography{bibliografia}  % The references (bibliography) information are stored in the file named "Bibliography.bib"
 
