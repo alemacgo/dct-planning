@@ -209,11 +209,9 @@ son:
 %\label{a}
 \end{definition}
 
-Sólo se considerará en el resto del trabajo las fórmulas sin variables o
-predicados libres,
-llamadas \textbf{sentencias}.
-También, entre las fórmulas de segundo orden, sólo se tratarán aquellas que
-sean de la forma
+Las fórmulas sin variables o predicados libres se llaman \textbf{sentencias}.
+Entre las fórmulas de segundo orden, en este trabajo
+sólo se tratarán aquellas que sean de la forma
 \[ \Phi = (\Q_1R_1^{a_1})(\Q_2R_2^{a_2})\cdots(\Q_nR_n^{a_n})\psi \]
 donde cada $\Q_i \in \{\exists,\forall\}$, y
 $\psi$ es una sentencia de primer orden sobre $\sigma\ \cup\ \{R_1^{a_1},\ldots,R_n^{a_n}\}$.
@@ -282,15 +280,15 @@ $(\exists xy) (T(x, y))$ son $i(x) = 1$ e $i(T) = \tup{0,2}$.
 \subsection{Semántica formal}
 La Definición \ref{semantica_def} describe bajo qué circunstancias una fórmula $\Phi$ en
 $\LSO(\sigma)$ satisface una estructura $\A$, o $\A \models \Phi$, tal como es
-presentado en \cite{immerman:book}.
+presentado por \cite{immerman:book}.
 
 \begin{definition}
 \label{semantica_def}
 Sea $\A \in \struc[\sigma]$, y sea $i$ una interpretación sobre $\A$ cuyo
-dominio incluye todas las variables libres relevantes. 
+dominio incluye todas las variables y relaciones libres.
 Se definen inductivamente las condiciones necesarias y suficientes para que 
-una fórmula $\Phi \in \LSO(\Phi)$ sea cierta en $(\A, i)$ (sea cierta en \A\ bajo la
-interpretación $i$):
+una fórmula $\Phi \in \LSO(\sigma)$ sea cierta en \A\ bajo la
+interpretación $i$:
 \[
 \begin{array}{lcl}
 (\A, i) \models x = y & \iff & i(x) = i(y)\\
@@ -332,7 +330,11 @@ interpretación $i$):
 Volviendo al ejemplo anterior de \A, puede verificarse mediante semántica 
 formal si $\A\models\Phi$, donde $\Phi$
 es una fórmula arbitraria de $\LPO(\sigma)$. A continuación se comprueba si dos
-$\Phi$ particulares satisfacen la estructura \A.
+$\Phi$ particulares satisfacen la estructura \A. 
+%! ?
+No se requiere utilizar la
+noción de interpretación, pues toda sentencia $\Phi \in LSO(\sigma)$ es
+verdadera o falsa en cualquier estructura $\A \in \struc[\sigma]$.
 
 \begin{enumerate}
 \item $\A\models^?(\exists x)(E(s,x)\land E(x,t))$
