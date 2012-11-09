@@ -3,10 +3,120 @@
 \chapter{Problemas NP modelados en lógica}
 \label{apendiceA}
 \lhead{Apéndice A. \emph{Problemas NP modelados en lógica}}
-\section{SAT}
-\section{Clique}
-\section{Camino hamiltoniano dirigido}
-\section{Matching 3-dimensional}
-\section{3-colorabilidad}
-\section{k-colorabilidad}
 
+\section{SAT}
+\begin{verbatim}
+(so-exists (?T 1)
+    (forall (?y)
+        (exists (?x)
+            (or
+                (and (?P ?x ?y)
+                     (?T ?x)
+                )
+                (and (?N ?x ?y)
+                     (not (?T ?x))
+                )
+            )
+        )
+    )
+)    
+\end{verbatim}
+
+\section{Clique}
+\begin{verbatim}
+(so-exists (?F Inj)
+  (and (forall (?y) (exists (?x) (?F ?x ?y)))  ; totality
+       (forall (?x) (forall (?y)
+         (implies (and (< ?x ?y)
+                       (exists (?z) (and (?F ?x ?z) (?K ?z)))
+                       (exists (?z) (and (?F ?y ?z) (?K ?z)))
+                   )
+                   (?E ?x ?y)
+          )
+       ))
+  )
+)
+\end{verbatim}
+
+\begin{verbatim}
+(exists F in Inj)(forall x y)[f(x) < K & f(y) < K -> E(x,y)]
+\end{verbatim}
+
+\section{Camino hamiltoniano dirigido}
+\begin{verbatim}
+(so-exists (?F Inj)
+  (forall (?x)
+     (implies (< ?x MAX)
+              (exists (?y1)
+                (and (?F ?x ?y1)
+                     (exists (?y2)
+                       (and (exists (?x2) (and (SUC ?x ?x2) (?f ?x2 ?y2)))
+                            (?E ?y1 ?y2))
+                     )
+                )
+              )
+     )
+   )
+)
+\end{verbatim}
+\begin{verbatim}
+; (exists F in Inj)(forall x)[x < MAX -> E(f(x),f(x+1))]
+\end{verbatim}
+
+\section{\textit{Matching} 3-dimensional}
+\begin{verbatim}
+(so-exists (?F Inj)
+    (so-exists (?G Inj)
+        (and
+            (forall (?x) (exists (?y) (?F ?x ?y))) ; F is total
+            (forall (?x) (exists (?y) (?G ?x ?y))) ; G is total
+            (forall (?x) (forall (?y) (forall (?z)
+                (implies (and (?F ?x ?y) (?G ?x ?z))
+                         (?T ?x ?y ?z)
+                )
+            )))
+        )
+    )
+)
+\end{verbatim}
+
+\section{3-colorabilidad}
+\begin{verbatim}
+(so-exists (?R 1) (so-exists (?G 1) (so-exists (?B 1)
+    (forall (?x) 
+        (and
+            (forall (?y)
+                ; no two adjacent vertices of the same color
+                (implies (?E ?x ?y) (not (or (and (?R ?x) (?R ?y))
+                                             (and (?G ?x) (?G ?y))
+                                             (and (?B ?x) (?B ?y))
+                                          ))
+                )
+            )
+            (or (?R ?x) (?G ?x) (?B ?x))  ; all vertices must be colored
+            ; only one color per vertex
+            (implies (?R ?x) (and (not (?G ?x)) (not (?B ?x))))
+            (implies (?G ?x) (and (not (?R ?x)) (not (?B ?x))))
+            (implies (?B ?x) (and (not (?R ?x)) (not (?G ?x))))
+        )
+    )
+)))
+\end{verbatim}
+
+\section{k-colorabilidad}
+\begin{verbatim}
+(so-exists (?F Func)
+    (forall (?x) 
+        (and (exists (?y) (and (?F ?x ?y) (?K ?y)))
+             (forall (?y) (implies (?E ?x ?y)
+                                   (not (exists (?z)
+                                        (and (?F ?x ?z)
+                                             (?F ?y ?z)
+                                        ))
+                                   )
+                            )
+             )
+        )
+    )
+)
+\end{verbatim}

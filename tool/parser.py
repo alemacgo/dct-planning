@@ -20,18 +20,37 @@ def read_signature(signature):
     # reading relations
     # print signature
     try:
-        number_of_relations = int(signature[0])
+        number_of_types = int(signature[0])
+        number_of_relations = int(signature[number_of_types + 1])
+        # print "Number of types: " + str(number_of_types) + "     Number_of_relations: " + str(number_of_relations)
     except ValueError:
         raise SignatureError(
         "the first non-whitespace character should be an integer"
         + " with the number of relations in the signature file")
-    for index in range(1, number_of_relations + 1):
+        
+    for index in range(1, number_of_types + 1):
+        line = signature[index]
+        line = line.split(";", 1)[0]  # strip comments
+        types.add(line.strip().lower())
+
+    # print types
+    
+    for index in range(number_of_types + 2, number_of_types + number_of_relations + 2):
         line = signature[index]
         line = line.split(";", 1)[0]  # strip comments
         line = line.replace('(', '').replace(')', '').split()
         try:
-            arity = line[1]
+            
             rel_name = line[0].lower()
+            arity = line[1].lower()
+            var_types_i_aux = line[2:]
+            var_types_i = []
+            
+            for i in var_types_i_aux:
+                var_types_i += [i.lower()]
+                if not (i.lower() in types): 
+                    raise SignatureError("relation '%s' types are invalid" %(rel_name))
+                    
             if symbols.has_key(rel_name):
                 raise SignatureError("relation '%s' already defined" %(rel_name))
 
@@ -46,7 +65,9 @@ def read_signature(signature):
                 else:                   #Regular function
                     symbols[rel_name] = (2, 1)
                     func_symbols.add(rel_name)
-    
+                    
+            rel_vars_types[rel_name] = var_types_i
+                    
         except IndexError:
             raise SignatureError("wrong formatting")
         except ValueError:
@@ -269,7 +290,7 @@ def parse_atom(tokens, next_token):
 
 def parse_list_rel(tokens, next_token):
     # There is at least one relation to parse in the current list
-    next_rel = parse_rel(next_token, tokens.next())
+    next_rel = parse_rel(tokens, next_token, tokens.next())
     
     next_token = tokens.next()
     if next_token != ')':
@@ -283,23 +304,26 @@ def parse_list_rel(tokens, next_token):
         return ListRel(next_rel)
 
 #This function also parse functions.
-def parse_rel(relation, arity):
+def parse_rel(tokens, relation, arity):
     # This checks the syntax of the relation-arity tuple
     if not relations.match(relation):
         raise SyntaxError(lineNumber, relation, '<REL>')
 
     if not (integers.match(arity) or arity == 'inj' or arity == 'func'):
         raise SyntaxError(lineNumber, arity, "<int>/<func>/<inj>")
-
+                
     if symbols.has_key(relation):
         raise DefinitionError(lineNumber, "relation '%s' already defined" %(relation))
-            
+           
+    n_types_to_get = 0
     #TODO clean up
     if arity != 'func' and arity != 'inj':
         arity = int(arity)
+        n_types_to_get = arity
         if arity <= 0:
             raise DefinitionError(lineNumber, "relation '%s' has nonpositive arity" %(relation))
     else:
+        n_types_to_get = 2
         if arity == 'inj':
             symbols[relation] = (2, 1)
             inj_symbols.add(relation)
@@ -307,13 +331,32 @@ def parse_rel(relation, arity):
             symbols[relation] = (2, 2)
             func_symbols.add(relation)
 
+    rel_types = []
+    for i in range(0,n_types_to_get):
+        rel_type = tokens.next()
+        if not types_regex.match(rel_type):
+            raise SyntaxError(lineNumber, rel_type, '<type>')
+        rel_types += [rel_type]
+        types.add(rel_type)
+        
+        
     if arity == 'func' or arity == 'inj':
         quantified_relations[relation] = arity
-        return [Func(relation), Int(2)]
+        fun = Func(relation)
+        if n_types_to_get:
+            fun.var_type = rel_types
+            rel_vars_types[relation] = rel_types
+            
+        return [fun, Int(2)]
     else:
         quantified_relations[relation] = arity
-        symbols[relation] = (arity, 0)
-        return [Rel(relation), Int(arity)]
+        symbols[relation] = (arity, 0)  
+        r = Rel(relation)
+        if n_types_to_get:
+            r.var_type = rel_types
+            rel_vars_types[relation] = rel_types
+
+        return [r, Int(arity)]
 
 def parse_list_term(tokens, next_token, terms_left):
     # debug: implementing support for constants
@@ -348,8 +391,15 @@ def parse_list_var(tokens, next_token):
     # There is at least one variable to parse in the current list
     if not variables.match(next_token):
         raise SyntaxError(lineNumber, next_token, '<VAR>')
+        
+    varType = tokens.next()
+    if not types_regex.match(varType):
+        raise SyntaxError(lineNumber, rel_type, '<type>')
     
-    next_var = [Var(next_token)]
+    v = Var(next_token)
+    v.var_type = varType
+    types.add(varType)
+    next_var = [v]
 
     next_token = tokens.next()
     if next_token != ')':

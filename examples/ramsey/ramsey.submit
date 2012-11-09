@@ -1,0 +1,16 @@
+executable = /home-users/nlipo/blai/Aldo/dct-planning/planners/m/M
+universe = vanilla
+Requirements = Memory >= 1024
+InitialDir = /home-users/nlipo/blai/Aldo
+# Experiment ram_prob6.pddl
+
+should_transfer_files = YES
+when_to_transfer_output = ON_EXIT 
+transfer_input_files = \
+/home-users/nlipo/blai/Aldo/dct-planning/ram_prob6.pddl,\
+/home-users/nlipo/blai/Aldo/dct-planning/ramsey.pddl
+
+output = /home-users/nlipo/blai/Aldo/dct-planning/ramsey.out
+arguments = -Q -t 10800 -F 42 -T 44 -S 1 -A 3 ramsey.pddl ram_prob6.pddl 
+error = /home-users/nlipo/blai/Aldo/dct-planning/ramsey.error
+queue

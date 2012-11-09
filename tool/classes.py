@@ -8,7 +8,7 @@ DEBUG = False
 #       Check assign_free_variables_set readability/efficiency
 
 from globals import *
-
+import re
 # Classes
 """
 SyntaxTree: 
@@ -195,8 +195,11 @@ class SoWff(LogicalFormula):
             var_list = []
             for i in range(0,fluents[1]):
                 var_list += ["?ivDel" + str(i)]
-            predicates += "\n\t\t\t\t(forall (" + " ".join(var_list) + ") (not " + fluents[0] +\
+            if len(var_list):
+                predicates += "\n\t\t\t\t(forall (" + " ".join(var_list) + ") (not " + fluents[0] +\
                           " ".join(var_list) + ")))"
+            else:
+                predicates += "\n\t\t\t\t(not " + fluents[0] + "))"
         return predicates    
     # Find the fluent that activates the proof of the next subformula
     # in a metaforic way "pass the baton"
@@ -224,6 +227,25 @@ class SoWff(LogicalFormula):
                 baton = " (iterate_" + childPredicate + ") (begin_so-forall_" + childPredicate + ") "
                 global_fluents.add("(begin_so-forall_" + childPredicate + ")")
         return baton
+    
+    def getIvmax(self, fluent):
+        if fluent:
+            ivmax = re.search("\?ivmax_[0-9A-Fa-f]+", fluent)
+            if ivmax:
+                return " " + ivmax.group(0)
+        return ""
+            
+    def getTypeFluent(self, v_type, variables):
+        return " ".join(["(" + v_type[1:] + " " + i + ")" for i in variables])
+        
+    def getSucFluent(self, v_type):
+        return " (" + v_type[1:] + "_suc ?iv0 ?iv1)"
+        
+    def getMaxFluent(self, v_type, var):
+        return " (" + v_type[1:] + "_max " + var + ")"
+        
+    def getZeroFluent(self, v_type, var):
+        return " (" + v_type[1:] + "_min " + var + ")"
         
     def get_soforall(self):
         prefix = "(:action "
@@ -231,6 +253,8 @@ class SoWff(LogicalFormula):
         arity = self._childlist[1]._childlist[1]._info
         predicate = self._childlist[1]._childlist[0]._info
         predicate = predicate[1:] # remove the '?'
+        r_types = self._childlist[1]._childlist[0].var_type
+        
         
         variable = "?x"
         variables_list = []
@@ -247,6 +271,8 @@ class SoWff(LogicalFormula):
         baton = self.get_baton()
         mode = "suc_special"
         actions = ""
+        types_condition = "".join(["(" + str(t[0][1:]) + " " + str(t[1]) + ") " for t in zip(r_types, variables_list)]) 
+        
         
         iterateFluent = " (iterate_" + predicate + ") "
         global_fluents.add("(iterate_" + predicate + ")")
@@ -260,53 +286,56 @@ class SoWff(LogicalFormula):
         zero_obj = " zero"
         aditional_prec_predicates = ""
         
-        #If normal mode (not efficient one) ignores this if (possible better codification)
-        if mode == "dont_care":
-            care_predicate = "care_" + predicate + " "
-            dont_care_predicate = "dont_care_" + predicate + " "
-            dont_care_condition = " (or " + "(" + dont_care_predicate + (")(" + dont_care_predicate).join(variables_list) +")) "
-            care_condition = " (and " + "(" + care_predicate + (")(" + care_predicate).join(variables_list) +"))"
-            
-            # Zero plus one dont care: pass to the next state of the relation whithout evaluate this one
-            name = "zero_plus_one_dc_" + predicate
-            parameters = ":parameters\t(" + " ".join(variables_list) + ")"
-            precondition = ":precondition\t(and (" + coin_predicate + " ".join(variables_list) + ") "\
-                                 + free_condition + "" + iterateFluent + " " + dont_care_condition + ")"
-            effects = ":effect\t\t\t(and (not "+ free_condition + ") (" + predicate + " " + " ".join(variables_list) +"))\n\t)"
-            global_fluents.add("(care_" + predicate + " ?x0)")
-            global_fluents.add("(dont_care_" + predicate + " ?x0)")
-            
-            actions += "\n\t\t".join([prefix + name, parameters, precondition, effects]) + "\n\t"
-
-        elif mode == "suc_special":
+        # #If normal mode (not efficient one) ignores this if (possible better codification)
+        # if mode == "dont_care":
+        #     care_predicate = "care_" + predicate + " "
+        #     dont_care_predicate = "dont_care_" + predicate + " "
+        #     dont_care_condition = " (or " + "(" + dont_care_predicate + (")(" + dont_care_predicate).join(variables_list) +")) "
+        #     care_condition = " (and " + "(" + care_predicate + (")(" + care_predicate).join(variables_list) +"))"
+        #     
+        #     # Zero plus one dont care: pass to the next state of the relation whithout evaluate this one
+        #     name = "zero_plus_one_dc_" + predicate
+        #     parameters = ":parameters\t(" + " ".join(variables_list) + ")"
+        #     precondition = ":precondition\t(and (" + coin_predicate + " ".join(variables_list) + ") "\
+        #                          + free_condition + "" + iterateFluent + " " + dont_care_condition + ")"
+        #     effects = ":effect\t\t\t(and (not "+ free_condition + ") (" + predicate + " " + " ".join(variables_list) +"))\n\t)"
+        #     global_fluents.add("(care_" + predicate + " ?x0)")
+        #     global_fluents.add("(dont_care_" + predicate + " ?x0)")
+        #     
+        #     actions += "\n\t\t".join([prefix + name, parameters, precondition, effects]) + "\n\t"
+        # 
+        # elif mode == "suc_special":
             #Need to block variables named iv*
-            suc_predicate = " (so-forall_suc_" + predicate + " ?iv0 ?iv1)"
-            max_obj_predicate = " (so-forall_max_" + predicate + " ?ivmax)"
-            zero_obj_predicate = " (so-forall_zero_" + predicate + " ?ivzero)"
-            
-            global_fluents.add(suc_predicate)
-            global_fluents.add(max_obj_predicate)
-            global_fluents.add(zero_obj_predicate)
-            max_obj = " ?ivmax"
-            max_parameter = max_obj
-            zero_obj = " ?ivzero"
-            zero_parameter = zero_obj
+        # suc_predicate = " (so-forall_suc_" + predicate + " ?iv0 ?iv1)"
+        # max_obj_predicate = " (so-forall_max_" + predicate + " ?ivmax)"
+        # zero_obj_predicate = " (so-forall_zero_" + predicate + " ?ivzero)"
+        # 
+        # global_fluents.add(suc_predicate)
+        # global_fluents.add(max_obj_predicate)
+        # global_fluents.add(zero_obj_predicate)
+        max_obj = " ?ivmax"
+        max_parameter = max_obj
+        zero_obj = " ?ivzero"
+        zero_parameter = zero_obj
             
         # Zero plus one
         name = "zero_plus_one_" + predicate
         parameters = ":parameters\t(" + " ".join(variables_list) + ")"
-        precondition = ":precondition\t(and (" + coin_predicate + " ".join(variables_list) + ") "\
+        precondition = ":precondition\t(and (" + coin_predicate + " ".join(variables_list) + ") " + types_condition + " "\
                              + free_condition + "" + iterateFluent + " " + care_condition + ")"
         effects = ":effect\t\t\t(and (not (" + coin_predicate + " ".join(variables_list) + ")) (not " +\
                             free_condition + ") (" + predicate + " " + " ".join(variables_list) +")" + baton + ")\n\t)"
         
         actions += "\n\t\t".join([prefix + name, parameters, precondition, effects]) + "\n\t"
         
+        types_condition = "".join(["(" + str(t[0][1:]) + " " + str(t[1]) + ") " for t in zip(r_types[:-1], variables_list[:-1])]) +\
+                          self.getTypeFluent(r_types[-1], ["?iv0", "?iv1"])
+        
         #One plus One base case
         name = "one_plus_one_0_" + predicate
         parameters = ":parameters\t(" + " ".join(variables_list[:-1]) + " ?iv0 ?iv1)" 
         precondition = ":precondition\t(and " + iterateFluent + "(" + coin_predicate + " ".join(variables_list[:-1]) + " ?iv0) ("\
-                         + predicate + " " +  " ".join(variables_list[:-1]) + " ?iv0" + ") " + suc_predicate + " )"
+                         + predicate + " " +  " ".join(variables_list[:-1]) + " ?iv0" + ") " + self.getSucFluent(r_types[-1]) + " " + types_condition + " )"
         effects = ":effect\t\t\t(and (not (" + coin_predicate + " ".join(variables_list[:-1]) + " ?iv0)) "+\
                   "(not (" + predicate + " " + " ".join(variables_list[:-1]) + " ?iv0)) " +\
                   "(not_" + predicate + " " + " ".join(variables_list[:-1]) + " ?iv0) " +\
@@ -315,48 +344,68 @@ class SoWff(LogicalFormula):
         actions += "\n\t\t".join([prefix + name, parameters, precondition, effects]) + "\n\t"
                             
         #One plus one n-ary relations
-        for i in range(1,arity-1):
+        for i in range(1,arity):
+            types_condition = "".join(["(" + str(t[0][1:]) + " " + str(t[1]) + ") " for t in zip(r_types[:-(i+1)], variables_list[-(i+1)])]) +\
+                              self.getTypeFluent(r_types[-(i+1)], ["?iv0", "?iv1"]) +\
+                              "".join(["(" + str(t[0][1:]) + " " + str(t[1]) + ") " for t in zip(r_types[-(i+1) + 1:], [max_parameter + str(l) for l in range(0,i)])]) +\
+                              "".join(["(" + str(t[0][1:]) + " " + str(t[1]) + ") " for t in zip(r_types[-(i+1) + 1:], [zero_parameter + str(l) for l in range(0,i)])])
+            suc_condition = self.getSucFluent(r_types[-(i+1)])
+            max_conditions = "".join([self.getMaxFluent(t[0], t[1]) for t in zip(r_types[-(i+1) + 1:], [max_parameter + str(l) for l in range(0,i)])])
+            zero_conditions = "".join([self.getZeroFluent(t[0], t[1]) for t in zip(r_types[-(i+1) + 1:], [zero_parameter + str(l) for l in range(0,i)])])
+            
+            
             name = "one_plus_one_" + str(i) + "_" + predicate
-            parameters = ":parameters\t(" + " ".join(variables_list[:-i]) + "?iv0 ?iv1" + max_parameter + zero_parameter +")"
-            precondition = ":precondition\t(and" + iterateFluent + "(" + coin_predicate + " ".join(variables_list[:-i]) + " ?iv0" + (i-1)*max_obj + ") (" + \
-                             predicate + " " + " ".join(variables_list[:-i]) + " ?iv0" + (i-1)*max_obj + ") " + suc_predicate + max_obj_predicate + zero_obj_predicate + ")"
-            effects = ":effect\t(and (not (" + coin_predicate + " ".join(variables_list[:-i]) + " ?iv0" + (i-1)*max_obj + ")) " +\
-                       "(not ("+ predicate + " " + " ".join(variables_list[:-i]) + " ?iv0" + (i-1)*max_obj + ")) "+\
-                      "(not_" + predicate + " "  + " ".join(variables_list[:-i]) + " ?iv0" + (i-1)*max_obj + ") " +\
-                      "(" + coin_predicate + " ".join(variables_list[:-i]) + " ?iv1" + (i-1)*zero_obj + ") )\n\t)"
+            parameters = ":parameters\t(" + " ".join(variables_list[:-(i+1)]) + " ?iv0 ?iv1" +\
+                         " ?ivmax" + (" " + max_parameter).join([str(l) for l in range(0,i)]) +\
+                         " ?ivzero" + (" " + zero_parameter).join([str(l) for l in range(0,i)]) + ")"
+            precondition = ":precondition\t(and" + iterateFluent + types_condition + "(" + coin_predicate + " ".join(variables_list[:-(i+1)]) +\
+                            " ?iv0 ?ivmax" + (" " + max_parameter).join([str(l) for l in range(0,i)]) + ") (" + \
+                             predicate + " " + " ".join(variables_list[:-(i+1)]) + " ?iv0 ?ivmax" + (" " + max_parameter).join([str(l) for l in range(0,i)]) +\
+                             ") " + suc_condition + max_conditions + zero_conditions
+            effects = ":effect\t(and (not (" + coin_predicate + " ".join(variables_list[:-(i+1)]) + " ?iv0 ?ivmax" + (" " + max_parameter).join([str(l) for l in range(0,i)]) + ")) " +\
+                       "(not ("+ predicate + " " + " ".join(variables_list[:-(i+1)]) + " ?iv0 ?ivmax" + (" " + max_parameter).join([str(l) for l in range(0,i)]) + ")) "+\
+                      "(not_" + predicate + " "  + " ".join(variables_list[:-(i+1)]) + " ?iv0 ?ivmax" + (" " + max_parameter).join([str(l) for l in range(0,i)]) + ") " +\
+                      "(" + coin_predicate + " ".join(variables_list[:-(i+1)]) + " ?iv1 ?ivzero" + (" " + zero_parameter).join([str(l) for l in range(0,i)]) + ") )\n\t)"
                       
             actions += "\n\t\t".join([prefix + name, parameters, precondition, effects]) + "\n\t"
         
         #Final case
+        max_conditions = "".join([self.getMaxFluent(t[0], t[1]) for t in zip(r_types, [max_parameter + str(l) for l in range(0,arity)])])
+        types_condition = "".join(["(" + str(t[0][1:]) + " " + str(t[1]) + ") " for t in zip(r_types, [max_parameter + str(l) for l in range(0,arity)])])
+        
         name = "one_plus_one_final_" + predicate
-        parameters = ":parameters (" + max_parameter + ")"
-        precondition = ":precondition\t(and" + iterateFluent + "("+ coin_predicate + arity*max_obj + ") (" + \
-                         predicate + " " + arity*max_obj + ") " + max_obj_predicate +")"
-        effects = ":effect\t(and (not" + iterateFluent + ") (not (" + coin_predicate + arity*max_obj + ")) " +\
-                   "(not ("+ predicate + " " + arity*max_obj + ")) " +\
-                  "(not_" + predicate + " " + arity*max_obj + ") " +\
+        parameters = ":parameters (?ivmax" + (" " + max_parameter).join([str(i) for i in range(0,arity)]) + ")"
+        precondition = ":precondition\t(and" + iterateFluent + "("+ coin_predicate + "?ivmax" + (" " + max_parameter).join([str(i) for i in range(0,arity)]) + ") (" + \
+                         predicate + " " + "?ivmax" + (" " + max_parameter).join([str(i) for i in range(0,arity)]) + ") " +\
+                         max_conditions + " " + types_condition + ")"
+        effects = ":effect\t(and (not" + iterateFluent + ") (not (" + coin_predicate + " ?ivmax" + (" " + max_parameter).join([str(i) for i in range(0,arity)]) + ")) " +\
+                   "(not ("+ predicate + " ?ivmax" + (" " + max_parameter).join([str(i) for i in range(0,arity)]) + ")) " +\
+                  "(not_" + predicate + " ?ivmax" + (" " + max_parameter).join([str(i) for i in range(0,arity)]) + ") " +\
                   "(holds_so-forall_" + predicate + ") )\n\t)"
                   
         actions += "\n\t\t".join([prefix + name, parameters, precondition, effects]) + "\n\t"
         
         global_fluents.add("(holds_so-forall_" + predicate + ")")
         
-        
-
-            
         # Action that increments the quantifier of the relation whith the condition
         # that the subformula has already been prooved with the current quantifier
         # state
+        zero_conditions = "".join([self.getZeroFluent(t[0], t[1]) for t in zip(r_types, [zero_parameter + str(l) for l in range(0,arity)])])
+        types_condition = "".join(["(" + str(t[0][1:]) + " " + str(t[1]) + ") " for t in zip(r_types, [zero_parameter + str(l) for l in range(0,arity)])])
+        
+        childFluent = self._childlist[2].get_fluent()
         name = "change_for_coin_" + predicate
-        parameters = ":parameters (" + zero_parameter + ")"   
-        precondition = ":precondition\t(and" + iterateFluent + self._childlist[2].get_fluent() + zero_obj_predicate + ")"
+        parameters = ":parameters (?ivzero" + (" " + zero_parameter).join([str(i) for i in range(0,arity)]) + self.getIvmax(childFluent) +")"   
+        precondition = ":precondition\t(and" + iterateFluent + childFluent +\
+                       zero_conditions + " " + types_condition + ")"
         # If this is the final second order quantifier it needs delete
         # the proof fluent. Needs to be here because the call to get fluent must be made first
         notProofFluent = ""
         if (baton == "(proof)"):
             notProofFluent = " (not (proof))" + self.get_delete_all_fowff()
-        effects = ":effect\t(and" + " (not " + self._childlist[2].get_fluent() +\
-                  ") (coin_" + predicate + arity*zero_obj + ") " + notProofFluent + ")\n\t)"
+        else:
+            notProofFluent = "(not " + childFluent + ")"
+        effects = ":effect\t(and (coin_" + predicate + " ?ivzero" + (" " + zero_parameter).join([str(i) for i in range(0,arity)]) + ") " + notProofFluent + ")\n\t)"
         
         actions += "\n\t\t".join([prefix + name, parameters, precondition, effects]) + "\n\t"
         
@@ -374,17 +423,19 @@ class SoWff(LogicalFormula):
         inj = False
         func = False
         arity = self._childlist[1]._childlist[1]._info
-        
-        # @Dace: 9063340-45 - Situacion academica (Sencilla -18bsf - 5 dias habiles| rector 90bsf - 20 dias habiles)
+        r_types = self._childlist[1]._childlist[0].var_type
+
         # Get predicate asosiated with the quantifier
         predicate = self._childlist[1]._childlist[0]._info
-        predicate = predicate[1:] # remove the '?'
         
-        if arity == 2: #Might be a function
+        if arity == 2: #Might be a function        
             if predicate in func_symbols:
                 func = True
             elif predicate in inj_symbols:
                 inj = True
+                
+        predicate = predicate[1:] # remove the '?'
+        
                 
         # Getting parameters of the actions depending on the relation arity
         variable = "?x"
@@ -409,33 +460,33 @@ class SoWff(LogicalFormula):
                         ":precondition\t" + guessFluent + "\n\t\t" +\
                         ":effect\t\t(and " + baton + " (not" + guessFluent + "))\n\t)"
         
-        free_condition = "(not_" + predicate + " " +\
-                " ".join(variables_list) + ")"
-
-        free_condition_functions = "(free_domain_" + predicate + " ?x0) "
-
-        free_condition_injective = "(free_range_" + predicate + " ?x1) "
+        free_condition = " (not_" + predicate + " " +\
+                " ".join(variables_list) + ")"  
+        types_condition = "".join(["(" + str(t[0][1:]) + " " + str(t[1]) + ") " for t in zip(r_types, variables_list)])
+        free_condition_functions = " (free_domain_" + predicate + " ?x0) "
+        free_condition_injective = " (free_range_" + predicate + " ?x1) "
         
         #Set True
-        precTrue = ":precondition\t(and " + free_condition + guessFluent
+        precTrue = ":precondition\t(and " + free_condition + guessFluent + types_condition
         effTrue = ":effect\t\t\t(and (" + predicate + " " + " ".join(variables_list)\
                     + ") (not " + free_condition + ") "
         #SetFalse
-        precFalse = ":precondition\t(and (" + predicate + " " + " ".join(variables_list) + ") " + guessFluent
+        precFalse = ":precondition\t(and (" + predicate + " " + " ".join(variables_list) + ") " +\
+                    guessFluent + " " + types_condition + " "
         effFalse = ":effect\t\t(and " + free_condition + " (not (" + predicate + " " + " ".join(variables_list) + "))   "
         
         #Adding constraints to make a relation work as a function or an injective function
         if inj or func: 
             #Adds for functions
             precTrue += free_condition_functions
-            effTrue +=  "(not " + free_condition_functions + "))\n\t)"
+            effTrue +=  " (not " + free_condition_functions + ")"
             effFalse += free_condition_functions 
             global_fluents.add(free_condition_functions)
             
             if inj:
                 #Adds for injective function            
-                precTrue += "\n\t\t" + free_condition_injective
-                effTrue += "\n\t\t(not " + free_condition_injective + ")"
+                precTrue += " " + free_condition_injective
+                effTrue += " (not " + free_condition_injective + ")"
                 effFalse += free_condition_injective
                 global_fluents.add(free_condition_injective)                        
 
@@ -450,25 +501,29 @@ class SoWff(LogicalFormula):
         strue = "\n\t\t".join([prefix + name_true, parameters, precTrue, effTrue])
         sfalse = "\n\t\t".join([prefix + name_false, parameters, precFalse, effFalse])
         
+        dummy_guess = (prefix + "dummy_guess_" + predicate + "\n\t\t" +\
+                       ":precondition\t" + guessFluent + "\n\t\t" +\
+                       ":effect\t" + guessFluent + "\n\t)")
+        
         #Establish so-exist -> used when the subformula of so-exist
         #is proved using a guessed relation
-
-            
-            
-        name = "establish_soexist_" + predicate        
-        precondition = ":precondition\t(and " + self._childlist[2].get_fluent() + ")"
+        
+        childFluent = self._childlist[2].get_fluent()            
+        name = "establish_soexist_" + predicate       
+        parameters = ":parameters\t(" + self.getIvmax(childFluent) + ")"
+        precondition = ":precondition\t(and " + childFluent + ")"
         
         notProofFluent = ""
         if (baton == "(proof)"):
             notProofFluent = " (not (proof))" + self.get_delete_all_fowff()
             
-        effects = ":effect\t(and (not " + self._childlist[2].get_fluent() + ") (holds_" + soexists_keyword +\
+        effects = ":effect\t(and (holds_" + soexists_keyword +\
                   "_" + predicate +") " + notProofFluent + ")\n\t)"
-        finalAction = "\n\t\t".join([prefix + name, precondition, effects])
+        finalAction = "\n\t\t".join([prefix + name, parameters, precondition, effects])
 
         global_fluents.add("(holds_" + soexists_keyword + "_" + predicate +")")
 
-        return [strue + "\n\t" + sfalse + "\n\t" + guess_action + "\n\t" + finalAction]
+        return [strue + "\n\t" + sfalse + "\n\t" + guess_action + "\n\t" + dummy_guess + "\n\t" + finalAction]
         
     # make readable
     def get_actions(self):
@@ -501,7 +556,6 @@ class FoWff(LogicalFormula):
                     new_childlist.append(Operator(not_keyword))
                     new_childlist.append(first_child)
                     self._childlist = new_childlist 
-
                 elif child_keyword in nary_operators or \
                      child_keyword in fo_wff:
                     first_child.complement() # switch and to or...
@@ -539,7 +593,15 @@ class FoWff(LogicalFormula):
             return self.free_vars_set
 
     ## improve readability
+    def getSucFluent(self, v_type):
+        return " (" + v_type[1:] + "_suc ?iv0 ?iv1)"
 
+    def getZeroFluent(self, v_type, var):
+        return " (" + v_type[1:] + "_min " + var + ")"
+        
+    def getMaxFluent(self, v_type, var):
+        return " (" + v_type[1:] + "_max " + var + ")"
+        
     def get_fluent(self, var = None, const = None):
         child = self._childlist[0]
         operator = child._info
@@ -556,10 +618,17 @@ class FoWff(LogicalFormula):
 
         if isinstance(child, Atom):
             relation = child._childlist[0]
-
+            #@reminder add to global fluents rel_vars_types
             ## if the relation is predefined, handle it here!
             if relation._info in predefined_relations:
                 fluent = get_relation_fluent(relation._info, argument_list)
+            elif relation._info in rel_vars_types:
+                fluent2 = "(" + relation._info[1:] +\
+                         " " + " ".join(argument_list) + ")"
+                global_fluents.add(fluent2)
+                
+                fluent = "".join(["(" + str(t[0][1:]) + " " + str(t[1]) + ") " for t in zip(rel_vars_types[relation._info], argument_list)]) +\
+                         fluent2
             else:
                 fluent = "(" + relation._info[1:] +\
                          " " + " ".join(argument_list) + ")"
@@ -572,6 +641,13 @@ class FoWff(LogicalFormula):
             ## if the relation is predefined, handle it here!
             if relation._info in predefined_relations:
                 fluent = get_relation_neg(relation._info, argument_list)
+            elif relation._info in rel_vars_types:
+                fluent2 = "(not_" + relation._info[1:] +\
+                         " " + " ".join(argument_list) + ")"
+                global_fluents.add(fluent2)
+                
+                fluent = "".join(["(" + str(t[0][1:]) + " " + str(t[1]) + ") " for t in zip(rel_vars_types[relation._info], argument_list)]) +\
+                         fluent2
             else:
                 fluent = "(not_" + relation._info[1:] +\
                          " " + " ".join(argument_list) + ")"
@@ -584,21 +660,22 @@ class FoWff(LogicalFormula):
             fowff_fluents.add(("(holds_" + operator + "_" + str(self.id) + " ",len(argument_list)))
             
         elif operator == forall_keyword:
+            v_type = self._childlist[1]._childlist[0].var_type        
+            
             global_fluents.add(suc_fluent) #! manually add suc
             # regular forall fluent, called from outside
-            fluent = "(holds_" + operator + "_" + str(self.id) +\
-                    " " + " ".join(argument_list) + " " +\
-                     max_keyword + ")"
-            global_fluents.add(fluent)
-            fowff_fluents.add(("(holds_" + operator + "_" + str(self.id) + " ",len(argument_list) + 1))
+            ivmax = " ?ivmax_" + str(self.id)
             
+            fluent = "(holds_" + operator + "_" + str(self.id) + " " + " ".join(argument_list) + ivmax + ")"
+            global_fluents.add(fluent)
+            fluent += " (" + v_type[1:] + ivmax + ") " + self.getMaxFluent(v_type, ivmax)  
+
+            fowff_fluents.add(("(holds_" + operator + "_" + str(self.id) + " ",len(argument_list) + 1))
+    
         else: pass # should not happen
 
         return fluent
 
-	# def get_notAtoms_fluents(list):
-		
-		
     # new
     # intended to be used with ?iv1 or zero
     def get_forall_fluent(self, var, const):
@@ -615,6 +692,13 @@ class FoWff(LogicalFormula):
     def collect_fluents(self):
         return [self.get_fluent()]
         
+    def getIvmax(self, fluent):
+        if fluent:
+            ivmax = re.search("\?ivmax_[0-9A-Fa-f]+", fluent)
+            if ivmax:
+                return " " + ivmax.group(0)
+        return ""
+    
     def get_actions(self):
         child = self._childlist[0]
         operator = child._info
@@ -626,138 +710,82 @@ class FoWff(LogicalFormula):
             return None
         elif operator == and_keyword:
             name = "establish_and_" + str(self.id)
-            parameters = ":parameters\t(" + " ".join(self.free_vars_set) + ")"
+            parameters = ":parameters\t(" + " ".join(self.free_vars_set) 
 
             precondition_fluents = []
-            negFluents =[]
-            # only_atom_operator = True
             for child in self._childlist:
                 fluent = child.collect_fluents() 
                 precondition_fluents += fluent  
+                if fluent:
+                    parameters += self.getIvmax(fluent[0])
                 
-                # if fluent and fluent[0][1:7] == "holds_":
-                #     negFluents += [" (not " + fluent[0] + ")"]
-            #         only_atom_operator = False
-            #         
-            # proof_fluent = " (proof_operator_level)"
-            # if (only_atom_operator):
-            #     proof_fluent = " (proof_atom_level)"
+            parameters += ")"
                 
             # print precondition_fluents
             prec = ":precondition\t(and " + " ".join(precondition_fluents) + " " + proof_fluent + ")"
+            eff = ":effect\t\t(and " + self.get_fluent() + ")\n\t)"
             
-            eff = ":effect\t\t(and " + self.get_fluent() + " " + " ".join(negFluents) + ")\n\t)"
             return ["\n\t\t".join([prefix + name, parameters, prec, eff])]
         elif operator == or_keyword:
             precondition_fluents = []
-            
             for child in self._childlist:
                 precondition_fluents += child.collect_fluents() 
 
             name = "establish_or_" + str(self.id)
-            parameters = ":parameters\t(" + " ".join(self.free_vars_set) + ")"
+            parameters = ":parameters\t(" + " ".join(self.free_vars_set)
             
-
             operator_list = []
             for index, fluent in enumerate(precondition_fluents):
-                negFluent = ""
-                # only_atom_operator = True
-                # if fluent[1:7] == "holds_":
-                #     negFluent =" (not " + fluent + ")"
-                #     only_atom_operator = False
-                # 
-                # proof_fluent = " (proof_operator_level)"
-                # if (only_atom_operator):
-                #     proof_fluent = " (proof_atom_level)"
-                
+                newParameters = parameters + self.getIvmax(fluent) + ")"
                 prec = ":precondition\t (and " + fluent + " " + proof_fluent + ")"
-                eff = ":effect\t\t(and " + self.get_fluent() + negFluent + ")\n\t)"
+                eff = ":effect\t\t(and " + self.get_fluent() + ")\n\t)"
                 operator_list.append("\n\t\t".join([prefix + name +\
-                        "_" + str(index), parameters, prec, eff]))
+                        "_" + str(index), newParameters, prec, eff]))
 
             return operator_list
         elif operator == exists_keyword:
             # only one-variable exists for now
             quantified_variable = self._childlist[1]._childlist[0]._info
-
+            v_type = self._childlist[1]._childlist[0].var_type        
+            
             name = "establish_exists_" + str(self.id)
             parameters = ":parameters\t(" + " ".join(self.free_vars_set) +\
-                    " " + quantified_variable + ")" # added quantified var
-
+                    " " + quantified_variable  
+                                    
             childFluents = self._childlist[2].get_fluent() 
-            negFluent = ""
-            # only_atom_operator = True
-            
-            # if childFluents[1:7] == "holds_":
-            #     negFluent =" (not " + childFluents + ")"
-            #     only_atom_operator = False
-            # 
-            # proof_fluent = " (proof_operator_level)"
-            # if (only_atom_operator):
-            #     proof_fluent = " (proof_atom_level)"
-                
-            prec = ":precondition\t (and " + childFluents + " " + proof_fluent + ")"
-            eff = ":effect\t\t(and "+ self.get_fluent() + negFluent + ")\n\t)"
+            parameters += self.getIvmax(childFluents) + ")"
+            prec = ":precondition\t (and " + childFluents + " " + proof_fluent +\
+                    "(" + v_type[1:] + " " + quantified_variable + "))"
+            eff = ":effect\t\t(and "+ self.get_fluent() + ")\n\t)"
 
             return ["\n\t\t".join([prefix + name, parameters, prec, eff])]
         elif operator == forall_keyword:
             quantified_variable = self._childlist[1]._childlist[0]._info
-
-            childFluentsBase = self._childlist[2].get_fluent(quantified_variable, zero_keyword)
-            print childFluentsBase
-            negFluentBase = ""
-            # only_atom_operator = True
+            v_type = self._childlist[1]._childlist[0].var_type        
+            childFluentsBase = self._childlist[2].get_fluent(quantified_variable, "?ivzero")  
+            suc_condition = self.getSucFluent(v_type[1:] )
             
-            # if childFluentsBase[1:7] == "holds_":
-            #     negFluentBase =" (not " + childFluentsBase + ")"
-            #     only_atom_operator = False
-            # 
-            # proof_fluent = " (proof_operator_level)"
-            # if (only_atom_operator):
-            #     proof_fluent = " (proof_atom_level)"
-                
-                
+            #Base function
             name = "establish_forall_" + str(self.id) + "_base"
-            parameters = ":parameters\t(" + " ".join(self.free_vars_set) + ")"
-            prec = ":precondition\t (and " + childFluentsBase + " " + proof_fluent + ")"
-            eff = ":effect\t\t(and " + self.get_forall_fluent(quantified_variable, zero_keyword) +\
- 				  " " + negFluentBase + ")\n\t)"
+            parameters = ":parameters\t(" + " ".join(self.free_vars_set) + " ?ivzero" + self.getIvmax(childFluentsBase) + ")" 
+            prec = ":precondition\t (and " + childFluentsBase + " " + proof_fluent + " (" + v_type[1:] + " ?ivzero)"+\
+                     self.getZeroFluent(v_type, "?ivzero") + ")"
+            eff = ":effect\t\t(and " + self.get_forall_fluent(quantified_variable, "?ivzero") + ")\n\t)"
 			
             fluent_1 = "\n\t\t".join([prefix + name, parameters, prec, eff])
 
             name = "establish_forall_" + str(self.id) + "_inductive"
-
+            
+            # Inductive function
             # Variables iv0 and iv1 represent two steps
             # of the induction, where suc(iv0) = iv1
-
             childFluentsInduc_1 = self.get_forall_fluent(quantified_variable, "?iv0")
             childFluentsInduc_2 = self._childlist[2].get_fluent(quantified_variable, "?iv1")
 
-            negFluentInduc_1 = ""
-            # only_atom_operator = True
-            
-            # if childFluentsInduc_1[1:7] == "holds_":
-            #     negFluentInduc_1 =" (not " + childFluentsInduc_1 + ")"
-                # only_atom_operator = False
-                
-                
-            negFluentInduc_2 = ""
-            # if childFluentsInduc_2[1:7] == "holds_":
-            #     negFluentInduc_2 =" (not " + childFluentsInduc_2 + ")"
-            #     only_atom_operator = False
-            # 
-            # proof_fluent = " (proof_operator_level)"
-            # if (only_atom_operator):
-            #     proof_fluent = " (proof_atom_level)"
-
-            parameters = ":parameters\t(" + " ".join(self.free_vars_set) +\
-                    " ?iv0 ?iv1)"
-            prec = ":precondition\t(and " + childFluentsInduc_1 + " (suc ?iv0 ?iv1) " + \
-                    childFluentsInduc_2 + " " + proof_fluent + ")"
-
-            eff = ":effect\t\t(and " + negFluentInduc_1 + " " + negFluentInduc_2 + " " +\
-                    self.get_forall_fluent(quantified_variable, "?iv1") + ")\n\t)"
-
+            parameters = ":parameters\t(" + " ".join(self.free_vars_set) + " ?iv0 ?iv1" + self.getIvmax(childFluentsInduc_1) + self.getIvmax(childFluentsInduc_2) + ")" 
+            prec = ":precondition\t(and " + childFluentsInduc_1 + " " + self.getSucFluent(v_type) + " " + \
+                    childFluentsInduc_2 + " " + proof_fluent + " (" + v_type[1:] + " ?iv0) (" + v_type[1:] + " ?iv1))"
+            eff = ":effect\t\t(and " + self.get_forall_fluent(quantified_variable, "?iv1") + ")\n\t)"
             fluent_2 = "\n\t\t".join([prefix + name, parameters, prec, eff])
 
             return [fluent_1, fluent_2]
@@ -869,7 +897,17 @@ class ListTerm(SyntaxTree):
 
 class Var(Leaf):
     node_type = "<VAR>"
-
+    var_type = ''
+    
+    def _show(self, depth, color = True):
+        if color:
+            print depth*" |    " + color_blue + self.node_type + ": "\
+                + color_green + str(self._info) + " " + self.var_type +\
+                color_normal   
+        else:
+            print depth*" |    " + self.node_type + ": "\
+                + str(self._info) + " " + self.var_type
+                
     def assign_free_variables(self): 
         return set([self._info])
 
@@ -878,12 +916,41 @@ class Const(Leaf):
 
 class Rel(Leaf):
     node_type = "<REL>"
+    var_type = []
+    # 
+    # def __init__(self, info, var_type):
+    #     SyntaxTree.__init__(self)
+    #     self._info = info
+    
+    def _show(self, depth, color = True):
+        if not self.var_type:
+            if color:
+                print depth*" |    " + color_blue + self.node_type + ": "\
+                    + color_green + str(self._info) +\
+                    color_normal   
+            else:
+                print depth*" |    " + self.node_type + ": "\
+                    + str(self._info)
+        else:
+
+            if color:
+                print depth*" |    " + color_blue + self.node_type + ": "\
+                    + color_green + str(self._info) + " " + ", ".join(self.var_type) +\
+                    color_normal   
+            else:
+                print depth*" |    " + self.node_type + ": "\
+                    + str(self._info) + " " + ", ".join(self.var_type)
     
 class Func(Leaf):
     node_type = "<FUNC>"
+    var_type = []
 
 class Int(Leaf):
     node_type = "<int>"
+    
+class Types(Leaf):
+    node_type = "<types>"
+    
     
 class Operator(Leaf):
     def _show(self, depth, color = True):
