@@ -13,4 +13,6 @@
 *.lot
 *.submit
 *.tar.gz
+*.blg
+*.bbl
 resultsQbf.tex
