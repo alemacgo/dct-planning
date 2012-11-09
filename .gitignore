@@ -5,3 +5,12 @@
 *.result
 *.out*
 *.error*
+*.pdf
+*.log
+*.aux
+*.lof
+*.toc
+*.lot
+*.submit
+*.tar.gz
+resultsQbf.tex
