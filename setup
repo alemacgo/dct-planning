@@ -1,0 +1,51 @@
+#! /bin/bash
+
+if [ -z $1 ];
+then
+    echo "Correct usage <./setup-soforall -all|-solve|-totalize>"
+else 
+    if [ $1 = -all ]; 
+    then
+        rm -rf problems-soforall
+        rm -rf solutions-soforall
+
+        ./scripts/so-forall/dirs_all.py
+        
+        for i in `ls domains/so-forall/ | grep .dct | sed -e s/.dct$//`; do    
+            tool/soplan.py --output=problems-soforall/$i/$i.pddl domains/so-forall/$i.dct\
+            > /dev/null
+                echo "Created domain for $i"
+        done
+        
+        ./scripts/so-forall/problems.py 30
+        ./scripts/so-forall/solve.py
+    elif [ $1 = -solutions ]; 
+    then    
+        ./scripts/so-forall/dirs_solution.py
+    elif [ $1 = -solve ]; 
+    then    
+        ./scripts/so-forall/solve.py
+    elif [ $1 = -totalize ]; 
+    then
+        ./scripts/so-forall/totalize.py
+    elif [ $1 = -domains ]; 
+    then
+        for i in `ls domains/so-forall/ | grep .dct | sed -e s/.dct$//`; do    
+            tool/soplan.py --output=problems-soforall/$i/$i.pddl domains/so-forall/$i.dct\
+            > /dev/null
+                echo "Created domain for $i"
+        done
+    elif [ $1 = -problems ]; 
+    then
+        rm -rf problems-soforall
+        ./scripts/so-forall/problems.py 30
+    elif [ $1 = -check ]; 
+    then
+        ./scripts/so-forall/check_results.py
+    elif [ $1 = -save ]; 
+    then
+        tar cfz prev-solutions/solutions_`date "+%Y:%m:%d_%H:%M:%S"`.tar.gz solutions-soforall 
+    else
+        echo "Correct usage <./setup-soforall -all|-solve|-solutions|-domains|-problems|-check|-save|-totalize>"
+    fi
+fi
