@@ -18,6 +18,23 @@ Primero se presenta una perspectiva a alto nivel de lo que de
 
 \section{Diseño del lenguaje}
 
+\subsection{Gramática}
+\begin{alignat*}{1}
+\sofbf\   & \deriv\ \lpar \SOExists\ \lpar \listrel \rpar\ \sofbf \rpar \\
+          & \deriv\ \lpar \SOForall\ \lpar \listrel \rpar\ \sofbf \rpar \\
+          & \deriv\ \pofbf \\[1em]
+\listrel\ & \deriv\ \rel\ \integer\ \listrel\ |\ \rel\ \integer \\
+          & \deriv\ \rel\ \tipof\ \listrel\ |\ \rel\ \tipof\ \\[1em]
+\tipof\   & \deriv\ \fun\ |\ \pfun\ |\ \inj\ |\ \pinj\ \\[1em]
+\pofbf\   & \deriv\ \lpar \rel\ \listvar \rpar \\
+          & \deriv\ \lpar \NOT\ \pofbf \rpar \\
+          & \deriv\ \lpar \AND\ \listpofbf \rpar \\
+          & \deriv\ \lpar \OR\ \listpofbf \rpar \\
+          & \deriv\ \lpar \IMPLIES\ \pofbf\ \pofbf \rpar \\
+          & \deriv\ \lpar \Exists\ \lpar \listvar \rpar\ \pofbf \rpar \\
+          & \deriv\ \lpar \Forall\ \lpar \listvar \rpar\ \pofbf \rpar \\[1em]
+\listvar\ & \deriv\ \var\ \listvar\ |\ \var \\[1em]
+\end{alignat*}
 
 \section{Reducción base}
 \subsection{Reducción del dominio}

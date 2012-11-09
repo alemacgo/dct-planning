@@ -13,7 +13,9 @@
 \usepackage{paquetes/vector}
 \usepackage{color}
 \usepackage{hyperref}
+\usepackage{amsmath}
 \usepackage{amsthm}
+\usepackage{amssymb}
 \usepackage{amsfonts}
 \usepackage{algorithmic}
 \usepackage{algorithm}
@@ -62,6 +64,62 @@
 \setlength{\parskip}{16.5pt} % Interparrafo 16.5pt
 %\oddsidemargin 3cm
 \topmargin 2cm
+
+% Grammar
+\newcommand{\deriv}{\longrightarrow}
+% non-terminals
+\newcommand{\sofbf}{\ensuremath{\langle\textsf{fbf-so}\rangle}}
+\newcommand{\listrel}{\ensuremath{\langle\textsf{lista-rel}\rangle}}
+\newcommand{\pofbf}{\ensuremath{\langle\textsf{fbf-po}\rangle}}
+\newcommand{\listvar}{\ensuremath{\langle\textsf{lista-var}\rangle}}
+\newcommand{\qffbf}{\ensuremath{\langle\textsf{qf-fbf}\rangle}}
+\newcommand{\listpofbf}{\ensuremath{\langle\textsf{lista-fbf-po}\rangle}}
+\newcommand{\atom}{\ensuremath{\langle\textsf{atom}\rangle}}
+\newcommand{\tipof}{\ensuremath{\langle\textsf{tipo-fun}\rangle}}
+
+% terminals
+\newcommand{\lpar}{\texttt{(}}
+\newcommand{\rpar}{\texttt{)}}
+\newcommand{\AND}{\texttt{and}}
+\newcommand{\OR}{\texttt{or}}
+\newcommand{\NOT}{\texttt{not}}
+\newcommand{\IMPLIES}{\texttt{implies}}
+\newcommand{\SOExists}{\texttt{so-exists}}
+\newcommand{\SOForall}{\texttt{so-forall}}
+\newcommand{\Exists}{\texttt{exists}}
+\newcommand{\Forall}{\texttt{forall}}
+\newcommand{\fun}{\texttt{Fun}}
+\newcommand{\pfun}{\texttt{PFun}}
+\newcommand{\inj}{\texttt{Inj}}
+\newcommand{\pinj}{\texttt{PInj}}
+
+% tokens
+\newcommand{\var}{\texttt{<VAR>}}
+\newcommand{\const}{\texttt{<CONST>}}
+\newcommand{\rel}{\texttt{<REL>}}
+\newcommand{\integer}{\texttt{<int>}}
+\newcommand{\fsymbol}{\texttt{<FUNC>}}
+
+% holds
+\newcommand{\holds}[2]{\ensuremath{\textbf{holds}[#1](#2)}}
+\newcommand{\action}[4]{\ensuremath{\textbf{set}[#1](#2): \textbf{pre}=\{#3\},\ \textbf{add}=\{#4\}}}
+
+% translation
+\newcommand{\F}{\mathbb{F}}
+\newcommand{\Not}{\text{not-}}
+%\newcommand{\est}[4]{\textbf{est}[#1](#2): \textbf{pre}=\{#3\},\ \textbf{add}=\{#4\}}
+\newcommand{\est}[4]{\textbf{establish}[#1](#2)=(\{#3\},\{#4\})}
+\newcommand{\settrue}[3]{\textbf{set-true}[#1](#2)=(\emptyset,\{#3\})}
+\newcommand{\setfalse}[3]{\textbf{set-false}[#1](#2)=(\emptyset,\{#3\})}
+\newcommand{\suc}{\text{SUC}}
+\newcommand{\len}{\ell}
+
+%\newcommand{\action}[1]{action[#1]}
+\newcommand{\pre}{\text{pre}}
+\newcommand{\eff}{\text{eff}}
+\newcommand{\true}{\textbf{true}}
+\newcommand{\false}{\textbf{false}}
+
 
 %! referencias manera estandar
 
