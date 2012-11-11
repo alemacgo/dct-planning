@@ -18,19 +18,46 @@ con el formalismo lógico propuesto.
 \section{Planificación automática}
 La planificación automática es un campo de investigación dentro de la Inteligencia
 Artificial. Su enfoque se basa en descubrir un plan de acciones a seguir para
-lograr un objetivo concreto \cite{russell:book}. En este trabajo se manejará
+lograr un objetivo concreto \citep{russell:book}. En este trabajo se manejará
 la concepción \textbf{clásica} de planificación, en la cual todas las acciones
 tienen una consecuencia determinística y observable en ambientes estáticos (es
 decir, que sólo cambian con el resultado de las acciones aplicadas).
 
+\cite{fikes:strips} fueron pioneros en el área de planificación con su sistema
+STRIPS (\textit{Stanford Research
+Institute Problem Solver}), razón por la cual se llama STRIPS a la clase de
+todos los problemas de planificación.
 Los investigadores de esta área han diseñado una representación compacta para
-expresar problemas de planificación de cualquier dominio, llamado PDDL 
+expresar problemas STRIPS de cualquier dominio, llamado PDDL
 (\textit{Planning Domain Definition Language}) que describe todo lo necesario
 para especificar un problema: el estado inicial, las acciones posibles con sus
-precondiciones y efectos, y el estado meta.
+precondiciones y efectos, y el estado meta. 
+La Definición \ref{definicion_planificacion} presenta de manera formal qué es
+un problema de planificación. Los párrafos siguientes contienen una explicación
+intuitiva del problema.
 
-Cada estado se representa con un conjunto de proposiciones, que pueden ser
-átomos o símbolos relacionales instanciados. Por ejemplo, en un problema de
+\begin{definition}
+\label{definicion_planificacion}
+Matemáticamente, se define un problema de planificación STRIPS como $P = \tup{C, A, I,
+F}$, donde: 
+\begin{itemize} 
+\item $C$ es un conjunto de \textbf{condiciones} o variables proposicionales.
+\item $A$ es un conjunto de \textbf{acciones}. Cada acción $a$, a su vez, es
+una tupla $a = \tup{pre^+, pre^-, ef^+, ef^-}$ que contiene los conjuntos de
+precondiciones positivas y negativas, o condiciones que deben ser ciertas y
+falsas respectivamente para poder aplicar la acción; y los conjuntos de efectos
+positivos (\textit{adds}) y negativos (\textit{deletes}) que causa la
+aplicación de la acción.
+\item $I \subseteq C$ es el \textbf{estado inicial}. Los estados son
+especificados por el conjunto de condiciones que son verdaderas en ellos.
+\item $F \subseteq C$ es el \textbf{estado final o meta}.
+\end{itemize}
+\end{definition}
+
+Cada estado se representa con un conjunto de proposiciones, representadas
+internamente como variables proposicionales pero expresadas frecuentemente como
+símbolos relacionales instanciados.
+Por ejemplo, en un problema de
 planificación canónico llamado \textit{mundo de bloques}, una mano
 robótica intenta apilar bloques enumerados de manera de que todos los bloques
 estén en una sola pila ordenados de forma ascendente. Cada bloque puede tener a
@@ -117,8 +144,10 @@ estado inicial o el estado meta. Por esto se dice que \textit{mundo de bloques}
 es un \textbf{dominio de planificación}, y el término \textbf{problema} se refiere a
 una instancia particular con estados inicial y final definidos, en
 el cual pueden utilizarse las acciones del dominio al que pertenece.
+%! arreglar citas
 
 \subsection{Complejidad en planificación}
+\label{complejidad_planificacion}
 Sea PLANSAT el problema de decisión que pregunta si existe algún plan que
 resuelve un problema de planificación. Según el formalismo que se ha definido
 en la sección anterior,
@@ -127,7 +156,7 @@ un algoritmo basado en búsqueda desde el estado inicial que aplique
 todas las acciones posibles en cada estado acabará examinando todo el espacio y
 determinando si existe tal plan.
 
-PLANSAT pertenece a la clase de complejidad PSPACE \cite{ghallab:book}.
+PLANSAT pertenece a la clase de complejidad PSPACE \citep{ghallab:book}.
 PSPACE es la clase de problemas que pueden ser resueltos por una máquina de
 Turing determinística con una cantidad polinomial (en $n$, donde $n$ es el
 tamaño del problema) de espacio en memoria. Los problemas PSPACE son, en
@@ -144,7 +173,8 @@ acciones. Si este es el caso, cualquier predicado instanciado que se haya
 agregado permanece cierto durante todo el plan, de modo que no es necesario
 que el operador instanciado sea aplicado más de una vez.
 Esto tiene como consecuencia que PLANSAT sin efectos 
-negativos pertenezca a la clase NP \cite{ghallab:book}.
+negativos pertenezca a la clase NP \citep{ghallab:book}.
+%! duplicado aqui
 
 \section{Complejidad Descriptiva}
 La Teoría de Complejidad Descriptiva (TCD) es un área de investigación en la
@@ -153,9 +183,9 @@ que estudia la teoría de complejidad desde un punto de vista matemático,
 sin utilizar modelos de computación como máquinas de Turing. La TCD surgió
 cuando se demostró que la clase de complejidad NP corresponde
 exactamente con la clase de problemas descriptibles en lógica de segundo orden
-existencial \cite{fagin:spectra}. En los últimos años se ha establecido una
+existencial \citep{fagin:spectra}. En los últimos años se ha establecido una
 correspondencia entre las clases de complejidad más importantes y lenguajes
-lógicos con distintos niveles de expresividad \cite{immerman:book}. En esta
+lógicos con distintos niveles de expresividad \citep{immerman:book}. En esta
 sección se describen los elementos sintácticos de estos lenguajes, repasando
 conceptos relevantes de la lógica, y se explica la interpretación formal de
 las fórmulas construidas con estos lenguajes.
@@ -424,13 +454,13 @@ una cierta propiedad (como 2-colorabilidad).
 En la TCD, un problema de decisión corresponde a una clase de estructuras de
 primer orden que satisface a una sentencia, y por lo tanto los problemas de
 decisión pueden ser \textbf{modelados con fórmulas lógicas de segundo orden}.
-El trabajo de Fagin \cite{fagin:spectra} estableció que todos los problemas de
+El trabajo de \cite{fagin:spectra} estableció que todos los problemas de
 decisión en NP pueden ser caracterizados por la clase de estructuras que
 satisfacen una sentencia de segundo orden existencial, es decir,
 $\text{NP}=\SOE$.
 
 Esta lista muestra los resultados más importantes de la TCD sobre la
-caracterización de clases de complejidad \cite{immerman:book}:
+caracterización de clases de complejidad \citep{immerman:book}:
 \begin{itemize}
 \item Espacio logarítmico no determinista (NL) es igual a la \LPO\ extendida con
 un operador de clausura transitiva.

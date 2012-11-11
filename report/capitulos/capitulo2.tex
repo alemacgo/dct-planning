@@ -41,11 +41,34 @@ Primero se presenta una perspectiva a alto nivel de lo que de
 \subsection{Reducción del problema}
 
 \section{Propiedades formales}
-\subsection{Demostración: reducción a STRIPS}
+Las propiedades más importantes a considerar en la herramienta son solidez,
+completitud y garantía de complejidad. Que la función de traducción sea sólida
+y completa significa que ella realmente implementa una reducción entre problemas de
+decisión, mientras que la garantía de complejidad se refiere al tiempo
+requerido para computar la reducción y la complejidad de decidir la existencia
+de un plan en el problema generado. En esta sección se demuestra que la 
+herramienta es una reducción en tiempo
+polinomial del problema NP expresado por $\Phi$ a un fragmento de planificación
+que es decidible en NP.
+
+Como se ha mencionado en la sección \ref{complejidad_planificacion}, 
+se sabe que verificar la existencia de un plan para 
+problemas de planificación
+sin efectos negativos está en NP \citep{bylander:plan-complexity}. La prueba
+depende del hecho de que un plan óptimo no necesita repetir acciones, y por lo
+tanto es de tamaño lineal. Puede extenderse esta noción: si todas las acciones que
+agregan efectos negativos pueden ser aplicadas a lo sumo una vez, verificar la
+existencia de un plan sigue estando en NP, pues el tamaño del plan no podrá ser
+mayor al número de acciones.
+
+\begin{definition}
+Un problema de planificación 
+\end{definition}
+
 
 \begin{theorem}
-The function $f_{\sigma,\Phi}$ is a polytime reduction from $\mod[\Phi]$
-into STRIPS-1.
+La función $f_{\sigma, \Phi}$ es una reducción en tiempo polinomial de $\mod[\Phi]$
+a PDDL.
 \end{theorem}
 
 \begin{proof}

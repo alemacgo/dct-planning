@@ -7,7 +7,7 @@
 \usepackage[utf8]{inputenc}
 
 \NeedsTeXFormat{LaTeX2e}[1996/12/01]
-\ProvidesClass{Thesis}
+\ProvidesClass{tesis}
               [2007/22/02 v1.0
    LaTeX document class]
 \def\baseclass{book}
