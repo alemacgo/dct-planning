@@ -44,7 +44,7 @@ proposiciones ciertas son estas mencionadas anteriormente.
 \begin{figure}[h!]
 \centering
 \includegraphics[width=0.4\textwidth]{figuras/blocksworld_inicial.png}
-\caption{Posible estado para un problema en \textit{mundo de bloques}.}
+\caption[Ejemplo de estado inicial en \textit{mundo de bloques}]{Posible estado de un problema en \textit{mundo de bloques}.}
 \label{blocksworld_inicial}
 \end{figure}
 
@@ -98,8 +98,9 @@ La Figura \ref{blocksworld_final} es una representación de este estado final.
 \begin{figure}[h!]
 \centering
 \includegraphics[width=0.4\textwidth]{figuras/blocksworld_final.png}
-\caption{Estado final para un problema en \textit{mundo de bloques},
-luego de aplicar una secuencia de acciones al estado en la Figura \ref{blocksworld_inicial}.}
+\caption[Estado final en \textit{mundo de bloques}]{Estado final para un problema en \textit{mundo de bloques},
+luego de aplicar una secuencia de acciones al estado en la Figura
+\ref{blocksworld_inicial}}
 \label{blocksworld_final}
 \end{figure}
 
@@ -260,7 +261,7 @@ Figura \ref{grafo_simple}.
   \path[->] (q0) edge (q1) (q1) edge (q2);
 \end{tikzpicture}
 \end{center}
-\caption{el grafo dirigido que corresponde a la estructura $\A=\tup{|\A|,E^\A,s^\A,t^\A}$
+\caption[Grafo dirigido correspondiente a una estructura \A]{El grafo dirigido que corresponde a la estructura $\A=\tup{|\A|,E^\A,s^\A,t^\A}$
 donde $|\A|=\{0,1,2\}$, $E^\A=\{(0,1),(1,2)\}$, $s^\A=0$ y $t^\A=2$.}
 \label{grafo_simple}
 \end{figure}
@@ -268,44 +269,38 @@ donde $|\A|=\{0,1,2\}$, $E^\A=\{(0,1),(1,2)\}$, $s^\A=0$ y $t^\A=2$.}
 La siguiente definición será de utilidad para trabajar sobre la semántica
 formal.
 \begin{definition}
-Una \textbf{interpretación} $i$ sobre $\A$ es una función que asigna
-elementos del conjunto de variables, $\text{VAR}$,
-a elementos de $|\A|$; o asigna a relaciones $R^k$, donde $R \not\in \sigma$, a
-tuplas en $|\A|^k$.
-
-Como ejemplo, dos posibles interpretaciones de la fórmula 
-$(\exists xy) (T(x, y))$ son $i(x) = 1$ e $i(T) = \tup{0,2}$.
+Sea $i$ una función $i :: \text{VAR} \cup \text{CONS} \deriv |\A|$, donde VAR es el conjunto de
+todas las variables y CONS el conjunto de constantes.
+Se dice que el par $(\A, i)$ es una \textbf{interpretación} de una fórmula de
+segundo orden $\Phi \in \LSO(\sigma)$.
 \end{definition}
+Como ejemplo, una posible interpretación de la fórmula $\Phi =
+(\exists xy) (T(x, y))$
+es $(\A, i)$, donde $i(x) = 1$ y $\A$ es la estructura ejemplo mencionada
+anteriormente.
 
 \subsection{Semántica formal}
-La Definición \ref{semantica_def} describe bajo qué circunstancias una fórmula $\Phi$ en
-$\LSO(\sigma)$ satisface una estructura $\A$, o $\A \models \Phi$, tal como es
+Las definiciones \ref{semantica_def} y \ref{semantica_def2} describen 
+bajo qué circunstancias una fórmula $\Phi$ en
+$\LSO(\sigma)$ satisface una estructura $\A$, tal como es
 presentado por \cite{immerman:book}.
 
 \begin{definition}
 \label{semantica_def}
-Sea $\A \in \struc[\sigma]$, y sea $i$ una interpretación sobre $\A$ cuyo
-dominio incluye todas las variables y relaciones libres.
+Sea $\A \in \struc[\sigma]$.
 Se definen inductivamente las condiciones necesarias y suficientes para que 
-una fórmula $\Phi \in \LSO(\sigma)$ sea cierta en \A\ bajo la
-interpretación $i$:
+una fórmula $\Phi \in \LSO(\sigma)$ sea cierta bajo la interpretación $(\A, i)$:
 \[
 \begin{array}{lcl}
-(\A, i) \models x = y & \iff & i(x) = i(y)\\
-(\A, i) \models R(x_1,...,x_{k}) & \iff & \tup{i(x_1),...,i(x_{k})} \in R^{\A, i}\\
-&&\mbox{donde } R^{\A, i}= \left\{
-    \begin{array}{lr}
-       R^\A & \mbox{si } R \in \sigma\\
-       i(R) & \mbox{si } R \not\in \sigma
-     \end{array}
-   \right.\\
+(\A, i) \models t_1 = t_2 & \iff & i(t_1) = i(t_2)\\
+(\A, i) \models R(t_1,...,t_{k}) & \iff & \tup{i(t_1),...,i(t_{k})} \in R^{\A}\\
 (\A, i) \models \neg \Phi & \iff & \mbox{no es cierto que } (A, i) \models \Phi\\
 (\A, i) \models \Phi \land \Psi & \iff & (\A, i) \models \Phi \mbox{ y } (\A, i) \models \Psi\\
 (\A, i) \models \Phi \lor \Psi & \iff & (\A, i) \models \Phi \mbox{ o } (\A, i) \models \Psi\\
-(\A, i) \models \Phi \Rightarrow \Psi & \iff & (\A, i) \nvDash \Phi \lor (\A, i) \models \Psi\\
+(\A, i) \models \Phi \Rightarrow \Psi & \iff & (\A, i) \models \neg \Phi \lor \Psi\\
 (\A, i) \models (\exists x) \Phi & \iff & \mbox{existe } a \in |\A| 
-\mbox{ tal que } (\A, i, a/x) \models \Phi,\\
-&&\mbox{donde } (i, a/x)(y) = \left\{
+\mbox{ tal que } (\A, i [x:= a]) \models \Phi,\\
+&&\mbox{donde } i[x:=a](y) = \left\{
      \begin{array}{lr}
        a & \mbox{si } y = x\\
        i(y) & \mbox{si } y \not= x
@@ -313,9 +308,9 @@ interpretación $i$:
    \right.\\
 (\A, i) \models (\forall x) \Phi & \iff &
     (\A, i) \nvDash (\exists x) \neg \Phi\\
-(\A, i) \models (\exists R) \Phi & \iff & \mbox{existe } S \subseteq |\A|^k
-\mbox{ tal que } (\A, i, S/R) \models \Phi,\\
-&&\mbox{donde } (i, S/R)(T) = \left\{
+(\A, i) \models (\exists R) \Phi & \iff & \mbox{existe } R' \subseteq |\A|^k
+\mbox{ tal que } (\A, i[R':=R]) \models \Phi,\\
+&&\mbox{donde } i[R':=R](T) = \left\{
      \begin{array}{lr}
        S & \mbox{si } T = R\\
        i(T) & \mbox{si } T \not= R
@@ -326,45 +321,40 @@ interpretación $i$:
 \end{array}
 \]
 \end{definition}
+\begin{definition}
+\label{semantica_def2}
+Se dice que $\A \models \Phi$ si y sólo si para toda función $i$ se cumple $(A, i)
+\models \Phi$.
+\end{definition}
 
 Volviendo al ejemplo anterior de \A, puede verificarse mediante semántica 
 formal si $\A\models\Phi$, donde $\Phi$
 es una fórmula arbitraria de $\LPO(\sigma)$. A continuación se comprueba si dos
-$\Phi$ particulares satisfacen la estructura \A. 
+fórmulas particulares satisfacen la estructura \A. 
 %! ?
-No se requiere utilizar la
-noción de interpretación, pues toda sentencia $\Phi \in LSO(\sigma)$ es
-verdadera o falsa en cualquier estructura $\A \in \struc[\sigma]$.
+%No se requiere utilizar la
+%noción de interpretación, pues toda sentencia $\Phi \in LSO(\sigma)$ es
+%verdadera o falsa en cualquier estructura $\A \in \struc[\sigma]$.
 
 \begin{enumerate}
 \item $\A\models^?(\exists x)(E(s,x)\land E(x,t))$
 \begin{center}
-\begin{tabular}{lll}
-&[def. de E en \A] & $E(0, 1) \land E(1, 2)$\\
-$\Rightarrow$ & $[s^\A = 0]$ & $E(s, 1) \land E(1, 2)$\\
-$\Rightarrow$ & $[t^\A = 2]$ & $E(s, 1) \land E(1, t)$\\
-$\Rightarrow$ & $[\mbox{testigo, } x = 1]$ & $(\exists x)(E(s, x) \land E(x, t))$\\
-&\qed & $\A \models \Phi$
+\begin{tabular}{llll}
+Sea $j$ la función $j(x) = 1$.&&\\
+&&[def. de E en \A] & $E(0, 1) \land E(1, 2)$\\
+&$\Rightarrow$ & $[s^\A = 0]$ & $E(s, 1) \land E(1, 2)$\\
+&$\Rightarrow$ & $[t^\A = 2]$ & $E(s, 1) \land E(1, t)$\\
+&$\Rightarrow$ & $[\mbox{testigo, } x = 1]$ & $(\exists x)(E(s, x) \land E(x, t))$\\
+&&&$\therefore$\hspace{5mm} $\A \models \Phi$
 \end{tabular}
 \end{center}
 
-\item $\A\models^?(\forall x)(\exists y)E(x,y)$
-\begin{center}
-\begin{tabular}{lll}
-&[def. de $E$ en \A] & $\neg E(2, 0) \land \neg E(2, 1) \land \neg E(2, 2)$\\
-$\Rightarrow$ & $[|\A| = \{0,1,2\}]$ & $(\forall y) (\neg E(2, y))$\\
-$=$ & [De Morgan] & $\neg (\exists y) (E(2, y))$\\
-$\Rightarrow$ & $[\mbox{testigo, } x = 2]$ & $(\exists x) (\neg (\exists y) (E(x, y)))$\\
-$=$ & [De Morgan] & $\neg (\forall x) (\exists y) (E(x, y))$\\
-&\qed & $\A \nvDash \Phi$
-\end{tabular}
-\end{center}
-\end{enumerate}
+%\item $\A\models^?(\exists R^1)(\forall x)(E(s,x) \land R(x))$
+\item La sentencia
+\[ \Phi_{\textsc{2Col}} = (\exists R^1)(\forall xy)(E(x,y)\Rightarrow \neg (R(x) \iff R(y))) \]
+es cierta para un grafo si y sólo si es 2-coloreable.
+Se comprobará que $\A$ es 2-coloreable mediante semántica formal.
 
-También pueden interpretarse fórmulas de \LSO \ con respecto a una estructura.
-Por ejemplo, la sentencia
-\[ \Phi_{\textsc{2Col}} = (\exists R^1)(\forall xy)[E(x,y)\Rightarrow \neg (R(x) \iff R(y))] \]
-es válida en \A, pues la relación $R = \{1\}$ la hace verdadera:
 \begin{center}
 \begin{tabular}{lll}
 &[suponiendo $R = \{1\}$] & $R(1) \land \neg R(0) \land \neg R(2)$\\
@@ -378,12 +368,11 @@ $\Rightarrow$ & [?] & $E(0, 1) \Rightarrow (\neg R(0) \iff R(1))\ \land$\\
 $=$ & [inequivalencia] & $E(0, 1) \Rightarrow \neg(R(0) \iff R(1))\ \land$\\
 &&$E(1, 2) \Rightarrow \neg(R(1) \iff R(2))$\\
 $\Rightarrow$ & [generalización] & $(\forall xy)(E(x, y) \Rightarrow \neg(R(x) \iff R(y)))$\\
-&\qed & $\A \models \Phi_{\textsc{2Col}}$
+&&$\therefore$ \hspace{5mm} $\A \models \Phi_{\textsc{2Col}}$
 \end{tabular}
 \end{center}
-De hecho, esta fórmula es válida en una estructura $\A \in \struc[\sigma]$ si y
-sólo si el grafo dirigido codificado por \A \ es 2-coloreable. La Figura
-\ref{grafo_coloreado} muestra una 2-coloración del grafo correspondiente a \A
+\end{enumerate}
+La Figura \ref{grafo_coloreado} muestra una 2-coloración del grafo correspondiente a \A
 \ inducida por $R$.
 
 \begin{figure}[h]
@@ -395,7 +384,7 @@ sólo si el grafo dirigido codificado por \A \ es 2-coloreable. La Figura
   \path[->] (q0) edge (q1) (q1) edge (q2);
 \end{tikzpicture}
 \end{center}
-\caption{El grafo dirigido de la Figura \ref{grafo_simple}, coloreado
+\caption[Grafo dirigido coloreado por una relación]{El grafo dirigido de la Figura \ref{grafo_simple}, coloreado
 utilizando la relación $R$. Los nodos para los cuales $R$ es verdadera son
 azules, los otros son negros.}
 \label{grafo_coloreado}
