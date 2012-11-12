@@ -62,27 +62,60 @@ existencia de un plan sigue estando en NP, pues el tamaño del plan no podrá se
 mayor al número de acciones.
 
 \begin{definition}
-Un problema de planificación 
+Un problema de planificación $P = \tup{C, A, I, F}$ es de tipo
+\textit{máximo-1} si y sólo si las acciones pueden ser particionadas en $A =
+A_0 \cup A_1$, donde:
+\begin{itemize}
+\item Ninguna de las acciones de $A_0$ tiene efectos negativos, es decir,
+$(\forall a \in A_0) (del(a) = \emptyset)$.
+\item Todas las acciones de $A_1$ tienen una precondición que no es añadida por
+ninguna acción, y que es borrada apenas $a$ es ejecutada, es decir, 
+$(\forall aa' \in A_1)\ (\exists p \in pre(a) \cap del(a))\ (p \not\in add(a'))$
+\end{itemize}
+
+El conjunto de todos los problemas \textit{máximo-1} se denota como STRIPS-1.
 \end{definition}
 
+%! ???
+Ahora considere la función de \emph{instanciación} $\ground$ que transforma el par
+$\tup{\domain,\instance}$ de un dominio y problema PDDL en un problema STRIPS
+$P = \ground(\domain, \instance)$. Para un $\domain$ fijo, la función
+$\instance\leadsto\ground(\domain, \instance)$ corre en un tiempo polinomial
+$\O(\|\instance\|^k)$ para algún $k$ que sólo depende de $\domain$; de hecho,
+$k$ es la máxima aridad de un predicado o acción en el dominio.
+
+De manera similar, la función de traducción $\insred$ corre en tiempo
+polinomial en el tamaño de la estructura $\A$, pero exponencial sobre la aridad
+más grande de un cuantificador de segundo orden existencial en $\Phi$. De este
+modo, la función $f_{\sigma,\Phi}:\struc[\sigma]\rightarrow\text{STRIPS}$
+definida por 
+\[ f_{\sigma,\Phi}(\A) = \ground(\domred(\sigma,\Phi),\insred(\sigma,\Phi,\A)) \]
+es una función en tiempo polinomial que asigna a las $\sigma$-estructuras un
+problema instanciado STRIPS. Esta función es una reducción, tal como es
+demostrado por
 
 \begin{theorem}
-La función $f_{\sigma, \Phi}$ es una reducción en tiempo polinomial de $\mod[\Phi]$
-a PDDL.
+La función $f_{\sigma, \Phi}$ es una reducción en tiempo polinomial del
+problema de decisión inducido por $\Phi$ a STRIPS-1.
 \end{theorem}
 
 \begin{proof}
-	The statement to show is that
-$\A\models(\exists R_1^{a_1})\cdots(\exists R_k^{a_k})\psi$ iff
-there is a plan that achieves the fluent $\FT[\psi]$.The proof is by structural induction on the FOL-sentence $\psi$ starting from the simplest sentences and building 
-towards the more complex ones. \\
+Se quiere demostrar que
+$\A\models(\exists R_1^{a_1})\cdots(\exists R_k^{a_k})\psi$ si y sólo si
+existe un plan que consigue la condición $\FT[\psi]$. La prueba es inductiva
+sobre la sentencia de primer orden $\psi$. Se demostrará que para toda subformula 
+$\theta$ de $\psi$, y toda interpretacion $(\A,i)$ de $\A$:
 
-Para toda subformula $\theta$ de $\psi$, y toda interpretacion $(\A,i)$ de $\A$:\\ \\
-$ $ \hspace*{3cm} $(\A,i) \models \theta(\overline{X}) \iff$ a plan exists for $\FT[\theta](\overline{X})$ \\
+\[ (\A,i) \models \theta(\overline{X}) \iff \text{existe un plan para } \FT[\theta](\overline{X}) \]
 
-Proof by mutual implication.
-We start proving:\\ \\
-$ $ \hspace*{3cm} $(\A,i) \models \theta(\overline{X}) \Rightarrow $ a plan exists for $\FT[\theta](\overline{X})$ \\
+Por implicación mutua. Primero se prueba
+\[ (\A,i) \models \theta(\overline{X}) \Rightarrow \text{existe un plan para } \FT[\theta](\overline{X}) \]
+
+\begin{tabular}{ll}
+\multirow{2}{*}{Caso base: $\theta$ es un literal, $\theta = P(\overline{X})$}\\
+\multirow{2}{*}{Caso $P(\overline{X})$ $\in$ $\sigma$}
+\end{tabular}
+
 \begin{itemize}
 		\item Caso base: $\theta$ is a literal. $\theta = P(X)$ 
 		

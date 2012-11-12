@@ -43,13 +43,15 @@ F}$, donde:
 \begin{itemize} 
 \item $C$ es un conjunto de \textbf{condiciones} o variables proposicionales.
 \item $A$ es un conjunto de \textbf{acciones}. Cada acción $a$, a su vez, es
-una tupla $a = \tup{pre^+, pre^-, ef^+, ef^-}$ que contiene los conjuntos de
-precondiciones positivas y negativas, o condiciones que deben ser ciertas y
-falsas respectivamente para poder aplicar la acción; y los conjuntos de efectos
+una tupla $a = \tup{pre, adds, deletes}$ que contiene los conjuntos de
+precondiciones, condiciones que deben ser ciertas para poder aplicar la acción,
+y los conjuntos de efectos
 positivos (\textit{adds}) y negativos (\textit{deletes}) que causa la
 aplicación de la acción.
 \item $I \subseteq C$ es el \textbf{estado inicial}. Los estados son
-especificados por el conjunto de condiciones que son verdaderas en ellos.
+especificados por el conjunto de condiciones que son verdaderas en ellos, las
+demás condiciones se suponen falsas. Esto se llama la suposición del
+\textbf{mundo cerrado} \citep{russell:book}.
 \item $F \subseteq C$ es el \textbf{estado final o meta}.
 \end{itemize}
 \end{definition}

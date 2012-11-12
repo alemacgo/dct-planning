@@ -81,7 +81,7 @@
 \usepackage{amsmath,amsfonts,amssymb,amscd,amsthm,xspace}
 \theoremstyle{plain}
 \newtheorem{example}{Example}[chapter]
-\newtheorem{theorem}{Theorem}[chapter]
+\newtheorem{theorem}{Teorema}[chapter]
 \newtheorem{corollary}[theorem]{Corollary}
 \newtheorem{lemma}[theorem]{Lemma}
 \newtheorem{proposition}[theorem]{Proposition}

@@ -25,6 +25,7 @@
 \usepackage{array}
 \usepackage{tabularx}
 \usepackage{caption}
+\usepackage{multirow}
 %:%s/\(bibitem.\+\)and/\1y/g
 %\usepackage[letterpaper, inner=3cm, outer=2cm]{geometry}
 %\addtolength[\topmargin]{-1.5cm}
@@ -58,6 +59,11 @@
 \newcommand{\eq}{\equiv}
 \newcommand{\pwin}{mkspw}
 \renewcommand{\models}{\vDash}
+\newcommand{\domred}{\mathfrak{D}}
+\newcommand{\insred}{\mathfrak{I}}
+\newcommand{\domain}{\mathsf{dom}}
+\newcommand{\instance}{\mathsf{ins}}
+\newcommand{\ground}{\mathfrak{G}}
 
 \parindent 3ex % Agrega sangrías de 3 espacios (3 veces el espacio de la x)
 \setlength{\baselineskip}{1.5pt} % Interlineado 1.5
@@ -119,6 +125,8 @@
 \newcommand{\eff}{\text{eff}}
 \newcommand{\true}{\textbf{true}}
 \newcommand{\false}{\textbf{false}}
+
+\renewcommand{\O}{\ensuremath{\mathcal{O}}}
 
 
 %! referencias manera estandar
