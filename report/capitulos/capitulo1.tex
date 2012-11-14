@@ -14,7 +14,6 @@ dificultad de resolver problemas formulados en un lenguaje lógico.
 Finalmente, se explican dos ejemplos de problemas NP fácilmente modelables
 con el formalismo lógico propuesto.
 
-
 \section{Planificación automática}
 La planificación automática es un campo de investigación dentro de la Inteligencia
 Artificial. Su enfoque se basa en descubrir un plan de acciones a seguir para
@@ -301,8 +300,9 @@ donde $|\A|=\{0,1,2\}$, $E^\A=\{(0,1),(1,2)\}$, $s^\A=0$ y $t^\A=2$.}
 La siguiente definición será de utilidad para trabajar sobre la semántica
 formal.
 \begin{definition}
-Sea $i$ una función $i :: \text{VAR} \cup \text{CONS} \deriv |\A|$, donde VAR es el conjunto de
-todas las variables y CONS el conjunto de constantes.
+Sea $\A \in \struc[\sigma]$ y sea $i$ una función 
+$i : \text{VAR}\ \cup \deriv |\A|$, donde \text{VAR} es el conjunto de
+todas las variables.
 Se dice que el par $(\A, i)$ es una \textbf{interpretación} de una fórmula de
 segundo orden $\Phi \in \LSO(\sigma)$.
 \end{definition}
@@ -310,6 +310,11 @@ Como ejemplo, una posible interpretación de la fórmula $\Phi =
 (\exists xy) (T(x, y))$
 es $(\A, i)$, donde $i(x) = 1$ y $\A$ es la estructura ejemplo mencionada
 anteriormente.
+\begin{definition}
+Se extiende $i$ sobre todos los términos del lenguaje. Como no hay símbolos
+funcionales, sólo es necesario extender $i$ sobre las constantes. Se define
+$i(a) = a^\A$ para toda constante $a \in \sigma$.
+\end{definition}
 
 \subsection{Semántica formal}
 Las definiciones \ref{semantica_def} y \ref{semantica_def2} describen 
@@ -319,36 +324,32 @@ presentado por \cite{immerman:book}.
 
 \begin{definition}
 \label{semantica_def}
-Sea $\A \in \struc[\sigma]$.
+\textbf{Definición de Verdad.} Sea $\A \in \struc[\sigma]$.
 Se definen inductivamente las condiciones necesarias y suficientes para que 
-una fórmula $\Phi \in \LSO(\sigma)$ sea cierta bajo la interpretación $(\A, i)$:
+una fórmula $\Phi \in \LSO(\sigma)$ sea verdadera bajo la interpretación $(\A, i)$:
 \[
 \begin{array}{lcl}
-(\A, i) \models t_1 = t_2 & \iff & i(t_1) = i(t_2)\\
-(\A, i) \models R(t_1,...,t_{k}) & \iff & \tup{i(t_1),...,i(t_{k})} \in R^{\A}\\
-(\A, i) \models \neg \Phi & \iff & \mbox{no es cierto que } (A, i) \models \Phi\\
-(\A, i) \models \Phi \land \Psi & \iff & (\A, i) \models \Phi \mbox{ y } (\A, i) \models \Psi\\
-(\A, i) \models \Phi \lor \Psi & \iff & (\A, i) \models \Phi \mbox{ o } (\A, i) \models \Psi\\
-(\A, i) \models \Phi \Rightarrow \Psi & \iff & (\A, i) \models \neg \Phi \lor \Psi\\
-(\A, i) \models (\exists x) \Phi & \iff & \mbox{existe } a \in |\A| 
-\mbox{ tal que } (\A, i [x:= a]) \models \Phi,\\
-&&\mbox{donde } i[x:=a](y) = \left\{
+\text{(a)} \hspace{5mm} (\A, i) \models t_1 = t_2 & \iff & i(t_1) = i(t_2)\\
+\text{(b)} \hspace{5mm} (\A, i) \models R(t_1,...,t_{k}) & \iff & \tup{i(t_1),...,i(t_{k})} \in R^{\A}\\
+\text{(c)} \hspace{5mm} (\A, i) \models \neg \Phi & \iff & (A, i) \nvDash \Phi\\
+\text{(d)} \hspace{5mm} (\A, i) \models \Phi \land \Psi & \iff & (\A, i) \models \Phi \mbox{ y } (\A, i) \models \Psi\\
+\text{(e)} \hspace{5mm} (\A, i) \models \Phi \lor \Psi & \iff & (\A, i) \models \Phi \mbox{ o } (\A, i) \models \Psi\\
+\text{(f)} \hspace{5mm} (\A, i) \models \Phi \Rightarrow \Psi & \iff & (\A, i) \models \neg \Phi \lor \Psi\\
+\text{(g)} \hspace{5mm} (\A, i) \models (\exists x) \Phi & \iff & \mbox{existe } u \in |\A| 
+\mbox{ tal que } (\A, i [x:= u]) \models \Phi,\\
+&&\mbox{donde } i[x:=u](y) = \left\{
      \begin{array}{lr}
-       a & \mbox{si } y = x\\
+       u & \mbox{si } y = x\\
        i(y) & \mbox{si } y \not= x
      \end{array}
    \right.\\
-(\A, i) \models (\forall x) \Phi & \iff &
+\text{(h)} \hspace{5mm} (\A, i) \models (\forall x) \Phi & \iff &
     (\A, i) \nvDash (\exists x) \neg \Phi\\
-(\A, i) \models (\exists R) \Phi & \iff & \mbox{existe } R' \subseteq |\A|^k
-\mbox{ tal que } (\A, i[R':=R]) \models \Phi,\\
-&&\mbox{donde } i[R':=R](T) = \left\{
-     \begin{array}{lr}
-       S & \mbox{si } T = R\\
-       i(T) & \mbox{si } T \not= R
-     \end{array}
-   \right.\\
-(\A, i) \models (\forall R) \Phi & \iff &
+\text{(i)} \hspace{5mm} (\A, i) \models (\exists R) \Phi & \iff & \mbox{existe } R' \subseteq |\A|^k
+\mbox{ tal que } (\tup{\A, R'}, i) \models \Phi,\\
+&&\text{donde } \tup{\A, R'} \text{ es la estructura que extiende a $\A$ }\\
+&&\text{donde $R$ se interpreta como $R'$.}\\
+\text{(j)} \hspace{5mm} (\A, i) \models (\forall R) \Phi & \iff &
     (\A, i) \nvDash (\exists R) \neg \Phi\\
 \end{array}
 \]
@@ -356,54 +357,59 @@ una fórmula $\Phi \in \LSO(\sigma)$ sea cierta bajo la interpretación $(\A, i)
 \begin{definition}
 \label{semantica_def2}
 Se dice que $\A \models \Phi$ si y sólo si para toda función $i$ se cumple $(A, i)
-\models \Phi$.
+\models \Phi$. Se dice que $\models \Phi$, o que $\Phi$ es verdadera, si y sólo si para
+toda estructura $\A \in \struc(\sigma)$ se cumple $\A \models \Phi$.
 \end{definition}
 
-Volviendo al ejemplo anterior de \A, puede verificarse mediante semántica 
+Volviendo al grafo de ejemplo \A, puede verificarse mediante semántica 
 formal si $\A\models\Phi$, donde $\Phi$
 es una fórmula arbitraria de $\LPO(\sigma)$. A continuación se comprueba si dos
 fórmulas particulares satisfacen la estructura \A. 
-%! ?
 %No se requiere utilizar la
 %noción de interpretación, pues toda sentencia $\Phi \in LSO(\sigma)$ es
 %verdadera o falsa en cualquier estructura $\A \in \struc[\sigma]$.
 
 \begin{enumerate}
 \item $\A\models^?(\exists x)(E(s,x)\land E(x,t))$
-\begin{center}
-\begin{tabular}{llll}
-Sea $j$ la función $j(x) = 1$.&&\\
-&&[def. de E en \A] & $E(0, 1) \land E(1, 2)$\\
-&$\Rightarrow$ & $[s^\A = 0]$ & $E(s, 1) \land E(1, 2)$\\
-&$\Rightarrow$ & $[t^\A = 2]$ & $E(s, 1) \land E(1, t)$\\
-&$\Rightarrow$ & $[\mbox{testigo, } x = 1]$ & $(\exists x)(E(s, x) \land E(x, t))$\\
-&&&$\therefore$\hspace{5mm} $\A \models \Phi$
-\end{tabular}
-\end{center}
+
+Sea $i : \text{VAR} \longrightarrow |\A|$ arbitraria.\\
+Considere $j = i[x:=1]$.\\
+Se tiene por definición \ref{semantica_def}(b) que $(\A,j) \models E(s,1)$ y que $(\A,j) \models E(1,t)$.\\
+$\tup{\text{por definición \ref{semantica_def}(d)}}$\\
+\mbox{\hspace{5mm} $(\A,j) \models E(s,1)\ \land E(1,t)$}\\
+$\iff \tup{\text{definición \ref{semantica_def}(g)}}$\\
+\mbox{\hspace{5mm} $(\A,j) \models (\exists x)(E(s,x) \land E(x,t))$}\\
+$\therefore\ \A \models \Phi$, porque $i$ es arbitraria.
 
 %\item $\A\models^?(\exists R^1)(\forall x)(E(s,x) \land R(x))$
 \item La sentencia
 \[ \Phi_{\textsc{2Col}} = (\exists R^1)(\forall xy)(E(x,y)\Rightarrow \neg (R(x) \iff R(y))) \]
-es cierta para un grafo si y sólo si es 2-coloreable.
-Se comprobará que $\A$ es 2-coloreable mediante semántica formal.
+es cierta para un grafo si y sólo si es 2-coloreable. Se comprobará formalmente
+que $\A \models \Phi_{\textsc{2Col}}$ y el grafo, por tanto, es 2-coloreable.
 
-\begin{center}
-\begin{tabular}{lll}
-&[suponiendo $R = \{1\}$] & $R(1) \land \neg R(0) \land \neg R(2)$\\
-$=$ & [def. de $E$ en \A] & $R(1) \land \neg R(0) \land \neg R(2) \land 
-E(0, 1) \land E(1, 2)$\\
-$=$ & [agrupación] & $(E(0, 1) \land \neg R(0) \land R(1)) \land
-(E(1, 2) \land R(1) \land \neg R(2))$\\
-%! que poner aqui?
-$\Rightarrow$ & [?] & $E(0, 1) \Rightarrow (\neg R(0) \iff R(1))\ \land$\\
-&&$E(1, 2) \Rightarrow (R(1) \iff \neg R(2))$\\
-$=$ & [inequivalencia] & $E(0, 1) \Rightarrow \neg(R(0) \iff R(1))\ \land$\\
-&&$E(1, 2) \Rightarrow \neg(R(1) \iff R(2))$\\
-$\Rightarrow$ & [generalización] & $(\forall xy)(E(x, y) \Rightarrow \neg(R(x) \iff R(y)))$\\
-&&$\therefore$ \hspace{5mm} $\A \models \Phi_{\textsc{2Col}}$
-\end{tabular}
-\end{center}
+Sea $i : \text{VAR} \longrightarrow |\A|$ arbitraria.\\
+Considere $R' = \{1\}$, y sea $\tup{A, R'}$ la estructura que extiende a $\A$
+donde $R$ se interpreta como $R'$.\\
+Se tiene por definición \ref{semantica_def}(b) que $(\tup{\A, R'},i) 
+\models E(0,1)$ y que \mbox{$(\tup{\A, R'},i) \models E(1,2)$}.\\
+También se tiene que $(\tup{\A, R'}, i) \models R'(1)$, 
+$(\tup{\A, R'}, i) \nvDash R'(0)$, y $(\tup{\A, R'}, i) \nvDash R'(1)$.\\
+$\tup{\text{por definición \ref{semantica_def}(d) y (c)}}$\\
+\mbox{\hspace{5mm} $(\tup{\A, R'}, i) \models E(0,1) \land E(1,2) \land \neg
+R'(0) \land R'(1) \land \neg R'(2)$}\\
+$\iff \tup{\text{operadores de la lógica proposicional}}$\\
+\mbox{\hspace{5mm} $(\tup{\A, R'}, i) \models (E(0,1) \Rightarrow \neg R(0)
+\iff R(1))\ \land$} \\ 
+\mbox{\hspace{30mm} $(E(1,2) \Rightarrow R(1) \iff \neg R(2))$}\\
+$\iff \tup{\text{?}}$\\
+\mbox{\hspace{5mm} $(\tup{\A, R'}, i) 
+\models (\forall xy)(E(x, y) \Rightarrow \neg(R'(x) \iff R'(y)))$}\\
+$\iff \tup{\text{definición \ref{semantica_def}(i)}}$\\
+\mbox{\hspace{5mm} $(\A, i) 
+\models (\exists R^1)(\forall xy)(E(x, y) \Rightarrow \neg(R(x) \iff R(y)))$}\\
+$\therefore\ \A \models \Phi$, porque $i$ es arbitraria.
 \end{enumerate}
+
 La Figura \ref{grafo_coloreado} muestra una 2-coloración del grafo correspondiente a \A
 \ inducida por $R$.
 

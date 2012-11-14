@@ -95,6 +95,27 @@ problema instanciado STRIPS. Esta función es una reducción, tal como es
 demostrado por
 
 \begin{theorem}
+\label{t1}
+Sean $t_1,...,t_n$ términos instanciados, es decir, que no contienen
+variables.\\
+\mbox{\hspace{5mm} $(A, i[x:=u]) \models \varphi(t_1,...,t_n,x)$}\\
+$\iff \tup{\text{si $a$ es una constante tal que } a^\A = u}$\\
+\mbox{\hspace{5mm} $(A, i[x:=u]) \models \varphi(t_1,...,t_n,a)$}\\
+$\iff \tup{\text{?}}$\\
+\mbox{\hspace{5mm} $(A, i) \models \varphi(t_1,...,t_n,a)$}\\
+\end{theorem}
+\begin{lemma}
+Sean $t_1,...,t_n$ términos instanciados y sea $a$ una constante. Sea $\A$ una
+estructura tal que $u \in |\A|$, $a^\A = u$. Entonces:\\
+\mbox{\hspace{5mm} $(A, i[x:=u]) \models \varphi(t_1,...,t_n,x)$}\\
+$\iff \tup{a^\A = u}$\\
+\mbox{\hspace{5mm} $(A, i[x:=u]) \models \varphi(t_1,...,t_n,a)$}\\
+$\iff \tup{\text{?}}$\\
+\mbox{\hspace{5mm} $(A, i) \models \varphi(t_1,...,t_n,a)$}\\
+\end{lemma}
+
+
+\begin{theorem}
 La función $f_{\sigma, \Phi}$ es una reducción en tiempo polinomial del
 problema de decisión inducido por $\Phi$ a STRIPS-1.
 \end{theorem}
@@ -103,7 +124,7 @@ problema de decisión inducido por $\Phi$ a STRIPS-1.
 Se quiere demostrar que
 $\A\models(\exists R_1^{a_1})\cdots(\exists R_k^{a_k})\psi$ si y sólo si
 existe un plan que consigue la condición $\FT[\psi]$. La prueba es inductiva
-sobre la sentencia de primer orden $\psi$. Se demostrará que para toda subformula 
+sobre la estructurda de la sentencia de primer orden $\psi$. Se demostrará que para toda subformula 
 $\theta$ de $\psi$, y toda interpretacion $(\A,i)$ de $\A$:
 
 \[ (\A,i) \models \theta(\overline{X}) \iff \text{existe un plan para } \FT[\theta](\overline{X}) \]
@@ -111,9 +132,22 @@ $\theta$ de $\psi$, y toda interpretacion $(\A,i)$ de $\A$:
 Por implicación mutua. Primero se prueba
 \[ (\A,i) \models \theta(\overline{X}) \Rightarrow \text{existe un plan para } \FT[\theta](\overline{X}) \]
 
+\begin{center}
 \begin{tabular}{ll}
-\multirow{2}{*}{Caso base: $\theta$ es un literal, $\theta = P(\overline{X})$}\\
-\multirow{2}{*}{Caso $P(\overline{X})$ $\in$ $\sigma$}
+\multicolumn{2}{l}{Caso base: $\theta$ es un literal, $\theta = R(t_1,...,t_k)$}\\
+\multicolumn{2}{l}{Caso $R \in \sigma$}\\
+&$\A \models R(t_1,...,t_k)$\\
+&$\Rightarrow (\A,i) \models R(t_1,...,t_k)$\\
+&$\Rightarrow \tup{i(t_1),...,i(t_k) \in R^\A}$\\
+&$\Rightarrow R^\A(i(t_1),...,i(t_k))$\\
+&$\Rightarrow R^\A$ pertenece a init, La situacion inicial (Init) consiste
+de fluents describiendo el valor de verdad de todas las relaciones en $\A$\\
+&$\Rightarrow \text{El plan vacío es un plan para }\theta(t_1,...,t_n)$.\\
+\multicolumn{2}{l}{Caso $R \not\in \sigma$??}\\
+\end{tabular}
+\end{center}
+
+\begin{tabular}{ll}
 \end{tabular}
 
 \begin{itemize}

@@ -83,7 +83,7 @@
 \newtheorem{example}{Example}[chapter]
 \newtheorem{theorem}{Teorema}[chapter]
 \newtheorem{corollary}[theorem]{Corollary}
-\newtheorem{lemma}[theorem]{Lemma}
+\newtheorem{lemma}[theorem]{Lema}
 \newtheorem{proposition}[theorem]{Proposition}
 \newtheorem{axiom}[theorem]{Axiom}
 \theoremstyle{definition}
