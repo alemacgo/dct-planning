@@ -173,18 +173,16 @@ $\FT[\varphi](t_1,...,t_k)$}\\
 \mbox{\hspace{10mm} $(\A, i) \models \varphi$}\\
 \mbox{\hspace{5mm} $\iff \tup{\text{definición \ref{semantica_def}(e)}}$}\\
 \mbox{\hspace{10mm} $(\A, i) \models \varphi_1$ o $(\A, i) \models \varphi_2$}\\
-\mbox{\hspace{5mm} $\iff \tup{\text{hipótesis inductiva}}$}\\
-\mbox{\hspace{10mm} $\pi_1[t_1,...,t_{k_1}]$ y $\pi_2[t_1,...,t_{k_2}]$ son planes que
-alcanzan}\\
-\mbox{\hspace{10mm} $\FT[\varphi_1](t_1,...,t_{k_1})$ y $\FT[\varphi_2](t_1,...t_{k_2})$
-desde $S[\A]$, respectivamente}\\
-\mbox{\hspace{5mm} $\iff \langle$ \text{?}}\\
-\mbox{\hspace{5mm} alguno de los planes
-$\tup{\pi_1(t_1,...,t_{k_1});\ \texttt{probar\_o}}$ o}\\
-\mbox{\hspace{5mm}
-$\tup{\pi_2(t_1,...,t_{k_2});\ \texttt{probar\_o}}$ alcanza la condición
+\mbox{\hspace{5mm} Por casos. Caso $(\A, i) \models \varphi_1$:}\\
+\mbox{\hspace{10mm} $\iff \tup{\text{hipótesis inductiva}}$}\\
+\mbox{\hspace{15mm} $\pi_1[t_1,...,t_{k_1}]$ es un plan que
+alcanza $\FT[\varphi_1](t_1,...,t_{k_1})$ desde $S[\A]$}\\
+\mbox{\hspace{10mm} $\iff \langle$ \text{?} $\rangle$}\\
+\mbox{\hspace{15mm} $\tup{\pi_1(t_1,...,t_{k_1});\ \texttt{probar\_o}}$ alcanza la condición
 $\FT[\varphi](t_1,...,t_k)$}\\
-\mbox{\hspace{5mm} desde $S[\A]$.}
+\mbox{\hspace{15mm} desde $S[\A]$.}\\
+\mbox{\hspace{5mm} Caso $(\A, i) \models \varphi_2$:}\\
+\mbox{\hspace{10mm} Análogo al caso anterior.}
 
 \noindent Caso $\varphi = \varphi_1(t_1,...,t_{k_1}) \Rightarrow \varphi_2(t_1,...,t_{k_2}) $:\\
 \mbox{\hspace{10mm}Análogo al anterior, pues $\varphi_1 \Rightarrow \varphi_2 =
@@ -232,6 +230,27 @@ toda constante $a$}\\
 \mbox{\hspace{10mm} desde $S[\A]$.}
 \end{proof}
 
+\begin{theorem}
+Sea $\Phi = (\exists R_1)\cdots(\exists R_n) \varphi$.
+\\ $\A \models \Phi \iff$ existe un plan $\pi$ que alcanza $\FT[\Phi]$ desde $S[\A]$.
+\end{theorem}
+\begin{proof}
+\ \\ \mbox{\hspace{5mm} $\A \models \Phi$}\\
+\noindent $\iff \tup{\text{definición \ref{semantica_def}(j)}}$ \\
+\mbox{\hspace{5mm} $\tup{\A, R_1',...,R_n'} \models \varphi$}\\
+\noindent $\iff $ existe $\pi$ que alcanza $\FT[\varphi]$ a partir de $S[\A,
+R_1',...,R_n']$.\\
+\noindent Basta mostrar que es posible alcanzar el estado $S[\A, R_1',...,R_n']$ desde
+$S[\A]$.\\
+$\pi$ consta de las siguientes acciones
+para cada tupla $\tup{u_1,...,u_k} \in |A|^k$, para cada $R_i$ con $i =
+\{1,...,n\}$:\\
+$\left\{\begin{array}{ll}
+\texttt{set\_true\_R\_i}(a_1,...,a_{k_i}) & \text{si } \tup{u_1,...,u_{k_i}} \in R_i\\
+\texttt{set\_false\_R\_i}(a_1,...,a_{k_i}) & \text{si } \tup{u_1,...,u_{k_i}} \not\in R_i\\
+\end{array}\right.$\\
+Al final se le agrega al plan la acción \texttt{comenzar\_prueba}.
+\end{proof}
 
 %\begin{theorem}
 %La función $f_{\sigma, \Phi}$ es una reducción en tiempo polinomial del
