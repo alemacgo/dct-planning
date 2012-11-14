@@ -98,161 +98,155 @@ demostrado por
 \label{t1}
 Sean $t_1,...,t_n$ términos instanciados, es decir, que no contienen
 variables.\\
-\mbox{\hspace{5mm} $(A, i[x:=u]) \models \varphi(t_1,...,t_n,x)$}\\
+\mbox{\hspace{5mm} $(\A, i[x:=u]) \models \varphi(t_1,...,t_n,x)$}\\
 $\iff \tup{\text{si $a$ es una constante tal que } a^\A = u}$\\
-\mbox{\hspace{5mm} $(A, i[x:=u]) \models \varphi(t_1,...,t_n,a)$}\\
+\mbox{\hspace{5mm} $(\A, i[x:=u]) \models \varphi(t_1,...,t_n,a)$}\\
 $\iff \tup{\text{?}}$\\
-\mbox{\hspace{5mm} $(A, i) \models \varphi(t_1,...,t_n,a)$}\\
+\mbox{\hspace{5mm} $(\A, i) \models \varphi(t_1,...,t_n,a)$}\\
 \end{theorem}
 \begin{lemma}
+\label{lema}
 Sean $t_1,...,t_n$ términos instanciados y sea $a$ una constante. Sea $\A$ una
 estructura tal que $u \in |\A|$, $a^\A = u$. Entonces:\\
-\mbox{\hspace{5mm} $(A, i[x:=u]) \models \varphi(t_1,...,t_n,x)$}\\
+\mbox{\hspace{5mm} $(\A, i[x:=u]) \models \varphi(t_1,...,t_n,x)$}\\
 $\iff \tup{a^\A = u}$\\
-\mbox{\hspace{5mm} $(A, i[x:=u]) \models \varphi(t_1,...,t_n,a)$}\\
+\mbox{\hspace{5mm} $(\A, i[x:=u]) \models \varphi(t_1,...,t_n,a)$}\\
 $\iff \tup{\text{?}}$\\
-\mbox{\hspace{5mm} $(A, i) \models \varphi(t_1,...,t_n,a)$}\\
+\mbox{\hspace{5mm} $(\A, i) \models \varphi(t_1,...,t_n,a)$}\\
 \end{lemma}
-
-
 \begin{theorem}
-La función $f_{\sigma, \Phi}$ es una reducción en tiempo polinomial del
-problema de decisión inducido por $\Phi$ a STRIPS-1.
-\end{theorem}
-
-\begin{proof}
-Se quiere demostrar que
-$\A\models(\exists R_1^{a_1})\cdots(\exists R_k^{a_k})\psi$ si y sólo si
-existe un plan que consigue la condición $\FT[\psi]$. La prueba es inductiva
-sobre la estructurda de la sentencia de primer orden $\psi$. Se demostrará que para toda subformula 
-$\theta$ de $\psi$, y toda interpretacion $(\A,i)$ de $\A$:
-
-\[ (\A,i) \models \theta(\overline{X}) \iff \text{existe un plan para } \FT[\theta](\overline{X}) \]
-
-Por implicación mutua. Primero se prueba
-\[ (\A,i) \models \theta(\overline{X}) \Rightarrow \text{existe un plan para } \FT[\theta](\overline{X}) \]
-
+Sea $\varphi \in \LPO$ y $t_1,...,t_n$ términos instanciados. Sea $\A \in
+\struc[\sigma]$ y sea $i : \text{VAR} \longrightarrow |\A|$.\\
 \begin{center}
-\begin{tabular}{ll}
-\multicolumn{2}{l}{Caso base: $\theta$ es un literal, $\theta = R(t_1,...,t_k)$}\\
-\multicolumn{2}{l}{Caso $R \in \sigma$}\\
-&$\A \models R(t_1,...,t_k)$\\
-&$\Rightarrow (\A,i) \models R(t_1,...,t_k)$\\
-&$\Rightarrow \tup{i(t_1),...,i(t_k) \in R^\A}$\\
-&$\Rightarrow R^\A(i(t_1),...,i(t_k))$\\
-&$\Rightarrow R^\A$ pertenece a init, La situacion inicial (Init) consiste
-de fluents describiendo el valor de verdad de todas las relaciones en $\A$\\
-&$\Rightarrow \text{El plan vacío es un plan para }\theta(t_1,...,t_n)$.\\
-\multicolumn{2}{l}{Caso $R \not\in \sigma$??}\\
-\end{tabular}
+\mbox{$(\A, i) \models \varphi(t_1,...,t_n)$}\\
+$\iff$\\ existe un plan $\pi[t_1,...,t_k]$que alcanza
+$\FT[\varphi](t_1,...,t_n)$ desde $S[\A]$,\\
+donde $S[\A]$ es el estado STRIPS determinado por:\\
+\vspace{5mm}
+
+$\left\{\mbox{\begin{tabular}{lr}
+\texttt{R}$(a_1,...a_k) \in S[\A]$ & $\iff \tup{a_1^\A,...,a_k^\A} \in R^\A$\\
+\texttt{not-R}$(a_1,...a_k) \in S[\A]$ & $\iff \tup{a_1^\A,...,a_k^\A} \not\in R^\A$\\
+\end{tabular}}\right.$
+
+para todas las relaciones $R \in \sigma$.
 \end{center}
+\end{theorem}
+\begin{proof}
+\ \\
+Caso $\varphi = R(t_1,...,t_k)$:\\
+\mbox{\hspace{10mm} $(\A, i) \models \varphi$}\\
+\mbox{\hspace{5mm} $\iff \tup{\text{definición \ref{semantica_def}(b)}}$}\\
+\mbox{\hspace{10mm} $\tup{t_1,...,t_n} \in R^\A$}\\
+\mbox{\hspace{5mm} $\iff \tup{\text{definición de $S[\A]$}}$}\\
+\mbox{\hspace{10mm} \texttt{R}$(t_1,...,t_n) \in S[\A]$}\\
+\mbox{\hspace{5mm} $\iff \tup{\text{?}}$}\\
+\mbox{\hspace{10mm} $\FT[\varphi](t_1,...,t_n) \in S[\A]$}\\
+\mbox{\hspace{5mm} $\iff \tup{\text{el plan vacío alcanza la condición
+$\FT[\varphi](t_1,...,t_k)$}}$}\\
+\mbox{\hspace{10mm} $\pi[t_1,...,t_n] =\ \tup{} $ es el plan.}\\
 
-\begin{tabular}{ll}
-\end{tabular}
+\noindent Caso $\varphi = \neg R(t_1,...,t_k)$:\\
+\mbox{\hspace{10mm}Análogo al anterior, con \texttt{not-R}$(t_1,...,t_n) \in
+S[\A]$}\\
+\mbox{\hspace{10mm} $\pi[t_1,...,t_n] =\ \tup{} $ es el plan.}\\
 
-\begin{itemize}
-		\item Caso base: $\theta$ is a literal. $\theta = P(X)$ 
-		
-		Prueba por casos:
-			\begin{itemize}
-				\item Caso 0: $P(\overline{X})$ $\epsilon$ $\sigma$
-				
-				\begin{tabular}{@{}p{1mm}p{1mm}p{11cm}}	
-						& & $\A \models P(\overline{X})$\\
-						$\eq$ & & $<(A,i)$ es una interpretacion de $\A>$ \\
-						& & $(A,i) \models P(\overline{X})$ \\
-						$\eq$ & & $<$Definicion de interpretacion$>$\\
-						& & $i(\overline{X})$ $\epsilon$ $P^{\A}$\\
-						$\Rightarrow$ & & $<$ La situacion inicial (Init) consiste de fluents describiendo el valor de 
-									  verdad de todas las relaciones en $\A$$>$\\
-						& & $P(\overline{X})$ $\epsilon$ $Init$ \\
-						$\eq$ & & $<$ Hy un plan de cero pasos para $\theta(\overline{x})>$\\
-						& & $\FT[\theta](\overline{X})$ tiene solucion
-					\end{tabular}
-					
-					
-				\item Caso 1: $P(\overline{X})$ $\epsilon$ $\Phi$
-				
-					  Falta
-			\end{itemize}
-			
-		\item Caso inductivo:
-			\begin{itemize}
-				\item Caso 0: $\theta = \neg P(\overline{X})$ (Como esta definido en el paper la negacion esta solo en los literales)
-				
-				\begin{tabular}{@{}p{1mm}p{1mm}p{11cm}}	
-						& & $\A \models \neg P(\overline{X})$\\
-						$\eq$ & & $<(A,i)$ es una interpretacion de $\A>$ \\
-						& & $(A,i) \models \neg P(\overline{X})$ \\
-						$\eq$ & & $<$Definicion de interpretacion$>$\\
-						& & $i(\overline{X})$ $\epsilon$ ${\neg P}^{\A}$\\
-						$\Rightarrow$ & & $<$ La situacion inicial (Init) consiste de fluents describiendo el valor de 
-									  verdad de todas las relaciones en $\A$ (La negacion de un literal es tomado como
-									  un fluent nuevo)$>$\\
-						& & $P(\overline{X})$ $\epsilon$ $Init$ \\ 
-						$\eq$ & & $<$ Hy un plan de cero pasos para $\theta(\overline{x})>$\\
-						& & $\FT[\theta](\overline{X})$ tiene solucion
-				\end{tabular}
-					
-				\item Caso 1: $\theta = \psi \land \psi'$ (Logical And)
-					  
-					  Hipotesis inductiva:
-					 	\begin{itemize}
-					 		\item $(A,i) \models \psi \eq$ hay un plan para $\FT[\psi] = \pi$
-							\item $(A,i) \models \psi' \eq$ hay un plan para $\FT[\psi'] = \pi'$
-					 	\end{itemize}
-				
-					\begin{tabular}{@{}p{1mm}p{1mm}p{11cm}}	
-					 	& & $\A \models \psi \land \psi'$\\
-						$\eq$ & & $<(A,i)$ es una interpretacion de $\A>$ \\
-						& & $(A,i) \models \psi \land \psi'$ \\
-						$\eq$ & & $<$ Semantica de Primer orden $>$\\
-						& & $(A,i) \models \psi \land (A,i) \models \psi'$ \\
-						$\eq$ & & $<$Hipotesis inductiva$>$\\
-						& & $\FT[\psi] = \pi \land \FT[\psi'] = \pi'$\\
-						$\Rightarrow$ & & $<$ Operator $ prove\_and\_id >$\\
-						& & $\FT[\theta](\overline{X})$ tiene solucion
-					\end{tabular}
-				\item Caso 2: $\theta = \psi \lor \psi'$ (Logical Or)
-					  
-					  Hipotesis inductiva:
-					 	\begin{itemize}
-					 		\item $(A,i) \models \psi \eq$ hay un plan para $\FT[\psi] = \pi$
-							\item $(A,i) \models \psi' \eq$ hay un plan para $\FT[\psi'] = \pi'$
-					 	\end{itemize}
-				
-					\begin{tabular}{@{}p{1mm}p{1mm}p{11cm}}	
-					 	& & $\A \models \psi \lor \psi'$\\
-						$\eq$ & & $<(A,i)$ es una interpretacion de $\A>$ \\
-						& & $(A,i) \models \psi \lor \psi'$ \\
-						$\eq$ & & $<$ Semantica de Primer orden $>$\\
-						& & $(A,i) \models \psi \lor (A,i) \models \psi'$ \\
-						$\eq$ & & $<$Hipotesis inductiva$>$\\
-						& & $\FT[\psi] = \pi \lor \FT[\psi'] = \pi'$\\
-						$\eq$ & & $<$ Operator $ prove\_or\_id$ twice, idempotencia del $\lor$ $>$\\
-						& & $\FT[\theta](\overline{X})$ tiene solucion
-					\end{tabular}
-					
-				\item Caso 3: $\theta = \exists x$ $ \psi(\overline{y},x)$ (Exists)
-					  
-					  Hipotesis inductiva:
-					 	\begin{itemize}
-					 		\item $(A,i) \models \psi(\overline{y},x)$ hay un plan $\pi$ para $\FT[\psi(\overline{y},x)] (\overline{y},x)$
-					 	\end{itemize}
-				
-					\begin{tabular}{@{}p{1mm}p{1mm}p{11cm}}	
-					 	& & $A \models \exists x$ $ \psi(\overline{y},x)$\\
-						$\eq$ & & $<(A,i)$ es una interpretacion de $\A>$ \\
-						& & $(A,i) \models \exists x$ $ \psi(\overline{y},x)$ \\
-						$\eq$ & & $<$ Semantica de Primer orden $>$\\
-						& & $(A,i) \models \psi(\overline{y},x)$ \\
-						$\eq$ & & $<$Hipotesis inductiva$>$\\
-						& & $\FT[\psi] = \pi \lor \FT[\psi'] = \pi'$\\
-						$\eq$ & & $<$ Operator $ prove\_exists >$\\
-						& & $\FT[\exists x$ $ \psi(\overline{y},x)](\overline{y})$ tiene solucion
-					\end{tabular}
+\noindent Caso $\varphi = \varphi_1(t_1,...,t_{k_1}) \land \varphi_2(t_1,...,t_{k_2}) $:\\
+\mbox{\hspace{10mm} $(\A, i) \models \varphi$}\\
+\mbox{\hspace{5mm} $\iff \tup{\text{definición \ref{semantica_def}(d)}}$}\\
+\mbox{\hspace{10mm} $(\A, i) \models \varphi_1$ y $(\A, i) \models \varphi_2$}\\
+\mbox{\hspace{5mm} $\iff \tup{\text{hipótesis inductiva}}$}\\
+\mbox{\hspace{10mm} $\pi_1[t_1,...,t_{k_1}]$ y $\pi_2[t_1,...,t_{k_2}]$ son planes que
+alcanzan}\\
+\mbox{\hspace{10mm} $\FT[\varphi_1](t_1,...,t_{k_1})$ y $\FT[\varphi_2](t_1,...t_{k_2})$
+desde S[\A].}\\
+\mbox{\hspace{5mm} $\iff \langle$ \text{no hay \textit{deletes}, aplicar ambos
+planes en secuencia}}\\
+\mbox{\hspace{20mm} garantiza alcanzar $\FT[\varphi](t_1,...,t_k)$ desde
+$S[\A] \rangle$}\\
+\mbox{\hspace{5mm} el plan
+$\tup{\pi_1(t_1,...,t_{k_1});\ \pi_2(t_1,...,t_{k_2});\ \texttt{probar\_y}}$ alcanza la condición
+$\FT[\varphi](t_1,...,t_k)$}\\
+\mbox{\hspace{5mm} desde $S[\A].$}
 
-			\end{itemize}
-		
-	\end{itemize}
+\noindent Caso $\varphi = \varphi_1(t_1,...,t_{k_1}) \lor \varphi_2(t_1,...,t_{k_2}) $:\\
+\mbox{\hspace{10mm} $(\A, i) \models \varphi$}\\
+\mbox{\hspace{5mm} $\iff \tup{\text{definición \ref{semantica_def}(e)}}$}\\
+\mbox{\hspace{10mm} $(\A, i) \models \varphi_1$ o $(\A, i) \models \varphi_2$}\\
+\mbox{\hspace{5mm} $\iff \tup{\text{hipótesis inductiva}}$}\\
+\mbox{\hspace{10mm} $\pi_1[t_1,...,t_{k_1}]$ y $\pi_2[t_1,...,t_{k_2}]$ son planes que
+alcanzan}\\
+\mbox{\hspace{10mm} $\FT[\varphi_1](t_1,...,t_{k_1})$ y $\FT[\varphi_2](t_1,...t_{k_2})$
+desde $S[\A]$, respectivamente}\\
+\mbox{\hspace{5mm} $\iff \langle$ \text{?}}\\
+\mbox{\hspace{5mm} alguno de los planes
+$\tup{\pi_1(t_1,...,t_{k_1});\ \texttt{probar\_o}}$ o}\\
+\mbox{\hspace{5mm}
+$\tup{\pi_2(t_1,...,t_{k_2});\ \texttt{probar\_o}}$ alcanza la condición
+$\FT[\varphi](t_1,...,t_k)$}\\
+\mbox{\hspace{5mm} desde $S[\A]$.}
+
+\noindent Caso $\varphi = \varphi_1(t_1,...,t_{k_1}) \Rightarrow \varphi_2(t_1,...,t_{k_2}) $:\\
+\mbox{\hspace{10mm}Análogo al anterior, pues $\varphi_1 \Rightarrow \varphi_2 =
+\neg \varphi_1 \lor \varphi_2$.}
+
+\noindent Caso $\varphi = (\exists x)\ \theta(t_1,...,t_k,x):$\\
+\mbox{\hspace{10mm} $(\A, i) \models \varphi$}\\
+\mbox{\hspace{5mm} $\iff \tup{\text{definición \ref{semantica_def}(g)}}$}\\
+\mbox{\hspace{10mm} $(\A, i[x:=u]) \models \theta(t_1,...,t_k,x)$, para algún $u\in|\A|$}\\
+\mbox{\hspace{5mm} $\iff \tup{\text{todo objeto en $|\A|$ tiene nombre, sea $a$
+el nombre de $u$}}$}\\
+\mbox{\hspace{10mm} $(\A, i) \models \theta(t_1,...,t_k,a)$}\\
+\mbox{\hspace{5mm} $\iff \tup{\text{hipótesis inductiva}}$}\\
+\mbox{\hspace{10mm} $\pi[t_1,...,t_k,a]$ es un plan que alcanza
+$\FT[\theta](t_1,...,t_k,a)$ desde $S[\A]$.}\\
+\mbox{\hspace{5mm} $\iff \tup{\text{lema \ref{lema}}}$}\\
+\mbox{\hspace{10mm} $\pi'[t_1,...,t_k] =
+\tup{\pi[t_1,...,t_k,a];\ \texttt{probar\_existencial}}$ alcanza}\\
+\mbox{\hspace{10mm} $\FT[\theta](t_1,...,t_k,a)$ desde $S[\A]$.}\\
+
+\noindent Caso $\varphi = (\forall x)\ \theta(t_1,...,t_k,x):$\\
+\mbox{\hspace{10mm} $(\A, i) \models \varphi$}\\
+%! def semantica no es asi?
+\mbox{\hspace{5mm} $\iff \tup{\text{definición \ref{semantica_def}(h)}}$}\\
+\mbox{\hspace{10mm} $(\A, i[x:=u]) \models \theta(t_1,...,t_k,x)$, para todo $u\in|\A|$}\\
+\mbox{\hspace{5mm} $\iff \langle |\A|$ tiene una función \texttt{SUC} que lo
+hace}\\
+\mbox{\hspace{15mm} isomórfico al conjunto de los primeros $n$ naturales.}\\
+\mbox{\hspace{15mm} Sea $a_i$ la i-ésima constante de $|\A| \ \rangle$.}\\
+\mbox{\hspace{10mm} $(\A, i) \models \theta(t_1,...,t_k,a_i)$, para todo $a_i
+\in |\A|$}\\
+\mbox{\hspace{5mm} $\iff \tup{\text{hipótesis inductiva}}$}\\
+\mbox{\hspace{10mm} hay un plan $\pi_i[t_1,...,t_k,a_i]$ que alcanza
+$\FT[\theta](t_1,...,t_k,a_i)$ desde $S[\A]$}\\
+\mbox{\hspace{10mm} para toda constante $a_i$.}\\
+\mbox{\hspace{5mm} $\iff \tup{\text{?}}$}\\
+\mbox{\hspace{10mm} $\pi'[t_1,...,t_k] =
+\langle \pi[t_1,...,t_k,a_0]$;\ \texttt{probar\_universal\_base};}\\
+\mbox{\hspace{10mm}
+$\pi[t_1,...,t_k,a_1]$;\ \texttt{probar\_universal\_inductivo(1)};\ ...\ ;}\\
+\mbox{\hspace{10mm} $\pi[t_1,...,t_k,a_{n-1}]$;\
+\texttt{probar\_universal\_inductivo(n-1)} $\rangle$}\\
+\mbox{\hspace{10mm} es un plan que alcanza $\FT[\theta](t_1,...,t_k,a)$ para
+toda constante $a$}\\
+\mbox{\hspace{10mm} desde $S[\A]$.}
 \end{proof}
+
+
+%\begin{theorem}
+%La función $f_{\sigma, \Phi}$ es una reducción en tiempo polinomial del
+%problema de decisión inducido por $\Phi$ a STRIPS-1.
+%\end{theorem}
+%
+%\begin{proof}
+%Se quiere demostrar que
+%$\A\models(\exists R_1^{a_1})\cdots(\exists R_k^{a_k})\psi$ si y sólo si
+%existe un plan que consigue la condición $\FT[\psi]$. La prueba es inductiva
+%sobre la estructura de la sentencia de primer orden $\psi$. Se demostrará que para toda subformula 
+%$\theta$ de $\psi$, y toda interpretacion $(\\A,i)$ de $\A$:
+%
+%\[ (\\A,i) \models \theta(\overline{X}) \iff \text{existe un plan para } \FT[\theta](\overline{X}) \]
+%
+%Por implicación mutua. Primero se prueba
+%\[ (\\A,i) \models \theta(\overline{X}) \Rightarrow \text{existe un plan para } \FT[\theta](\overline{X}) \]
+%\end{proof}
