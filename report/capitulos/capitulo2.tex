@@ -16,7 +16,7 @@ analizador sintáctico y función de traducción ya descrita.
 
 \section{Perspectiva general}
 Como puede verse en la Figura \ref{esquema_herramienta}, la herramienta tiene
-como entradas una sentencia en \SOE\ $\Phi\in\SOE(\sigma)$, y
+como entradas una sentencia $\Phi\in\SOE(\sigma)$, y
 una estructura finita de primer orden $\A\in\struc[\sigma]$ sobre la cual se
 intentará probar la propiedad definida por $\Phi$.
 Las salidas son un dominio y una instancia PDDL que tienen un plan válido si y
@@ -90,33 +90,8 @@ herramienta es una reducción en tiempo
 polinomial del problema NP expresado por $\Phi$ a un fragmento de planificación
 que es decidible en NP.
 
-Como se ha mencionado en la sección \ref{complejidad_planificacion}, 
-se sabe que verificar la existencia de un plan para 
-problemas de planificación
-sin efectos negativos está en NP \citep{bylander:plan-complexity}. La prueba
-depende del hecho de que un plan óptimo no necesita repetir acciones, y por lo
-tanto es de tamaño lineal. Puede extenderse esta noción: si todas las acciones que
-agregan efectos negativos pueden ser aplicadas a lo sumo una vez, verificar la
-existencia de un plan sigue estando en NP, pues el tamaño del plan no podrá ser
-mayor al número de acciones.
-
-\begin{definition}
-Un problema de planificación $P = \tup{C, A, I, F}$ es de tipo
-\textit{máximo-1} si y sólo si las acciones pueden ser particionadas en $A =
-A_0 \cup A_1$, donde:
-\begin{itemize}
-\item Ninguna de las acciones de $A_0$ tiene efectos negativos, es decir,
-$(\forall a \in A_0) (del(a) = \emptyset)$.
-\item Todas las acciones de $A_1$ tienen una precondición que no es añadida por
-ninguna acción, y que es borrada apenas $a$ es ejecutada, es decir, 
-$(\forall aa' \in A_1)\ (\exists p \in pre(a) \cap del(a))\ (p \not\in add(a'))$
-\end{itemize}
-
-El conjunto de todos los problemas \textit{máximo-1} se denota como STRIPS-1.
-\end{definition}
-
 %! ???
-Ahora considere la función de \emph{instanciación} $\ground$ que transforma el par
+Considere la función de \emph{instanciación} $\ground$ que transforma el par
 $\tup{\domain,\instance}$ de un dominio y problema PDDL en un problema STRIPS
 $P = \ground(\domain, \instance)$. Para un $\domain$ fijo, la función
 $\instance\leadsto\ground(\domain, \instance)$ corre en un tiempo polinomial
@@ -130,8 +105,16 @@ modo, la función $f_{\sigma,\Phi}:\struc[\sigma]\rightarrow\text{STRIPS}$
 definida por 
 \[ f_{\sigma,\Phi}(\A) = \ground(\domred(\sigma,\Phi),\insred(\sigma,\Phi,\A)) \]
 es una función en tiempo polinomial que asigna a las $\sigma$-estructuras un
-problema instanciado STRIPS. Esta función es una reducción, tal como es
-demostrado por
+problema instanciado STRIPS.
+
+Se debe demostrar que la función $f_{\sigma,\Phi}(\A)$ es una reducción y que
+los problemas de planificación que produce tienen a lo sumo la misma
+complejidad que \SOE.
+
+\subsection{Demostración de reducción}
+Se demostrará que $\A \models \Phi$ si y sólo si $f_{\sigma,\Phi}(\A)$ tiene
+solución, es decir, si y sólo si existe un plan que alcanza $\FT[\Phi]$ desde
+el estado inicial (que depende de $\A$).
 
 \begin{proposition}
 \label{t1}
@@ -157,7 +140,7 @@ Sea $\varphi \in \LPO(\sigma)$ y $t_1,\ldots,t_k$ $\sigma$-términos instanciado
 \struc[\sigma]$ tal que todo objeto tiene nombre y sea $i : \text{VAR} \longrightarrow |\A|$.
 Entonces, $(\A, i) \models \varphi(t_1,\ldots,t_k)$ si y sólo si
 existe un plan $\pi[t_1,\ldots,t_k]$ que alcanza
-$\FT[\varphi](t_1,\ldots,t_k)$ desde $S[\A]$,
+$\FT[\varphi](t_1,\ldots,t_k)$ desde el \textbf{estado inicial} $S[\A]$,
 donde $S[\A]$ es el estado de STRIPS definido por las siguientes condiciones:
 \begin{alignat*}{1}
 & S[\A] = \{\texttt{prueba}\} \cup \{ \texttt{R}(a_1,\ldots,a_k) :
@@ -291,8 +274,60 @@ $S[\A]$. Sea $u_j = a_j^\A$ para $1 \leq j \leq k$.
 & {\color{white} \langle \ } \texttt{comenzar\_prueba}()\ \rangle\\
 & \textbf{alcanza el estado } S[\A, R_1',\ldots,R_n'] \textbf{ desde } S[\A].
 \end{alignat*}
-
 \end{proof}
+
+\subsection{Demostración de complejidad}
+Como se ha mencionado en la sección \ref{complejidad_planificacion}, 
+se sabe que verificar la existencia de un plan para 
+problemas de planificación
+sin efectos negativos está en NP \citep{bylander:plan-complexity}. La prueba
+depende del hecho de que un plan óptimo no necesita repetir acciones, y por lo
+tanto es de tamaño lineal. Puede extenderse esta noción: si todas las acciones que
+agregan efectos negativos pueden ser aplicadas a lo sumo una vez, verificar la
+existencia de un plan sigue estando en NP, pues el tamaño del plan no podrá ser
+mayor al número de acciones.
+
+\begin{definition}
+Un problema de planificación $P = \tup{C, A, I, F}$ es de tipo
+\textit{máximo-1} si y sólo si las acciones pueden ser particionadas en $A =
+A_0 \cup A_1$, donde:
+\begin{itemize}
+\item Ninguna de las acciones de $A_0$ tiene efectos negativos, es decir,
+$(\forall a \in A_0) (del(a) = \emptyset)$.
+\item Todas las acciones de $A_1$ tienen una precondición que no es añadida por
+ninguna acción, y que es borrada apenas $a$ es ejecutada, es decir, 
+$(\forall aa' \in A_1)\ (\exists p \in pre(a) \cap del(a))\ (p \not\in add(a'))$
+\end{itemize}
+
+El conjunto de todos los problemas \textit{máximo-1} se denota como STRIPS-1.
+\end{definition}
+
+\begin{theorem}
+Para toda estructura $\A$, $f_{\sigma, \Phi}(\A)$ es un problema STRIPS-1.
+\end{theorem}
+\begin{proof}
+Ninguna de las acciones de $f_{\sigma, \Phi}(\A)$ tienen \textit{deletes} excepto
+\texttt{comenzar\_prueba} y las acciones \texttt{colocar\_verdadera} y
+\texttt{colocar\_falsa}, pero todas estas borran una precondición que no es
+añadida por ninguna otra acción (i.e., pertenecen a $A_1$ según la definición
+de STRIPS-1).
+\end{proof}
+
+\begin{theorem}
+El problema de decisión de existencia de un plan STRIPS-1 es NP-completo.
+\end{theorem}
+\begin{proof}
+\ \\ \textbf{Inclusión:} Todas las acciones de $A_1$ pueden ser aplicadas a lo
+sumo una vez. Como estas acciones pueden borrar condiciones (tienen
+\textit{deletes}), en el peor caso puede requerirse aplicar \textbf{todas} las
+acciones de $A_0$ antes de aplicar otra acción de $A_1$. Por lo tanto, el
+tamaño de un plan es a lo sumo cuadrático en el número total de acciones.
+\\ \textbf{Dificultad:} $f_{\sigma_{\textsc{SAT}}, \Phi_{\textsc{SAT}}}$ reduce SAT a STRIPS-1 en
+tiempo polinomial.
+\end{proof}
+
+Por lo tanto, la herramienta traduce cualquier problema NP, codificado con una
+sentencia \SOE, a STRIPS-1.
 
 \section{Diseño del lenguaje}
 
