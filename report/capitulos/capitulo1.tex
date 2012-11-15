@@ -330,7 +330,7 @@ una fórmula $\Phi \in \LSO(\sigma)$ sea verdadera bajo la interpretación $(\A,
 \[
 \begin{array}{lcl}
 \text{(a)} \hspace{5mm} (\A, i) \models t_1 = t_2 & \iff & i(t_1) = i(t_2)\\
-\text{(b)} \hspace{5mm} (\A, i) \models R(t_1,...,t_{k}) & \iff & \tup{i(t_1),...,i(t_{k})} \in R^{\A}\\
+\text{(b)} \hspace{5mm} (\A, i) \models R(t_1,\ldots,t_{k}) & \iff & \tup{i(t_1),\ldots,i(t_{k})} \in R^{\A}\\
 \text{(c)} \hspace{5mm} (\A, i) \models \neg \Phi & \iff & (A, i) \nvDash \Phi\\
 \text{(d)} \hspace{5mm} (\A, i) \models \Phi \land \Psi & \iff & (\A, i) \models \Phi \mbox{ y } (\A, i) \models \Psi\\
 \text{(e)} \hspace{5mm} (\A, i) \models \Phi \lor \Psi & \iff & (\A, i) \models \Phi \mbox{ o } (\A, i) \models \Psi\\
@@ -503,6 +503,9 @@ su ocurrencia negativa.
 Por ejemplo, $(p\lor \neg q\lor r)\land(\neg p\lor \neg r)\land(\neg p\lor q)$
 es codificado como $\A=\tup{|\A|,N^\A,P^\A}$, donde $|\A|=\{0,1,2\}$,
 $N^\A=\{(1,0),(0,1),(2,1),(0,2)\}$ y $P^\A=\{(0,0),(2,0),(1,2)\}$.
+
+En el Apéndice \ref{apendiceA} se encuentran las fórmulas correspondientes a
+varios problemas NP.
 
 %On the other hand, a truth-assignment is a subset of true propositions
 %and the existence of a truth assignment (satisfiability) can be

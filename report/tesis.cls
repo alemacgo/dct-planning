@@ -82,9 +82,9 @@
 \theoremstyle{plain}
 \newtheorem{example}{Example}[chapter]
 \newtheorem{theorem}{Teorema}[chapter]
-\newtheorem{corollary}[theorem]{Corollary}
+\newtheorem{corollary}[theorem]{Corolario}
 \newtheorem{lemma}[theorem]{Lema}
-\newtheorem{proposition}[theorem]{Proposition}
+\newtheorem{proposition}[theorem]{Proposición}
 \newtheorem{axiom}[theorem]{Axiom}
 \theoremstyle{definition}
 \newtheorem{definition}[theorem]{Definición}

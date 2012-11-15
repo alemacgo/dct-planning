@@ -4,39 +4,78 @@
 \label{Chapter2}
 \lhead{Capítulo 2. \emph{Traducción de problemas NP}}
 Este capítulo describe el diseño de una herramienta capaz de transformar una
-descripción de un problema en lógica de segundo orden 
-en un problema de planificación de clase de complejidad equivalente. 
-Primero se presenta una perspectiva a alto nivel de lo que de
+descripción de un problema en lógica de segundo orden existencial
+en un problema de planificación perteneciente a la clase de complejidad
+equivalente (NP).
+Primero se explica el funcionamiento a alto nivel de la herramienta, en función
+de sus entradas y salidas. Luego, se define formalmente una función de
+traducción de lógica a planificación, demostrando las propiedades pertinentes.
+Finalmente, se presenta la gramática de un lenguaje de especificación basado en lógica 
+y se describe brevemente la implementación de la herramienta, que consiste en un 
+analizador sintáctico y función de traducción ya descrita.
 
 \section{Perspectiva general}
-\begin{figure}[h!]
+Como puede verse en la Figura \ref{esquema_herramienta}, la herramienta tiene
+como entradas una sentencia en \SOE\ $\Phi\in\SOE(\sigma)$, y
+una estructura finita de primer orden $\A\in\struc[\sigma]$ sobre la cual se
+intentará probar la propiedad definida por $\Phi$.
+Las salidas son un dominio y una instancia PDDL que tienen un plan válido si y
+sólo si $\A$ satisface $\Phi$. Además, un \textbf{certificado} de la validez de
+la propiedad en $\Phi$ puede obtenerse del plan en tiempo lineal.
+
+\begin{figure}[h]
 \centering
 \includegraphics[width=\textwidth]{figuras/esquema_herramienta.pdf}
 \caption{Esquema de operación de la herramienta}
 \label{esquema_herramienta}
 \end{figure}
 
-\section{Diseño del lenguaje}
+La traducción se basa en convertir la tarea de demostrar la validez de la
+fórmula lógica en una tarea de planificación. Por lo tanto, las acciones del
+dominio de planificación harán las veces de las operaciones de semántica
+formal, probando cada tipo de subfórmula según un esquema similar a la
+definición \ref{semantica_def}. La información específica al problema, como el
+estado inicial, está codificada por la estructura de primer orden que recibe la
+herramienta. Se ha visto que estas estructuras pueden representar grafos, por lo
+que el \textit{software} es especialmente útil para la modelación y resolución
+de problemas de grafos.
 
-\subsection{Gramática}
+Desde el punto de vista del usuario, la contribución de esta herramienta es
+proveer una forma alternativa y descriptiva de especificar problemas de forma
+que sea posible obtener e interpretar su solución.
+
+
+Hence, we can think of the tool as a generator of reductions
+among problems. Recall that, in general, a reduction from problem
+$A$ into problem $B$ is a computable function $f$ such that
+for each instance $\omega$, $\omega\in A$ iff $f(\omega)\in B$.
+
+In our case, the reduction decomposes in two functions
 \begin{alignat*}{1}
-\sofbf\   & \deriv\ \lpar \SOExists\ \lpar \listrel \rpar\ \sofbf \rpar \\
-          & \deriv\ \lpar \SOForall\ \lpar \listrel \rpar\ \sofbf \rpar \\
-          & \deriv\ \pofbf \\[1em]
-\listrel\ & \deriv\ \rel\ \integer\ \listrel\ |\ \rel\ \integer \\
-          & \deriv\ \rel\ \tipof\ \listrel\ |\ \rel\ \tipof\ \\[1em]
-\tipof\   & \deriv\ \fun\ |\ \pfun\ |\ \inj\ |\ \pinj\ \\[1em]
-\pofbf\   & \deriv\ \lpar \rel\ \listvar \rpar \\
-          & \deriv\ \lpar \NOT\ \pofbf \rpar \\
-          & \deriv\ \lpar \AND\ \listpofbf \rpar \\
-          & \deriv\ \lpar \OR\ \listpofbf \rpar \\
-          & \deriv\ \lpar \IMPLIES\ \pofbf\ \pofbf \rpar \\
-          & \deriv\ \lpar \Exists\ \lpar \listvar \rpar\ \pofbf \rpar \\
-          & \deriv\ \lpar \Forall\ \lpar \listvar \rpar\ \pofbf \rpar \\[1em]
-\listvar\ & \deriv\ \var\ \listvar\ |\ \var \\[1em]
+&\domred: \text{Signatures} \times \SOE \rightarrow \text{PDDL Domains}\,, \\
+&\insred: \text{Signatures} \times \SOE \times \struc \rightarrow \text{PDDL Instances}
 \end{alignat*}
+such that $\domain=\domred(\sigma,\Phi)$ is a PDDL domain
+and $\instance=\insred(\sigma,\Phi,\A)$ is an instance.
 
-\section{Reducción base}
+In order to get something of theoretical and practical 
+interest, the reduction should run in polynomial time,
+so that it would not be able to check whether $\A$
+satisfies $\Phi$ and then produce a trivial planning
+problem, and its output should be solvable in NP so that
+complexity of solving the output problem is no bigger than
+solving the input problem.
+However, the plan-existence decision problem for PDDL is
+not in NP because (1)~the number of grounded fluents
+and actions may be exponential in the input size, and
+(2)~a minimum-length plan may be of exponential size in
+the number of grounded fluents and actions.
+Thus, not every reduction qualifies for our purposes
+and we must be careful with its design. In the following
+two sections, we present an acceptable reduction and 
+study its formal properties.
+
+\section{Reducción de LSO a STRIPS}
 \subsection{Reducción del dominio}
 \subsection{Reducción del problema}
 
@@ -94,163 +133,187 @@ es una función en tiempo polinomial que asigna a las $\sigma$-estructuras un
 problema instanciado STRIPS. Esta función es una reducción, tal como es
 demostrado por
 
-\begin{theorem}
+\begin{proposition}
 \label{t1}
-Sean $t_1,...,t_n$ términos instanciados, es decir, que no contienen
-variables.\\
-\mbox{\hspace{5mm} $(\A, i[x:=u]) \models \varphi(t_1,...,t_n,x)$}\\
-$\iff \tup{\text{si $a$ es una constante tal que } a^\A = u}$\\
-\mbox{\hspace{5mm} $(\A, i[x:=u]) \models \varphi(t_1,...,t_n,a)$}\\
-$\iff \tup{\text{?}}$\\
-\mbox{\hspace{5mm} $(\A, i) \models \varphi(t_1,...,t_n,a)$}\\
-\end{theorem}
-\begin{lemma}
-\label{lema}
-Sean $t_1,...,t_n$ términos instanciados y sea $a$ una constante. Sea $\A$ una
-estructura tal que $u \in |\A|$, $a^\A = u$. Entonces:\\
-\mbox{\hspace{5mm} $(\A, i[x:=u]) \models \varphi(t_1,...,t_n,x)$}\\
-$\iff \tup{a^\A = u}$\\
-\mbox{\hspace{5mm} $(\A, i[x:=u]) \models \varphi(t_1,...,t_n,a)$}\\
-$\iff \tup{\text{?}}$\\
-\mbox{\hspace{5mm} $(\A, i) \models \varphi(t_1,...,t_n,a)$}\\
-\end{lemma}
+Sean $t_1,\ldots,t_k$ términos instanciados, es decir, que no contienen
+variables. Sea $\A$ una estructura, $u\in|\A|$ y `$a$' una constante tal que
+$a^\A=u$.
+Entonces, $(\A, i[x:=u]) \models \varphi(t_1,\ldots,t_k,x)$ si y sólo si
+$(\A, i) \models \varphi(t_1,\ldots,t_k,a)$.
+\end{proposition}
+\begin{proof}
+Directa de la definición de verdad.
+\end{proof}
+\begin{corollary}
+\label{corolario}
+Sean $t_1,\ldots,t_k$ términos instanciados. Sea $\A$ una
+estructura en donde todos los objetos tienen nombre (i.e., para todo $u\in|\A|$
+existe una constante $a$ tal que $a^\A=u$). Entonces,
+$(\A, i) \models (\exists x) \varphi(t_1,\ldots,t_k,x)$ si y sólo si
+existe una constante `$a$' tal que $(\A, i) \models \varphi(t_1,\ldots,t_k,a)$.
+\end{corollary}
 \begin{theorem}
-Sea $\varphi \in \LPO$ y $t_1,...,t_n$ términos instanciados. Sea $\A \in
-\struc[\sigma]$ y sea $i : \text{VAR} \longrightarrow |\A|$.\\
-\begin{center}
-\mbox{$(\A, i) \models \varphi(t_1,...,t_n)$}\\
-$\iff$\\ existe un plan $\pi[t_1,...,t_k]$que alcanza
-$\FT[\varphi](t_1,...,t_n)$ desde $S[\A]$,\\
-donde $S[\A]$ es el estado STRIPS determinado por:\\
-\vspace{5mm}
+Sea $\varphi \in \LPO(\sigma)$ y $t_1,\ldots,t_k$ $\sigma$-términos instanciados. Sea $\A \in
+\struc[\sigma]$ tal que todo objeto tiene nombre y sea $i : \text{VAR} \longrightarrow |\A|$.
+Entonces, $(\A, i) \models \varphi(t_1,\ldots,t_k)$ si y sólo si
+existe un plan $\pi[t_1,\ldots,t_k]$ que alcanza
+$\FT[\varphi](t_1,\ldots,t_k)$ desde $S[\A]$,
+donde $S[\A]$ es el estado de STRIPS definido por las siguientes condiciones:
+\begin{alignat*}{1}
+& S[\A] = \{\texttt{prueba}\} \cup \{ \texttt{R}(a_1,\ldots,a_k) :
+\tup{a_1^\A,\ldots,a_k^\A} \in R^\A\}\\
+& {\color{white} S[\A] = } \cup \{\texttt{no-R}(a_1,\ldots,a_k) : \tup{a_1^\A,\ldots,a_k^\A} \not\in R^\A\}\\
+& {\color{white} S[\A] = } \cup \{\texttt{SUC}(a_i, a_{i+1}) : 0 \leq i < n\}
+\end{alignat*}
 
-$\left\{\mbox{\begin{tabular}{lr}
-\texttt{R}$(a_1,...a_k) \in S[\A]$ & $\iff \tup{a_1^\A,...,a_k^\A} \in R^\A$\\
-\texttt{not-R}$(a_1,...a_k) \in S[\A]$ & $\iff \tup{a_1^\A,...,a_k^\A} \not\in R^\A$\\
-\end{tabular}}\right.$
-
-para todas las relaciones $R \in \sigma$.
-\end{center}
 \end{theorem}
 \begin{proof}
-\ \\
-Caso $\varphi = R(t_1,...,t_k)$:\\
-\mbox{\hspace{10mm} $(\A, i) \models \varphi$}\\
-\mbox{\hspace{5mm} $\iff \tup{\text{definición \ref{semantica_def}(b)}}$}\\
-\mbox{\hspace{10mm} $\tup{t_1,...,t_n} \in R^\A$}\\
-\mbox{\hspace{5mm} $\iff \tup{\text{definición de $S[\A]$}}$}\\
-\mbox{\hspace{10mm} \texttt{R}$(t_1,...,t_n) \in S[\A]$}\\
-\mbox{\hspace{5mm} $\iff \tup{\text{?}}$}\\
-\mbox{\hspace{10mm} $\FT[\varphi](t_1,...,t_n) \in S[\A]$}\\
-\mbox{\hspace{5mm} $\iff \tup{\text{el plan vacío alcanza la condición
-$\FT[\varphi](t_1,...,t_k)$}}$}\\
-\mbox{\hspace{10mm} $\pi[t_1,...,t_n] =\ \tup{} $ es el plan.}\\
+Hacemos la demostración por inducción sobre la estructura de $\varphi$. El caso
+base corresponde a las fórmulas atómicas de la forma $\varphi =
+R(t_1,\ldots,t_k)$:
+\begin{alignat*}{1}
+& \quad \quad (\A, i) \models \varphi(t_1,\ldots,t_k)\\
+& \iff \tup{\text{definición \ref{semantica_def}(b)}} \\
+& \quad \quad \tup{t_1,\ldots,t_k} \in R^\A\\
+& \iff \tup{\text{definición de S[\A]}}\\
+& \quad \quad \texttt{R}(t_1,\ldots,t_k) \in S[\A]\\
+& \iff \tup{\text{definición de } \FT}\\
+& \quad \quad \FT[\varphi](t_1,\ldots,t_k) \in S[\A]\\
+& \iff \tup{\text{el plan vacío alcanza la condición } \FT[\varphi](t_1,\ldots,t_k)}\\
+& \quad \quad \pi[t_1,\ldots,t_k] =\ \tup{} \textbf{ es el plan.}
+\end{alignat*}
+El caso $\varphi = \neg R(t_1,\ldots,t_k)$ es análogo al anterior, con
+\texttt{not-R}$(t_1,\ldots,t_k) \in S[\A]$ en lugar de \texttt{R}$(t_1,\ldots,t_k)$.
+Ahora consideramos las fórmulas más complejas:
 
-\noindent Caso $\varphi = \neg R(t_1,...,t_k)$:\\
-\mbox{\hspace{10mm}Análogo al anterior, con \texttt{not-R}$(t_1,...,t_n) \in
-S[\A]$}\\
-\mbox{\hspace{10mm} $\pi[t_1,...,t_n] =\ \tup{} $ es el plan.}\\
+Caso $\varphi = \varphi_1(t'_1,\ldots,t'_{k'}) \land \varphi_2(t_1'',\ldots,t''_{k''}) $:
+\begin{alignat*}{1}
+& \quad \quad (\A, i) \models \varphi(t_1,\ldots,t_k)\\
+& \iff \tup{\text{definición \ref{semantica_def}(d)}}\\
+& \quad \quad (\A, i) \models \varphi_1(t'_1,\ldots,t'_{k'}) \text{ y } 
+(\A, i) \models \varphi_2(t''_1,\ldots,t''_{k''})\\
+& \iff \tup{\text{hipótesis inductiva}}\\
+& \quad \quad \pi_1[t'_1,\ldots,t'_{k'}] \text{ y } 
+\pi_2[t_1'',\ldots,t''_{k''}] \text{ son planes que alcanzan }\\
+& \quad \quad \FT[\varphi_1](t'_1,\ldots,t'_{k'}) \text{ y } \FT[\varphi_2](t'_1,\ldots,t'_{k''})
+\text{ desde } S[\A]\\
+& \iff \langle \text{como no hay \textit{deletes}, aplicar ambos planes en
+secuencia }\\
+& {\color{white}\iff\langle} \text{garantiza alcanzar
+$\FT[\varphi](t_1,\ldots,t_k)$ desde $S[\A]$} \rangle\\
+& \quad \quad \textbf{el plan }\tup{\pi_1(t'_1,\ldots,t'_{k'});\
+\pi_2(t_1'',\ldots,t_{k_2}'');\ \texttt{probar\_y\_}\varphi(t_1,\ldots,t_k)} \\
+& \quad \quad \textbf{alcanza la condición }
+\FT[\varphi](t_1,\ldots,t_k) \textbf{ desde } S[\A]
+\end{alignat*}
 
-\noindent Caso $\varphi = \varphi_1(t_1,...,t_{k_1}) \land \varphi_2(t_1,...,t_{k_2}) $:\\
-\mbox{\hspace{10mm} $(\A, i) \models \varphi$}\\
-\mbox{\hspace{5mm} $\iff \tup{\text{definición \ref{semantica_def}(d)}}$}\\
-\mbox{\hspace{10mm} $(\A, i) \models \varphi_1$ y $(\A, i) \models \varphi_2$}\\
-\mbox{\hspace{5mm} $\iff \tup{\text{hipótesis inductiva}}$}\\
-\mbox{\hspace{10mm} $\pi_1[t_1,...,t_{k_1}]$ y $\pi_2[t_1,...,t_{k_2}]$ son planes que
-alcanzan}\\
-\mbox{\hspace{10mm} $\FT[\varphi_1](t_1,...,t_{k_1})$ y $\FT[\varphi_2](t_1,...t_{k_2})$
-desde S[\A].}\\
-\mbox{\hspace{5mm} $\iff \langle$ \text{no hay \textit{deletes}, aplicar ambos
-planes en secuencia}}\\
-\mbox{\hspace{20mm} garantiza alcanzar $\FT[\varphi](t_1,...,t_k)$ desde
-$S[\A] \rangle$}\\
-\mbox{\hspace{5mm} el plan
-$\tup{\pi_1(t_1,...,t_{k_1});\ \pi_2(t_1,...,t_{k_2});\ \texttt{probar\_y}}$ alcanza la condición
-$\FT[\varphi](t_1,...,t_k)$}\\
-\mbox{\hspace{5mm} desde $S[\A].$}
+Caso $\varphi = \varphi_1(t_1',\ldots,t'_{k_1}) \lor \varphi_2(t''_1,\ldots,t''_{k_2}) $:
+\begin{alignat*}{1}
+& \quad \quad (\A, i) \models \varphi(t_1,\ldots,t_k)\\
+& \iff \tup{\text{definición \ref{semantica_def}(e)}}\\
+& \quad \quad (\A, i) \models \varphi_1(t'_1,\ldots,t'_{k'}) 
+\text{ o } (\A, i) \models \varphi_2(t''_1,\ldots,t''_{k''})\\
+& \text{Por casos. Caso $(\A, i) \models \varphi_1(t'_1,\ldots,t'_{k'})$:}\\
+& \quad \iff \tup{\text{hipótesis inductiva}}\\
+& \quad \quad \quad \pi_1[t_1,\ldots,t_{k_1}] \text{ es un plan que alcanza 
+$\FT[\varphi_1](t_1,\ldots,t_{k_1})$ desde $[\A]$}\\
+& \quad \iff \langle \text{no hay \textit{deletes}} \rangle\\
+& \quad \quad \textbf{el plan } \tup{\pi_1(t_1,\ldots,t_{k_1});\
+\texttt{probar\_o\_}\varphi(t_1,\ldots,t_k)} \\
+& \quad \quad \textbf{alcanza la condición }
+\FT[\varphi](t_1,\ldots,t_k) \textbf{ desde } S[\A]\\
+& \text{Caso $(\A, i) \models \varphi_2(t''_1,\ldots,t''_{k''})$:}\\
+& \quad \quad \text{Análogo al caso anterior.}
+\end{alignat*}
 
-\noindent Caso $\varphi = \varphi_1(t_1,...,t_{k_1}) \lor \varphi_2(t_1,...,t_{k_2}) $:\\
-\mbox{\hspace{10mm} $(\A, i) \models \varphi$}\\
-\mbox{\hspace{5mm} $\iff \tup{\text{definición \ref{semantica_def}(e)}}$}\\
-\mbox{\hspace{10mm} $(\A, i) \models \varphi_1$ o $(\A, i) \models \varphi_2$}\\
-\mbox{\hspace{5mm} Por casos. Caso $(\A, i) \models \varphi_1$:}\\
-\mbox{\hspace{10mm} $\iff \tup{\text{hipótesis inductiva}}$}\\
-\mbox{\hspace{15mm} $\pi_1[t_1,...,t_{k_1}]$ es un plan que
-alcanza $\FT[\varphi_1](t_1,...,t_{k_1})$ desde $S[\A]$}\\
-\mbox{\hspace{10mm} $\iff \langle$ \text{?} $\rangle$}\\
-\mbox{\hspace{15mm} $\tup{\pi_1(t_1,...,t_{k_1});\ \texttt{probar\_o}}$ alcanza la condición
-$\FT[\varphi](t_1,...,t_k)$}\\
-\mbox{\hspace{15mm} desde $S[\A]$.}\\
-\mbox{\hspace{5mm} Caso $(\A, i) \models \varphi_2$:}\\
-\mbox{\hspace{10mm} Análogo al caso anterior.}
+Caso $\varphi = \varphi_1(t_1',\ldots,t'_{k'}) \Rightarrow \varphi_2(t''_1,\ldots,t''_{k''}) $:
 
-\noindent Caso $\varphi = \varphi_1(t_1,...,t_{k_1}) \Rightarrow \varphi_2(t_1,...,t_{k_2}) $:\\
-\mbox{\hspace{10mm}Análogo al anterior, pues $\varphi_1 \Rightarrow \varphi_2 =
-\neg \varphi_1 \lor \varphi_2$.}
+\quad Ver caso anterior, pues $\varphi_1 \Rightarrow \varphi_2 = \neg \varphi_1 \lor \varphi_2$.
 
-\noindent Caso $\varphi = (\exists x)\ \theta(t_1,...,t_k,x):$\\
-\mbox{\hspace{10mm} $(\A, i) \models \varphi$}\\
-\mbox{\hspace{5mm} $\iff \tup{\text{definición \ref{semantica_def}(g)}}$}\\
-\mbox{\hspace{10mm} $(\A, i[x:=u]) \models \theta(t_1,...,t_k,x)$, para algún $u\in|\A|$}\\
-\mbox{\hspace{5mm} $\iff \tup{\text{todo objeto en $|\A|$ tiene nombre, sea $a$
-el nombre de $u$}}$}\\
-\mbox{\hspace{10mm} $(\A, i) \models \theta(t_1,...,t_k,a)$}\\
-\mbox{\hspace{5mm} $\iff \tup{\text{hipótesis inductiva}}$}\\
-\mbox{\hspace{10mm} $\pi[t_1,...,t_k,a]$ es un plan que alcanza
-$\FT[\theta](t_1,...,t_k,a)$ desde $S[\A]$.}\\
-\mbox{\hspace{5mm} $\iff \tup{\text{lema \ref{lema}}}$}\\
-\mbox{\hspace{10mm} $\pi'[t_1,...,t_k] =
-\tup{\pi[t_1,...,t_k,a];\ \texttt{probar\_existencial}}$ alcanza}\\
-\mbox{\hspace{10mm} $\FT[\theta](t_1,...,t_k,a)$ desde $S[\A]$.}\\
+Caso $\varphi = (\exists x)\ \theta(t_1,\ldots,t_k,x):$
+\begin{alignat*}{1}
+& \quad \quad (\A, i) \models \varphi\\
+& \iff \langle \text{por corolario \ref{corolario}, ya que todo objeto en $|\A|$
+tiene nombre, }\\
+& {\color{white} \iff \langle} \text{ existe una constante } `a' \rangle\\
+& \quad \quad (\A, i) \models \theta(t_1,\ldots,t_k,a)\\
+& \iff \tup{\text{hipótesis inductiva}}\\
+& \quad \quad \pi[t_1,\ldots,t_k,a] \text{ es un plan que alcanza }
+\FT[\theta](t_1,\ldots,t_k,a) \text{ desde } S[\A]\\
+& \iff \tup{\text{no hay \textit{deletes}}}\\
+& \quad \quad \textbf{el plan } \langle \pi[t_1,\ldots,t_k,a];\
+\texttt{probar\_existencial\_}\varphi(t_1,\ldots,t_k)\rangle\\
+& \quad \quad \textbf{alcanza la condición } \FT[\varphi](t_1,\ldots,t_k)
+\textbf{ desde } S[\A]
+\end{alignat*}
 
-\noindent Caso $\varphi = (\forall x)\ \theta(t_1,...,t_k,x):$\\
-\mbox{\hspace{10mm} $(\A, i) \models \varphi$}\\
-%! def semantica no es asi?
-\mbox{\hspace{5mm} $\iff \tup{\text{definición \ref{semantica_def}(h)}}$}\\
-\mbox{\hspace{10mm} $(\A, i[x:=u]) \models \theta(t_1,...,t_k,x)$, para todo $u\in|\A|$}\\
-\mbox{\hspace{5mm} $\iff \langle |\A|$ tiene una función \texttt{SUC} que lo
-hace}\\
-\mbox{\hspace{15mm} isomórfico al conjunto de los primeros $n$ naturales.}\\
-\mbox{\hspace{15mm} Sea $a_i$ la i-ésima constante de $|\A| \ \rangle$.}\\
-\mbox{\hspace{10mm} $(\A, i) \models \theta(t_1,...,t_k,a_i)$, para todo $a_i
-\in |\A|$}\\
-\mbox{\hspace{5mm} $\iff \tup{\text{hipótesis inductiva}}$}\\
-\mbox{\hspace{10mm} hay un plan $\pi_i[t_1,...,t_k,a_i]$ que alcanza
-$\FT[\theta](t_1,...,t_k,a_i)$ desde $S[\A]$}\\
-\mbox{\hspace{10mm} para toda constante $a_i$.}\\
-\mbox{\hspace{5mm} $\iff \tup{\text{?}}$}\\
-\mbox{\hspace{10mm} $\pi'[t_1,...,t_k] =
-\langle \pi[t_1,...,t_k,a_0]$;\ \texttt{probar\_universal\_base};}\\
-\mbox{\hspace{10mm}
-$\pi[t_1,...,t_k,a_1]$;\ \texttt{probar\_universal\_inductivo(1)};\ ...\ ;}\\
-\mbox{\hspace{10mm} $\pi[t_1,...,t_k,a_{n-1}]$;\
-\texttt{probar\_universal\_inductivo(n-1)} $\rangle$}\\
-\mbox{\hspace{10mm} es un plan que alcanza $\FT[\theta](t_1,...,t_k,a)$ para
-toda constante $a$}\\
-\mbox{\hspace{10mm} desde $S[\A]$.}
+Caso $\varphi = (\forall x)\ \theta(t_1,\ldots,t_k,x):$
+\begin{alignat*}{1}
+& \quad \quad (\A, i) \models \varphi\\
+& \iff \tup{\text{definición \ref{semantica_def}(h), y todo objeto tiene nombre}}\\
+& \quad \quad (\A, i) \models \theta(t_1,\ldots,t_k,a), \text{ para toda
+constante $a$}\\
+& \iff \tup{\text{hipótesis inductiva}}\\
+& \quad\quad \text{para toda constante $a$ existe un plan $\pi[t_1,\ldots,t_k,a]$ que}\\
+& \quad\quad \text{alcanza $\FT[\theta](t_1,\ldots,t_k,a)$ desde } S[\A]\\
+& \iff \langle \text{existe un orden $a_i < a_{i+1}$ para todas las constantes,}\\
+& {\color{white} \iff \langle} \text{ determinado por \texttt{SUC}, y no hay
+\textit{deletes}} \rangle\\
+& \quad \quad \textbf{el plan } \langle \pi_0[t_1,\ldots,t_k,a_0];\
+\texttt{probar\_universal\_base\_}\varphi(t_1,\ldots,t_k);\\
+& \quad \quad \pi_1[t_1,\ldots,t_k,a_1];\
+\texttt{probar\_universal\_inductivo\_}\varphi(t_1,\ldots,t_k,a_1);\\
+& \quad \quad \ldots\ \\
+& \quad \quad \pi_{n-1}[t_1,\ldots,t_k,a_{n-1}];\
+\texttt{probar\_universal\_inductivo\_}\varphi(t_1,\ldots,t_k,a_{n-1}) \rangle\\
+& \quad \quad \textbf{alcanza la condición } \FT[\varphi](t_1,\ldots,t_k)
+\textbf{ desde } S[\A]
+\end{alignat*}
 \end{proof}
 
 \begin{theorem}
 Sea $\Phi = (\exists R_1)\cdots(\exists R_n) \varphi$.
-\\ $\A \models \Phi \iff$ existe un plan $\pi$ que alcanza $\FT[\Phi]$ desde $S[\A]$.
+$\A \models \Phi$ si y sólo si existe un plan $\pi$ que alcanza $\FT[\Phi]$ desde $S[\A]$.
 \end{theorem}
 \begin{proof}
-\ \\ \mbox{\hspace{5mm} $\A \models \Phi$}\\
-\noindent $\iff \tup{\text{definición \ref{semantica_def}(j)}}$ \\
-\mbox{\hspace{5mm} $\tup{\A, R_1',...,R_n'} \models \varphi$}\\
-\noindent $\iff $ existe $\pi$ que alcanza $\FT[\varphi]$ a partir de $S[\A,
-R_1',...,R_n']$.\\
-\noindent Basta mostrar que es posible alcanzar el estado $S[\A, R_1',...,R_n']$ desde
-$S[\A]$.\\
-$\pi$ consta de las siguientes acciones
-para cada tupla $\tup{u_1,...,u_k} \in |A|^k$, para cada $R_i$ con $i =
-\{1,...,n\}$:\\
-$\left\{\begin{array}{ll}
-\texttt{set\_true\_R\_i}(a_1,...,a_{k_i}) & \text{si } \tup{u_1,...,u_{k_i}} \in R_i\\
-\texttt{set\_false\_R\_i}(a_1,...,a_{k_i}) & \text{si } \tup{u_1,...,u_{k_i}} \not\in R_i\\
-\end{array}\right.$\\
-Al final se le agrega al plan la acción \texttt{comenzar\_prueba}.
+Por definición, $\A \models \Phi$ si y sólo si
+$\tup{\A, R_1',\ldots,R_n'} \models \varphi$.
+La hipótesis inductiva es que existe un plan $\pi'$ que alcanza $\FT[\varphi]$ a partir de $S[\A,
+R_1',\ldots,R_n']$.
+Basta mostrar que es posible alcanzar el estado $S[\A, R_1',\ldots,R_n']$ desde
+$S[\A]$. Sea $u_j = a_j^\A$ para $1 \leq j \leq k$.
+\begin{alignat*}{1}
+& \textbf{El plan }\\
+& \langle \ \tup{\texttt{colocar\_verdadera\_R\_i}(a_1,\ldots,a_{k_i}) 
+\text{ para cada } \tup{u_1,\ldots,u_k} \in R_i} \text{ para cada } R_i \ ;\\
+& {\color{white} \langle \ } \tup{\texttt{colocar\_falsa\_R\_i}(a_1,\ldots,a_{k_i}) \text { para cada
+} \tup{u_1,\ldots,u_k} \not\in R_i} \text{ para cada } R_i\ ;\\
+& {\color{white} \langle \ } \texttt{comenzar\_prueba}()\ \rangle\\
+& \textbf{alcanza el estado } S[\A, R_1',\ldots,R_n'] \textbf{ desde } S[\A].
+\end{alignat*}
+
 \end{proof}
+
+\section{Diseño del lenguaje}
+
+\subsection{Gramática}
+\begin{alignat*}{1}
+\sofbf\   & \deriv\ \lpar \SOExists\ \lpar \listrel \rpar\ \sofbf \rpar \\
+          & \deriv\ \lpar \SOForall\ \lpar \listrel \rpar\ \sofbf \rpar \\
+          & \deriv\ \pofbf \\[1em]
+\listrel\ & \deriv\ \rel\ \integer\ \listrel\ |\ \rel\ \integer \\
+          & \deriv\ \rel\ \tipof\ \listrel\ |\ \rel\ \tipof\ \\[1em]
+\tipof\   & \deriv\ \fun\ |\ \pfun\ |\ \inj\ |\ \pinj\ \\[1em]
+\pofbf\   & \deriv\ \lpar \rel\ \listvar \rpar \\
+          & \deriv\ \lpar \NOT\ \pofbf \rpar \\
+          & \deriv\ \lpar \AND\ \listpofbf \rpar \\
+          & \deriv\ \lpar \OR\ \listpofbf \rpar \\
+          & \deriv\ \lpar \IMPLIES\ \pofbf\ \pofbf \rpar \\
+          & \deriv\ \lpar \Exists\ \lpar \listvar \rpar\ \pofbf \rpar \\
+          & \deriv\ \lpar \Forall\ \lpar \listvar \rpar\ \pofbf \rpar \\[1em]
+\listvar\ & \deriv\ \var\ \listvar\ |\ \var \\[1em]
+\end{alignat*}
+
 
 %\begin{theorem}
 %La función $f_{\sigma, \Phi}$ es una reducción en tiempo polinomial del
