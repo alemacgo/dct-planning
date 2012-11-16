@@ -380,7 +380,7 @@ fórmulas particulares satisfacen la estructura \A.
 \begin{enumerate}
 \item $\A\models^?(\exists x)(E(s,x)\land E(x,t))$
 
-Sea $i : \text{VAR} \longrightarrow |\A|$ arbitraria.\\
+Sea $i : \text{VAR} \rightarrow |\A|$ arbitraria.\\
 Considere $j = i[x:=1]$.\\
 Se tiene por definición \ref{semantica_def}(b) que $(\A,j) \models E(s,1)$ y que $(\A,j) \models E(1,t)$.\\
 $\tup{\text{por definición \ref{semantica_def}(d)}}$\\
@@ -395,7 +395,7 @@ $\therefore\ \A \models \Phi$, porque $i$ es arbitraria.
 es cierta para un grafo si y sólo si es 2-coloreable. Se comprobará formalmente
 que $\A \models \Phi_{\textsc{2Col}}$ y el grafo, por tanto, es 2-coloreable.
 
-Sea $i : \text{VAR} \longrightarrow |\A|$ arbitraria.\\
+Sea $i : \text{VAR} \rightarrow |\A|$ arbitraria.\\
 Considere $R' = \{1\}$, y sea $\tup{A, R'}$ la estructura que extiende a $\A$
 donde $R$ se interpreta como $R'$.\\
 Se tiene por definición \ref{semantica_def}(b) que $(\tup{\A, R'},i) 
@@ -512,17 +512,26 @@ Por ejemplo, $(p\lor \neg q\lor r)\land(\neg p\lor \neg r)\land(\neg p\lor q)$
 es codificado como $\A=\tup{|\A|,N^\A,P^\A}$, donde $|\A|=\{0,1,2\}$,
 $N^\A=\{(1,0),(0,1),(2,1),(0,2)\}$ y $P^\A=\{(0,0),(2,0),(1,2)\}$.
 
+La existencia de una asignación de valores de verdad a las variables que
+satisfaga una fórmula en forma normal conjuntiva (CNF) puede ser expresada con la
+sentencia \SOE $\Phi_\SAT$:\footnote{Esta sentencia
+asume que $m\geq n$. En caso contrario, se debe añadir cláusulas tautológicas a
+la fórmula en CNF.}
+\[ (\exists T^1)(\forall y)(\exists x)[(P(x,y)\land T(x))\lor(N(x,y)\land\neg T(x))] \]
+
+La fórmula puede leerse como: existe una asignación de valores de verdad $T$
+tal que en toda cláusula hay al menos una variable que cumple una de las
+siguientes condiciones:
+\begin{enumerate}[--]
+\item la variable aparece positiva en la cláusula y está asignada a verdadero,
+i.e. $T(x)$
+\item la variable aparece negativa en la cláusula y está asignada a falso, i.e.
+$\neg T(x)$
+\end{enumerate}
+
+Nótese que $T$ es un \textit{certificado}, pues muestra cuál es la asignación 
+de variables necesaria para que la fórmula en CNF sea cierta.
+
 En el Apéndice \ref{apendiceA} se encuentran las fórmulas correspondientes a
-varios problemas NP.
-
-%On the other hand, a truth-assignment is a subset of true propositions
-%and the existence of a truth assignment (satisfiability) can be
-%expressed with the \SOE\ sentence $\Phi_\SAT$:\footnote{This
-%sentence assumes that $m\geq n$. If not, add tautological clauses to the CNF.}
-%\[ (\exists T^1)(\forall y)(\exists x)[(P(x,y)\land T(x))\lor(N(x,y)\land\neg T(x))] \]
-%
-% Otro ejemplo: camino hamiltoniano
-
-%\subsubsection{Equivalencias con complejidad en planificación automática}
-
-%\section{Trabajos previos}
+varios problemas NP, como camino hamiltoniano dirigido y colorabilidad de
+grafos, entre otros.

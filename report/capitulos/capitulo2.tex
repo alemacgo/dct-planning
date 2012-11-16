@@ -12,7 +12,7 @@ de sus entradas y salidas. Luego, se define formalmente una función de
 traducción de lógica a planificación, demostrando las propiedades pertinentes.
 Finalmente, se presenta la gramática de un lenguaje de especificación basado en lógica 
 y se describe brevemente la implementación de la herramienta, que consiste en un 
-analizador sintáctico y función de traducción ya descrita.
+analizador sintáctico para el lenguaje lógico encadenado con la función de traducción descrita.
 
 \section{Perspectiva general}
 Desde el punto de vista del usuario, la contribución de esta herramienta es
@@ -36,7 +36,7 @@ la propiedad en $\Phi$ puede obtenerse del plan en tiempo lineal.
 
 La traducción se basa en convertir la tarea de demostrar la validez de la
 fórmula lógica en una tarea de planificación. Por lo tanto, las acciones del
-dominio de planificación harán las veces de las operaciones de semántica
+dominio de planificación hacen las veces de las definiciones de la semántica
 formal, probando cada tipo de subfórmula según un esquema similar a la
 definición \ref{semantica_def}. La información específica al problema, como el
 estado inicial, está codificada por la estructura de primer orden que recibe la
@@ -61,13 +61,6 @@ y $\instance=\insred(\sigma,\Phi,\A)$ es una instancia PDDL.
 Para obtener algo de interés teórico y práctico, la reducción debe correr en
 tiempo polinomial y su salida debe ser resoluble en NP para que la complejidad
 de resolver su salida no sea mayor que la complejidad de resolver su entrada.
-Sin embargo, el problema de decisión de existencia de un plan para PDDL no está
-en NP porque (1)~el número de condiciones y acciones instanciadas puede ser
-exponencial en el tamaño de la entrada, y (2~) un plan de longitud mínima puede
-ser de tamaño exponencial en el número de condiciones y acciones instanciadas.
-Por lo tanto, no todas las reducciones son adecuadas para este propósito y su
-diseño debe realizarse cuidadosamente. En esta sección se
-presenta una reducción aceptable y se estudian sus propiedades formales.
 
 %Un problema STRIPS instanciado es una tupla $P=\tup{C,A,I,F}$
 %donde $C$ es un conjunto de condiciones (proposiciones),
@@ -94,23 +87,25 @@ presenta una reducción aceptable y se estudian sus propiedades formales.
 $\domred(\sigma,\Phi)$ produce un dominio para la firma
 $\sigma$ y la sentencia $\Phi\in\LSO(\sigma)$ de la forma
 $(\exists R_1^{a_1})\cdots(\exists R_n^{a_n})\psi$.
-Las acciones en el dominio se dividen en tres grupos: acciones para 
-colocar el valor de verdad de las variables de segundo orden (relaciones
-cuantificadas), acciones para probar la sentencia $\psi$ y dos otras acciones.
+Las acciones en el dominio se dividen en tres grupos: \textbf{acciones para 
+colocar el valor de verdad de las variables de segundo orden} (relaciones
+cuantificadas), \textbf{acciones para probar la sentencia} $\psi$ y \textbf{otras
+acciones}.
 
 \subsubsection{Acciones para las variables}
 Para cada variable de segundo orden $R_i$ de aridad $a_i$,
 existe una acción \fttt{colocar\_verdadera\_Ri} con $a_i$ parámetros que
-coloca la condición \fttt{Ri} y quita $\fttt{libre-Ri}$, el cual es
-inicialmente verdadero; estas condiciones se usan para denotar el valor de
+coloca la condición \fttt{Ri} y quita $\fttt{libre-Ri}$, el cual debe ser
+verdadero en el estado inicial de cualquier problema;
+estas condiciones se usan para denotar el valor de
 verdad de $R_i$. Por ejemplo, la acción para la relación $T^1$ en SAT es
 
 {\footnotesize
 \begin{Verbatim}
-(:action set_T_true
+(:action colocar_verdadera_T
   :parameters (?x)
-  :precondition (and (guess) (not-T ?x))
-  :effect (and (T ?x) (not (not-T ?x))))
+  :precondition (and (conjetura) (no-T ?x))
+  :effect (and (T ?x) (no (no-T ?x))))
 \end{Verbatim}
 }
 
@@ -127,38 +122,38 @@ El primer paso en la traducción es quitar todas las implicaciones
 y mover todas las negaciones hacia los literales mediante aplicaciones
 repetidas de las leyes de De~Morgan. Luego, se generan las acciones recorriendo
 recursivamente todas las subfórmulas $\theta$ de $\psi$ utilizando
-\textit{depth-first search} de la siguiente forma:
+búsqueda en profundidad de la siguiente forma:
 \footnote{$\theta(\bar x)$ significa que
 $\bar x$ son las variables libres de $\theta$.}
 
 \begin{enumerate}[--]
 \item si $\theta(\bar x)=\bigwedge_{i=1}^n \theta_i(\bar x_i)$
   con $\bar x=\cup_{i=1}^n \bar x_i$, entonces generar la acción
-  $\prove[\theta]$ con parámetros $\bar x$, precondición
+  $\texttt{probar\_y}[\theta]$ con parámetros $\bar x$, precondición
   $\bigwedge_{i=1}^n \FT[\theta_i](\bar x_i)$ y efecto \textit{add}
   $\FT[\theta](\bar x)$,
 %
 \item si $\theta(\bar x)=\bigvee_{i=1}^n \theta_i(\bar x_i)$ con
   $\bar x=\cup_{i=1}^n \bar x_i$, entonces generar $n$ acciones de la forma
-  $\prove[\theta]_i(\bar x_i)$ con precondición
+  $\texttt{probar\_o}[\theta]_i(\bar x_i)$ con precondición
   $\FT[\theta_i](\bar x_i)$ y efecto \textit{add} $\FT[\theta](\bar x)$,
 %
 \item si $\theta(\bar x)=(\exists y)\theta'(\bar x,y)$, entonces generar
-  $\prove[\theta](\bar x,y)$ con precondición $\FT[\theta'](\bar x,y)$
+  $\texttt{probar\_existencial}[\theta](\bar x,y)$ con precondición $\FT[\theta'](\bar x,y)$
   y efecto \textit{add} $\FT[\theta](\bar x)$,
 %
 \item si $\theta(\bar x)=(\forall y)\theta'(\bar x,y)$ entonces generar
   dos acciones. La idea es probar $\theta(\bar x)$, variando $y$
   sobre todos los objetos.
 
-  La primera acción $\prove[\theta]_0(\bar x)$ prueba $\theta'(\bar x,0)$.
+  La primera acción $\texttt{probar\_universal\_base}[\theta](\bar x)$ prueba $\theta'(\bar x,0)$.
   La acción tiene parámetros $\bar x$, precondición $\FT[\theta'](\bar x,0)$
   y efecto \textit{add} $\FT[(\forall y\leq z)\theta'(\bar x,y)](\bar x,0)$.
   (Observar que la traducción de la condición es aplicada a diferentes
 fórmulas,
   en las cuales la cuantificación está acotada por $z$.)
 
-  La segunda acción $\prove[\theta]_1(\bar x,z',z'')$ prueba inductivamente
+  La segunda acción $\texttt{probar\_universal\_inductivo}[\theta]_1(\bar x,z',z'')$ prueba inductivamente
   $(\forall y\leq z)\theta'(x,y)$ una vez que $(\forall y<z)\theta'(x,y)$ es
 verdad.
   La acción tiene parámetros $\bar x,z',z''$, precondición
@@ -315,32 +310,27 @@ Las propiedades más importantes a considerar en la herramienta son solidez,
 completitud y garantía de complejidad. Que la función de traducción sea sólida
 y completa significa que ella realmente implementa una reducción entre problemas de
 decisión, mientras que la garantía de complejidad se refiere al tiempo
-requerido para computar la reducción y la complejidad de decidir la existencia
-de un plan en el problema generado. En esta sección se demuestra que la 
-herramienta es una reducción en tiempo
-polinomial del problema NP expresado por $\Phi$ a un fragmento de planificación
-que es decidible en NP.
+requerido para computar la reducción y a la complejidad de decidir la existencia
+de un plan en el problema generado.
 
-%! ???
+Recuerde que la reducción se descompone en dos funciones $\domred :
+\text{Firmas} \times \SOE \rightarrow \text{Dominios PDDL}$, y $\insred :
+\text{Firmas} \times \SOE \times \struc \rightarrow \text{Instancias PDDL}$,
+tal que $\domain=\domred(\sigma,\Phi)$ es un dominio PDDL
+y $\instance=\insred(\sigma,\Phi,\A)$ es una instancia PDDL.
+
 Considere la función de \emph{instanciación} $\ground$ que transforma el par
 $\tup{\domain,\instance}$ de un dominio y problema PDDL en un problema STRIPS
-$P = \ground(\domain, \instance)$. Para un $\domain$ fijo, la función
-$\instance\leadsto\ground(\domain, \instance)$ corre en un tiempo polinomial
-$\O(\|\instance\|^k)$ para algún $k$ que sólo depende de $\domain$; de hecho,
-$k$ es la máxima aridad de un predicado o acción en el dominio.
+$P = \ground(\domain, \instance)$.
 
-De manera similar, la función de traducción $\insred$ corre en tiempo
-polinomial en el tamaño de la estructura $\A$, pero exponencial sobre la aridad
-más grande de un cuantificador de segundo orden existencial en $\Phi$. De este
-modo, la función $f_{\sigma,\Phi}:\struc[\sigma]\rightarrow\text{STRIPS}$
+Formalmente, $f_{\sigma,\Phi}:\struc[\sigma]\rightarrow\text{STRIPS}$
 definida por 
 \[ f_{\sigma,\Phi}(\A) = \ground(\domred(\sigma,\Phi),\insred(\sigma,\Phi,\A)) \]
-es una función en tiempo polinomial que asigna a las $\sigma$-estructuras un
+es una función que asigna a las $\sigma$-estructuras un
 problema instanciado STRIPS.
 
-Se debe demostrar que la función $f_{\sigma,\Phi}(\A)$ es una reducción y que
-los problemas de planificación que produce tienen a lo sumo la misma
-complejidad que \SOE.
+A continuación se demuestran las tres propiedades formales importantes sobre
+$f_{\sigma,\Phi}$.
 
 \subsection{Demostración de reducción}
 Se demostrará que $\A \models \Phi$ si y sólo si $f_{\sigma,\Phi}(\A)$ tiene
@@ -370,17 +360,17 @@ existe una constante `$a$' tal que $(\A, i) \models \varphi(t_1,\ldots,t_k,a)$.
 \begin{theorem}
 \label{teoremaprimerorden}
 Sea $\varphi \in \LPO(\sigma)$ y $t_1,\ldots,t_k$ $\sigma$-términos instanciados. Sea $\A \in
-\struc[\sigma]$ tal que todo objeto tiene nombre y sea $i : \text{VAR} \longrightarrow |\A|$.
+\struc[\sigma]$ tal que todo objeto tiene nombre y sea $i : \text{VAR} \rightarrow |\A|$.
 Entonces, $(\A, i) \models \varphi(t_1,\ldots,t_k)$ si y sólo si
 existe un plan $\pi[t_1,\ldots,t_k]$ que alcanza
-$\FT[\varphi](t_1,\ldots,t_k)$ desde el \textbf{estado inicial} $S[\A]$,
-donde $S[\A]$ es el estado de STRIPS en el cual los operadores que construyen la
+$\FT[\varphi](t_1,\ldots,t_k)$ desde el \textbf{estado intermedio} $I[\A]$,
+el estado de STRIPS en el cual los operadores que construyen la
 prueba empiezan a ser aplicables, definido por las siguientes condiciones:
 \begin{alignat*}{1}
-& S[\A] = \{\texttt{prueba}\} \cup \{ \texttt{R}(a_1,\ldots,a_k) :
+& I[\A] = \{\texttt{prueba}\} \cup \{ \texttt{R}(a_1,\ldots,a_k) :
 \tup{a_1^\A,\ldots,a_k^\A} \in R^\A\}\\
-& {\color{white} S[\A] = } \cup \{\texttt{no-R}(a_1,\ldots,a_k) : \tup{a_1^\A,\ldots,a_k^\A} \not\in R^\A\}\\
-& {\color{white} S[\A] = } \cup \{\texttt{SUC}(a_i, a_{i+1}) : 0 \leq i < n\}
+& {\color{white} I[\A] = } \cup \{\texttt{no-R}(a_1,\ldots,a_k) : \tup{a_1^\A,\ldots,a_k^\A} \not\in R^\A\}\\
+& {\color{white} I[\A] = } \cup \{\texttt{SUC}(a_i, a_{i+1}) : 0 \leq i < n\}
 \end{alignat*}
 \end{theorem}
 \begin{proof}
@@ -391,15 +381,15 @@ R(t_1,\ldots,t_k)$:
 & \quad \quad (\A, i) \models \varphi(t_1,\ldots,t_k)\\
 & \iff \tup{\text{definición \ref{semantica_def}(b)}} \\
 & \quad \quad \tup{t_1,\ldots,t_k} \in R^\A\\
-& \iff \tup{\text{definición de S[\A]}}\\
-& \quad \quad \texttt{R}(t_1,\ldots,t_k) \in S[\A]\\
+& \iff \tup{\text{definición de I[\A]}}\\
+& \quad \quad \texttt{R}(t_1,\ldots,t_k) \in I[\A]\\
 & \iff \tup{\text{definición de } \FT}\\
-& \quad \quad \FT[\varphi](t_1,\ldots,t_k) \in S[\A]\\
+& \quad \quad \FT[\varphi](t_1,\ldots,t_k) \in I[\A]\\
 & \iff \tup{\text{el plan vacío alcanza la condición } \FT[\varphi](t_1,\ldots,t_k)}\\
 & \quad \quad \pi[t_1,\ldots,t_k] =\ \tup{} \textbf{ es el plan.}
 \end{alignat*}
 El caso $\varphi = \neg R(t_1,\ldots,t_k)$ es análogo al anterior, con
-\texttt{not-R}$(t_1,\ldots,t_k) \in S[\A]$ en lugar de \texttt{R}$(t_1,\ldots,t_k)$.
+\texttt{not-R}$(t_1,\ldots,t_k) \in I[\A]$ en lugar de \texttt{R}$(t_1,\ldots,t_k)$.
 Ahora consideramos las fórmulas más complejas:
 
 Caso $\varphi = \varphi_1(t'_1,\ldots,t'_{k'}) \land \varphi_2(t_1'',\ldots,t''_{k''}) $:
@@ -412,15 +402,15 @@ Caso $\varphi = \varphi_1(t'_1,\ldots,t'_{k'}) \land \varphi_2(t_1'',\ldots,t''_
 & \quad \quad \pi_1[t'_1,\ldots,t'_{k'}] \text{ y } 
 \pi_2[t_1'',\ldots,t''_{k''}] \text{ son planes que alcanzan }\\
 & \quad \quad \FT[\varphi_1](t'_1,\ldots,t'_{k'}) \text{ y } \FT[\varphi_2](t'_1,\ldots,t'_{k''})
-\text{ desde } S[\A]\\
+\text{ desde } I[\A]\\
 & \iff \langle \text{como no hay \textit{deletes}, aplicar ambos planes en
 secuencia }\\
 & {\color{white}\iff\langle} \text{garantiza alcanzar
-$\FT[\varphi](t_1,\ldots,t_k)$ desde $S[\A]$} \rangle\\
+$\FT[\varphi](t_1,\ldots,t_k)$ desde $I[\A]$} \rangle\\
 & \quad \quad \textbf{el plan }\tup{\pi_1(t'_1,\ldots,t'_{k'});\
 \pi_2(t_1'',\ldots,t_{k_2}'');\ \texttt{probar\_y\_}\varphi(t_1,\ldots,t_k)} \\
 & \quad \quad \textbf{alcanza la condición }
-\FT[\varphi](t_1,\ldots,t_k) \textbf{ desde } S[\A]
+\FT[\varphi](t_1,\ldots,t_k) \textbf{ desde } I[\A]
 \end{alignat*}
 
 Caso $\varphi = \varphi_1(t_1',\ldots,t'_{k_1}) \lor \varphi_2(t''_1,\ldots,t''_{k_2}) $:
@@ -437,7 +427,7 @@ $\FT[\varphi_1](t_1,\ldots,t_{k_1})$ desde $[\A]$}\\
 & \quad \quad \textbf{el plan } \tup{\pi_1(t_1,\ldots,t_{k_1});\
 \texttt{probar\_o\_}\varphi(t_1,\ldots,t_k)} \\
 & \quad \quad \textbf{alcanza la condición }
-\FT[\varphi](t_1,\ldots,t_k) \textbf{ desde } S[\A]\\
+\FT[\varphi](t_1,\ldots,t_k) \textbf{ desde } I[\A]\\
 & \text{Caso $(\A, i) \models \varphi_2(t''_1,\ldots,t''_{k''})$:}\\
 & \quad \quad \text{Análogo al caso anterior.}
 %Caso $\varphi = \varphi_1(t_1',\ldots,t'_{k'}) \Rightarrow \varphi_2(t''_1,\ldots,t''_{k''}) $:
@@ -453,12 +443,12 @@ tiene nombre, }\\
 & \quad \quad (\A, i) \models \theta(t_1,\ldots,t_k,a)\\
 & \iff \tup{\text{hipótesis inductiva}}\\
 & \quad \quad \pi[t_1,\ldots,t_k,a] \text{ es un plan que alcanza }
-\FT[\theta](t_1,\ldots,t_k,a) \text{ desde } S[\A]\\
+\FT[\theta](t_1,\ldots,t_k,a) \text{ desde } I[\A]\\
 & \iff \tup{\text{no hay \textit{deletes}}}\\
 & \quad \quad \textbf{el plan } \langle \pi[t_1,\ldots,t_k,a];\
 \texttt{probar\_existencial\_}\varphi(t_1,\ldots,t_k)\rangle\\
 & \quad \quad \textbf{alcanza la condición } \FT[\varphi](t_1,\ldots,t_k)
-\textbf{ desde } S[\A]
+\textbf{ desde } I[\A]
 \end{alignat*}
 
 Caso $\varphi = (\forall x)\ \theta(t_1,\ldots,t_k,x):$
@@ -469,35 +459,32 @@ Caso $\varphi = (\forall x)\ \theta(t_1,\ldots,t_k,x):$
 constante $a$}\\
 & \iff \tup{\text{hipótesis inductiva}}\\
 & \quad\quad \text{para toda constante $a$ existe un plan $\pi[t_1,\ldots,t_k,a]$ que}\\
-& \quad\quad \text{alcanza $\FT[\theta](t_1,\ldots,t_k,a)$ desde } S[\A]\\
+& \quad\quad \text{alcanza $\FT[\theta](t_1,\ldots,t_k,a)$ desde } I[\A]\\
 & \iff \langle \text{existe un orden $a_i < a_{i+1}$ para todas las constantes,}\\
 & {\color{white} \iff \langle} \text{ determinado por \texttt{SUC}, y no hay
 \textit{deletes}} \rangle\\
 & \quad \quad \textbf{el plan } \langle \pi_0[t_1,\ldots,t_k,a_0];\
-\texttt{probar\_universal\_base\_}\varphi(t_1,\ldots,t_k);\\
+\texttt{probar\_universal\_base\_}\varphi(t_1,\ldots,t_k,a_0);\\
 & \quad \quad \pi_1[t_1,\ldots,t_k,a_1];\
-\texttt{probar\_universal\_inductivo\_}\varphi(t_1,\ldots,t_k,a_1);\\
+\texttt{probar\_universal\_inductivo\_}\varphi(t_1,\ldots,t_k,a_0,a_1);\\
 & \quad \quad \ldots\ \\
-& \quad \quad \pi_{n-1}[t_1,\ldots,t_k,a_{n-1}];\
+& \quad \quad \pi_{n-1}[t_1,\ldots,t_k,a_{n-2},a_{n-1}];\
 \texttt{probar\_universal\_inductivo\_}\varphi(t_1,\ldots,t_k,a_{n-1}) \rangle\\
 & \quad \quad \textbf{alcanza la condición } \FT[\varphi](t_1,\ldots,t_k)
-\textbf{ desde } S[\A]
+\textbf{ desde } I[\A]
 \end{alignat*}
 \end{proof}
 
-Se define ahora formalmente el estado inicial de un problema de planificación
-generado por la traducción. La traducción completa del
-problema está en la sección \ref{traduccionproblema}.
-
 \begin{definition}
 Sea $\Phi = (\exists R_1^{k_1})\cdots(\exists R_m^{k_m}) \varphi$.
+El \textbf{estado inicial} \textsc{init}[\A] de un problema STRIPS generado por
+$f_{\sigma,\Phi}(\A)$ es:
 \begin{alignat*}{1}
-& \textsc{init}(f_{\sigma,\Phi}(\A)) = \{\{ \texttt{P}(a_1,\ldots,a_k) :
+& \textsc{init}(\A) = \{\{ \texttt{P}(a_1,\ldots,a_k) :
 \tup{a_1^\A,\ldots,a_k^\A} \in P^\A\}\\
-& {\color{white} \texttt{init}(f_{\sigma,\Phi}(\A)) = } \cup \{\texttt{no-P}(a_1,\ldots,a_k) : \tup{a_1^\A,\ldots,a_k^\A} \not\in P^\A\}\\
-& {\color{white} \texttt{init}(f_{\sigma,\Phi}(\A)) = } \cup \{\texttt{SUC}(a_i, a_{i+1}) : 0 \leq i < n \} \\
-& {\color{white} \texttt{init}(f_{\sigma,\Phi}(\A)) = } \cup
-\{\texttt{libre-R\_i}(t)) : \text{ para todo $t \in |\A|^{k_i}$},
+& {\color{white} \texttt{init}[\A] = } \cup \{\texttt{no-P}(a_1,\ldots,a_k) : \tup{a_1^\A,\ldots,a_k^\A} \not\in P^\A\}\\
+& {\color{white} \texttt{init}[\A] = } \cup \{\texttt{SUC}(a_i, a_{i+1}) : 0 \leq i < n \} \\
+& {\color{white} \texttt{init}[\A] = } \cup \{\texttt{libre-R\_i}(t)) : \text{ para todo $t \in |\A|^{k_i}$},
 R_i\in\{R_1,\ldots,R_m\}\} \}
 \end{alignat*}
 \end{definition}
@@ -512,9 +499,9 @@ desde el estado inicial $\textsc{init}(f_{\sigma,\Phi}(\A))$.
 Por definición, $\A \models \Phi$ si y sólo si
 $\tup{\A, R_1',\ldots,R_n'} \models \varphi$.
 Por Teorema \ref{teoremaprimerorden}, esto es verdad si y sólo si 
-existe un plan $\pi'$ que alcanza $\FT[\varphi]$ a partir de $S[\A,
+existe un plan $\pi'$ que alcanza $\FT[\varphi]$ a partir de $I[\A,
 R_1',\ldots,R_n']$.
-Basta mostrar que es posible alcanzar el estado $S[\A, R_1',\ldots,R_n']$ desde
+Basta mostrar que es posible alcanzar el estado $I[\A, R_1',\ldots,R_n']$ desde
 $\textsc{init}(f_{\sigma,\Phi}(\A))$. Sea $u_j = a_j^\A$ para $1 \leq j \leq k$.
 \begin{alignat*}{1}
 & \textbf{El plan }\\
@@ -523,12 +510,46 @@ $\textsc{init}(f_{\sigma,\Phi}(\A))$. Sea $u_j = a_j^\A$ para $1 \leq j \leq k$.
 & {\color{white} \langle \ } \tup{\texttt{colocar\_falsa\_Ri}(a_1,\ldots,a_{k_i}) \text { para cada
 } \tup{u_1,\ldots,u_k} \not\in R_i} \text{ para cada } R_i\ ;\\
 & {\color{white} \langle \ } \texttt{comenzar\_prueba}()\ \rangle\\
-& \textbf{alcanza el estado } S[\A, R_1',\ldots,R_n'] \textbf{ desde }
+& \textbf{alcanza el estado } I[\A, R_1',\ldots,R_n'] \textbf{ desde }
 \textsc{init}(f_{\sigma,\Phi}(\A)).
 \end{alignat*}
 \end{proof}
 
+\subsection{Tiempo de corrida de la reducción}
+En esta sección se demuestra que $f_{\sigma,\Phi}$ es una reducción en tiempo
+polinomial del problema NP expresado por $\Phi$ en STRIPS.
+
+Recuerde que 
+$ f_{\sigma,\Phi}(\A) = \ground(\domred(\sigma,\Phi),\insred(\sigma,\Phi,\A))
+$.
+Para un $\domain$ fijo, la función
+$\instance\leadsto\ground(\domain, \instance)$ corre en un tiempo polinomial
+$\O(\|\instance\|^k)$ para algún $k$ que sólo depende de $\domain$; de hecho,
+$k$ es la máxima aridad de un predicado o acción en el dominio. Nótese que en
+este caso el dominio puede generarse de manera independiente del problema 
+utilizando sólo una fórmula de segundo orden. Al no depender de $\A$, el
+dominio es fijo y $\domred$ corre en tiempo polinomial.
+
+La función de traducción $\insred$ corre en tiempo
+polinomial en el tamaño de la estructura $\A$, puesto que sólo se agregan
+condiciones que equivalen al estado de las relaciones $P\in\sigma$ al estado inicial.
+
+%pero exponencial sobre la aridad
+%más grande de un cuantificador de segundo orden existencial en $\Phi$. 
+
 \subsection{Demostración de complejidad}
+Se debe demostrar que los problemas de planificación producidos 
+por $f_{\sigma,\Phi}(\A)$ tienen a lo sumo la misma
+complejidad que \SOE.
+
+El problema de decisión de existencia de un plan general para un problema
+STRIPS no está en NP porque (1)~el número de condiciones y acciones instanciadas puede ser
+exponencial en el tamaño de la entrada, y (2)~incluso los planes más cortos pueden
+ser de tamaño exponencial en el número de condiciones y acciones instanciadas.
+%Por lo tanto, no todas las reducciones son adecuadas para este propósito y su
+%diseño debe realizarse cuidadosamente. En esta sección se
+%presenta una reducción aceptable y se estudian sus propiedades formales.
+
 Como se ha mencionado en la sección \ref{complejidad_planificacion}, 
 se sabe que verificar la existencia de un plan para 
 problemas de planificación
@@ -579,10 +600,11 @@ tiempo polinomial.
 \end{proof}
 
 Por lo tanto, la herramienta traduce cualquier problema NP, codificado con una
-sentencia \SOE, a STRIPS-1.
+sentencia \SOE, a un problema STRIPS-1 que se ubica en la clase de complejidad
+NP.
 
 \section{Diseño del lenguaje}
-
+df
 \subsection{Gramática}
 \begin{alignat*}{1}
 \sofbf\   & \deriv\ \lpar \SOExists\ \lpar \listrel \rpar\ \sofbf \rpar \\
@@ -601,6 +623,7 @@ sentencia \SOE, a STRIPS-1.
 \listvar\ & \deriv\ \var\ \listvar\ |\ \var \\[1em]
 \end{alignat*}
 
+\section{Implementación de la herramienta}
 
 %\begin{theorem}
 %La función $f_{\sigma, \Phi}$ es una reducción en tiempo polinomial del
