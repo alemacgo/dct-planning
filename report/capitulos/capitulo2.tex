@@ -294,16 +294,6 @@ $R$ no han sido asignados (\fttt{libre\_f}), y en casos en los que un símbolo
 represente una función o función inyectiva, la situación inicial incluye
 condiciones del tipo \fttt{libre\_R\_dom} y \fttt{libre\_R\_ran}.
 
-%\subsubsection{Constantes}
-%Los símbolos de constantes que pertenecen a la firma (por ejemplo,
-%$K\in\sigma$) son `preprocesados' y convertidos a relaciones unarias
-%que son ciertas para el elemento en $\A$ que interpreta $K$, i.e. $K^\A$.
-%El preprocesamiento consiste en reescribir la 
-
-%$K^\A$. The preprocessing consists of rewriting the logical %!fix
-%formulae that use the constant into appropriate formulae that
-%use the new relation, and in extending the initial situation of
-%the problem with the value of the relation.
 
 \section{Propiedades formales}
 Las propiedades más importantes a considerar en la herramienta son solidez,
@@ -469,7 +459,7 @@ constante $a$}\\
 \texttt{probar\_universal\_inductivo\_}\varphi(t_1,\ldots,t_k,a_0,a_1);\\
 & \quad \quad \ldots\ \\
 & \quad \quad \pi_{n-1}[t_1,\ldots,t_k,a_{n-2},a_{n-1}];\
-\texttt{probar\_universal\_inductivo\_}\varphi(t_1,\ldots,t_k,a_{n-1}) \rangle\\
+\texttt{probar\_universal\_inductivo\_}\varphi(t_1,\ldots,t_k,a_{n-2},a_{n-1}) \rangle\\
 & \quad \quad \textbf{alcanza la condición } \FT[\varphi](t_1,\ldots,t_k)
 \textbf{ desde } I[\A]
 \end{alignat*}
@@ -537,7 +527,7 @@ condiciones que equivalen al estado de las relaciones $P\in\sigma$ al estado ini
 %pero exponencial sobre la aridad
 %más grande de un cuantificador de segundo orden existencial en $\Phi$. 
 
-\subsection{Demostración de complejidad}
+\subsection{Complejidad de los problemas generados}
 Se debe demostrar que los problemas de planificación producidos 
 por $f_{\sigma,\Phi}(\A)$ tienen a lo sumo la misma
 complejidad que \SOE.
@@ -604,8 +594,16 @@ sentencia \SOE, a un problema STRIPS-1 que se ubica en la clase de complejidad
 NP.
 
 \section{Diseño del lenguaje}
-df
-\subsection{Gramática}
+El lenguaje de entrada de la herramienta debe ser capaz de expresar
+sintácticamente cualquier fórmula \LSO existencial. En el capítulo
+\ref{Chapter4} se presenta una extensión de la herramienta que le permite
+traducir problemas en la clase más compleja PH, por lo que es necesario
+agregarle al lenguaje el operador $\forall$ de segundo orden, $\SOForall$.
+La figura \ref{gramatica} muestra la gramática del lenguaje propuesto
+en forma Backus-Naur, que permite especificar fórmulas lógicas generales de
+segundo orden.
+
+\begin{figure}[h]
 \begin{alignat*}{1}
 \sofbf\   & \deriv\ \lpar \SOExists\ \lpar \listrel \rpar\ \sofbf \rpar \\
           & \deriv\ \lpar \SOForall\ \lpar \listrel \rpar\ \sofbf \rpar \\
@@ -622,8 +620,41 @@ df
           & \deriv\ \lpar \Forall\ \lpar \listvar \rpar\ \pofbf \rpar \\[1em]
 \listvar\ & \deriv\ \var\ \listvar\ |\ \var \\[1em]
 \end{alignat*}
+\label{gramatica}
+\caption{Gramática en BNF del lenguaje que se utiliza para expresar $\Phi$ en
+la herramienta.}
+\end{figure}
+
+Para especificar una firma $\sigma = \tup{R_1^{k_1},\ldots,R_n^{k_n}}$ se utiliza la notación:
+\begin{verbatim}
+?R_1 k_1
+...
+?R_n k_n
+\end{verbatim}
+
+Para especificar constantes en la firma se utilizan relaciones unarias que son
+ciertas sólo para el elemento de $|\A|$ que interpreta la constante.
+Esto simplifica el procesamiento. Por ejemplo, si se quiere agregar una
+constante $K$ se agrega una relación unaria a la
+firma \texttt{?K 1}.
+
+%\subsubsection{Constantes}
+%Los símbolos de constantes que pertenecen a la firma (por ejemplo,
+%$K\in\sigma$) son `preprocesados' y convertidos a relaciones unarias
+%que son ciertas para el elemento en $\A$ que interpreta $K$, i.e. $K^\A$.
+%El preprocesamiento consiste en reescribir la 
+
+%$K^\A$. The preprocessing consists of rewriting the logical %!fix
+%formulae that use the constant into appropriate formulae that
+%use the new relation, and in extending the initial situation of
+%the problem with the value of the relation.
 
 \section{Implementación de la herramienta}
+La herramienta fue implementada en el lenguaje de programación \textit{python}.
+
+El \textit{software} consiste en un analizador sintáctico LL(1) implementado
+de forma descendente recursiva. Según este esquema, se construye un árbol
+sintáctico
 
 %\begin{theorem}
 %La función $f_{\sigma, \Phi}$ es una reducción en tiempo polinomial del
