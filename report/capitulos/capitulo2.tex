@@ -15,6 +15,10 @@ y se describe brevemente la implementación de la herramienta, que consiste en u
 analizador sintáctico y función de traducción ya descrita.
 
 \section{Perspectiva general}
+Desde el punto de vista del usuario, la contribución de esta herramienta es
+proveer una forma alternativa y descriptiva de especificar problemas de forma
+que sea posible obtener e interpretar su solución.
+
 Como puede verse en la Figura \ref{esquema_herramienta}, la herramienta tiene
 como entradas una sentencia $\Phi\in\SOE(\sigma)$, y
 una estructura finita de primer orden $\A\in\struc[\sigma]$ sobre la cual se
@@ -40,44 +44,271 @@ herramienta. Se ha visto que estas estructuras pueden representar grafos, por lo
 que el \textit{software} es especialmente útil para la modelación y resolución
 de problemas de grafos.
 
-Desde el punto de vista del usuario, la contribución de esta herramienta es
-proveer una forma alternativa y descriptiva de especificar problemas de forma
-que sea posible obtener e interpretar su solución.
-
-
-Hence, we can think of the tool as a generator of reductions
-among problems. Recall that, in general, a reduction from problem
-$A$ into problem $B$ is a computable function $f$ such that
-for each instance $\omega$, $\omega\in A$ iff $f(\omega)\in B$.
-
-In our case, the reduction decomposes in two functions
-\begin{alignat*}{1}
-&\domred: \text{Signatures} \times \SOE \rightarrow \text{PDDL Domains}\,, \\
-&\insred: \text{Signatures} \times \SOE \times \struc \rightarrow \text{PDDL Instances}
-\end{alignat*}
-such that $\domain=\domred(\sigma,\Phi)$ is a PDDL domain
-and $\instance=\insred(\sigma,\Phi,\A)$ is an instance.
-
-In order to get something of theoretical and practical 
-interest, the reduction should run in polynomial time,
-so that it would not be able to check whether $\A$
-satisfies $\Phi$ and then produce a trivial planning
-problem, and its output should be solvable in NP so that
-complexity of solving the output problem is no bigger than
-solving the input problem.
-However, the plan-existence decision problem for PDDL is
-not in NP because (1)~the number of grounded fluents
-and actions may be exponential in the input size, and
-(2)~a minimum-length plan may be of exponential size in
-the number of grounded fluents and actions.
-Thus, not every reduction qualifies for our purposes
-and we must be careful with its design. In the following
-two sections, we present an acceptable reduction and 
-study its formal properties.
-
 \section{Reducción de LSO a STRIPS}
+Una \textbf{reducción} de un problema $A$ a un problema $B$ es una función
+computable $f$ tal que para cada instancia
+$\omega$, $\omega\in A$ si y sólo si $f(\omega)\in B$.
+La herramienta puede ser considerada un generador de reducciones entre problemas.
+
+En este caso, la reducción se descompone en dos funciones
+\begin{alignat*}{1}
+&\domred: \text{Firmas} \times \SOE \rightarrow \text{Dominios PDDL}\,, \\
+&\insred: \text{Firmas} \times \SOE \times \struc \rightarrow \text{Instancias PDDL}
+\end{alignat*}
+tal que $\domain=\domred(\sigma,\Phi)$ es un dominio PDDL
+y $\instance=\insred(\sigma,\Phi,\A)$ es una instancia PDDL.
+
+Para obtener algo de interés teórico y práctico, la reducción debe correr en
+tiempo polinomial y su salida debe ser resoluble en NP para que la complejidad
+de resolver su salida no sea mayor que la complejidad de resolver su entrada.
+Sin embargo, el problema de decisión de existencia de un plan para PDDL no está
+en NP porque (1)~el número de condiciones y acciones instanciadas puede ser
+exponencial en el tamaño de la entrada, y (2~) un plan de longitud mínima puede
+ser de tamaño exponencial en el número de condiciones y acciones instanciadas.
+Por lo tanto, no todas las reducciones son adecuadas para este propósito y su
+diseño debe realizarse cuidadosamente. En esta sección se
+presenta una reducción aceptable y se estudian sus propiedades formales.
+
+%Un problema STRIPS instanciado es una tupla $P=\tup{C,A,I,F}$
+%donde $C$ es un conjunto de condiciones (proposiciones),
+%$I\subseteq C$ denota el estado inicial,
+%$F\subseteq C$ denota el estado final
+%y $A$ es una colección de operadores.
+%
+%Each action $a\in O$ is defined by three subsets of fluents $pre(a)$,
+%$add(a)$ and $del(a)$ that stand for the precondition, and the
+%positive and negative effects of the action.
+%As usual, action $a$ is applicable at state $s\subseteq F$ iff
+%$pre(a)\subseteq s$, and the result of applying $a$ at such state
+%is $res(s,a)=(s\setminus del(a))\cup add(a)$.
+%A plan for state $s$ is a sequence of actions applicable from the
+%initial state $I$ that achieves the goal condition.
+
+%, and hence the \emph{grounding}
+%of $\tup{\domain,\instance}$ results in an STRIPS problem $P$.
+%The size of the grounding is polynomial for \emph{fixed} domain,
+%but exponential for unrestricted domain and instance.
+
 \subsection{Reducción del dominio}
-\subsection{Reducción del problema}
+
+$\domred(\sigma,\Phi)$ produce un dominio para la firma
+$\sigma$ y la sentencia $\Phi\in\LSO(\sigma)$ de la forma
+$(\exists R_1^{a_1})\cdots(\exists R_n^{a_n})\psi$.
+Las acciones en el dominio se dividen en tres grupos: acciones para 
+colocar el valor de verdad de las variables de segundo orden (relaciones
+cuantificadas), acciones para probar la sentencia $\psi$ y dos otras acciones.
+
+\subsubsection{Acciones para las variables}
+Para cada variable de segundo orden $R_i$ de aridad $a_i$,
+existe una acción \fttt{colocar\_verdadera\_Ri} con $a_i$ parámetros que
+coloca la condición \fttt{Ri} y quita $\fttt{libre-Ri}$, el cual es
+inicialmente verdadero; estas condiciones se usan para denotar el valor de
+verdad de $R_i$. Por ejemplo, la acción para la relación $T^1$ en SAT es
+
+{\footnotesize
+\begin{Verbatim}
+(:action set_T_true
+  :parameters (?x)
+  :precondition (and (guess) (not-T ?x))
+  :effect (and (T ?x) (not (not-T ?x))))
+\end{Verbatim}
+}
+
+\subsubsection{Acciones para las subfórmulas}
+Los operadores del segundo tipo están diseñados para construir una prueba de
+$\psi$ (si existe) por inducción sobre la estructura de $\psi$.
+Para cada subfórmula $\theta$ de $\psi$, hay una condición
+$\FT[\theta]$ que denota su validez, y hay una acción que la añade.
+Los parámetros de la condición $\FT[\theta]$ son las variables libres de
+$\theta$; la función $\FT[\cdot]$ se llama la \textit{traducción de la
+condición}.
+
+El primer paso en la traducción es quitar todas las implicaciones
+y mover todas las negaciones hacia los literales mediante aplicaciones
+repetidas de las leyes de De~Morgan. Luego, se generan las acciones recorriendo
+recursivamente todas las subfórmulas $\theta$ de $\psi$ utilizando
+\textit{depth-first search} de la siguiente forma:
+\footnote{$\theta(\bar x)$ significa que
+$\bar x$ son las variables libres de $\theta$.}
+
+\begin{enumerate}[--]
+\item si $\theta(\bar x)=\bigwedge_{i=1}^n \theta_i(\bar x_i)$
+  con $\bar x=\cup_{i=1}^n \bar x_i$, entonces generar la acción
+  $\prove[\theta]$ con parámetros $\bar x$, precondición
+  $\bigwedge_{i=1}^n \FT[\theta_i](\bar x_i)$ y efecto \textit{add}
+  $\FT[\theta](\bar x)$,
+%
+\item si $\theta(\bar x)=\bigvee_{i=1}^n \theta_i(\bar x_i)$ con
+  $\bar x=\cup_{i=1}^n \bar x_i$, entonces generar $n$ acciones de la forma
+  $\prove[\theta]_i(\bar x_i)$ con precondición
+  $\FT[\theta_i](\bar x_i)$ y efecto \textit{add} $\FT[\theta](\bar x)$,
+%
+\item si $\theta(\bar x)=(\exists y)\theta'(\bar x,y)$, entonces generar
+  $\prove[\theta](\bar x,y)$ con precondición $\FT[\theta'](\bar x,y)$
+  y efecto \textit{add} $\FT[\theta](\bar x)$,
+%
+\item si $\theta(\bar x)=(\forall y)\theta'(\bar x,y)$ entonces generar
+  dos acciones. La idea es probar $\theta(\bar x)$, variando $y$
+  sobre todos los objetos.
+
+  La primera acción $\prove[\theta]_0(\bar x)$ prueba $\theta'(\bar x,0)$.
+  La acción tiene parámetros $\bar x$, precondición $\FT[\theta'](\bar x,0)$
+  y efecto \textit{add} $\FT[(\forall y\leq z)\theta'(\bar x,y)](\bar x,0)$.
+  (Observar que la traducción de la condición es aplicada a diferentes
+fórmulas,
+  en las cuales la cuantificación está acotada por $z$.)
+
+  La segunda acción $\prove[\theta]_1(\bar x,z',z'')$ prueba inductivamente
+  $(\forall y\leq z)\theta'(x,y)$ una vez que $(\forall y<z)\theta'(x,y)$ es
+verdad.
+  La acción tiene parámetros $\bar x,z',z''$, precondición
+  $\FT[(\forall y\leq z)\theta'(\bar x, y)](\bar x,z')\land\FT[\theta'](\bar x,z'')\land \SUC(z',z'')$
+  y efecto \textit{add} $\FT[(\forall y\leq z)\theta'(\bar x,y)](\bar x,z')$.
+\end{enumerate}
+Todas estas acciones tienen como precondición adicional la condición
+\fttt{prueba}. Además, nótese que no hay acciones para las fórmulas literales.
+Éstas son manejadas por la traducción de condiciones, cuya función es asignar
+fórmulas a condiciones de esta manera:
+\begin{enumerate}[--]
+\item $\FT[Q(\bar x)](\bar x)=Q(\bar x)$,
+\item $\FT[\neg Q(\bar x)](\bar x)=\fttt{no-}Q(\bar x)$,
+\item $\FT[(\forall y)\theta'(\bar x,y)](\bar x) =
+  \FT[(\forall y\leq z)\theta'(\bar x,y)](\bar x,\max)$,
+\item en cualquier otro caso, $\FT[\theta](\bar x)=\fttt{es\_cierto\_<id>}(\bar x)$
+  donde \fttt{<id>} es un identificador único para $\theta$.
+\end{enumerate}
+La función de traducción también se encarga de instanciar variables a términos
+cuando es aplicada a literales que involucran a constantes.
+
+\subsubsection{Otras acciones}
+La traducción requiere de dos otras acciones. La primera,
+llamada \fttt{empezar\_prueba} sirve para cambiar la fase de
+`conjetura' a `prueba', tiene precondición \fttt{conjetura}, agrega
+\fttt{prueba} y quita \fttt{conjetura}. La otra acción se llama
+\fttt{probar-meta}, tiene precondición $\FT[\psi]$ y agrega 
+\fttt{es\_cierto\_meta}.
+
+%Figure~\ref{figure:sat} shows the domain for $\Phi_\SAT$.
+
+%\begin{SaveVerbatim}{SAT}
+%(define (domain SAT)
+%  (:constants zero max)
+%  (:predicates
+%    (holds_and_2 ?x ?y) (holds_and_6 ?x0 ?x1)
+%    (holds_exists_8 ?x0) (holds_forall_9 ?x0)
+%    (holds_or_7 ?x0 ?x1) (holds_goal)
+%    (N ?x ?y) (P ?x ?y) (T ?x) (not-T ?x)
+%    (suc ?x ?y)
+%  )
+%  (:action set_T_true
+%    :parameters (?x)
+%    :precondition (and (guess) (not-T ?x))
+%    :effect (and (T ?x) (not (not-T ?x))))
+%
+%  (:action prove_forall_9_1
+%    :precondition (and (proof)
+%                       (holds_exists_8 zero))
+%    :effect (holds_forall_9 zero))
+%
+%  (:action prove_forall_9_2
+%    :parameters (?y1 ?y2)
+%    :precondition (and (proof)
+%                       (suc ?y1 ?y2)
+%                       (holds_forall_9 ?y1)
+%                       (holds_exists_8 ?y2))
+%    :effect (holds_forall_9 ?y2))
+%
+%  (:action prove_exists_8
+%    :parameters (?y ?x)
+%    :precondition (and (proof)
+%                       (holds_or_7 ?y ?x))
+%    :effect (holds_exists_8 ?y))
+%
+%  (:action prove_or_7_0
+%    :parameters (?y ?x)
+%    :precondition (and (proof)
+%                       (holds_and_2 ?y ?x))
+%    :effect (holds_or_7 ?y ?x))
+%
+%  (:action prove_or_7_1
+%    :parameters (?y ?x)
+%    :precondition (and (proof)
+%                       (holds_and_6 ?y ?x))
+%    :effect (holds_or_7 ?y ?x))
+%
+%  (:action prove_and_2
+%    :parameters (?y ?x)
+%    :precondition (and (proof)
+%                       (P ?x ?y) (T ?x))
+%    :effect (holds_and_2 ?y ?x))
+%
+%  (:action prove_and_6
+%    :parameters (?y ?x)
+%    :precondition (and (proof)
+%                       (N ?x ?y) (not-T ?x))
+%    :effect (holds_and_6 ?y ?x))
+%
+%  (:action prove-goal
+%    :precondition (holds_forall_9 max)
+%    :effect (holds_goal))
+%
+%  (:action begin-proof
+%    :precondition (guess)
+%    :effect (and (proof) (not (guess)))) )
+%\end{SaveVerbatim}
+
+%\begin{figure}
+%\begin{center}
+%\footnotesize
+%\UseVerbatim{SAT}
+%\end{center}
+%\vskip -.85em
+%\caption{Domain translation for $\Phi_\text{sat}=(\exists T^1)(\forall y)(\exists x)$
+%$[(P(x,y)\land T(x))\lor(N(x,y)\land\neg T(x))]$.}
+%\label{figure:sat}
+%\end{figure}
+
+\subsubsection{Abreviaciones}
+Al haber abreviaciones, las acciones para las variables de segundo orden son
+extendidos para hacer la traducción más eficiente. Para $(\exists F\in\Fun)$,
+la precondición y el \textit{delete} de \fttt{colocar\_verdadera\_F} son
+extendidos con la condición \fttt{(libre\_F\_dom ?x)} de modo de que pueda
+haber a lo sumo una condición $F(x,y)$ verdadera para cada $x$. Así, no hay
+necesidad de incluir la subfórmula $\psi_\text{fun}$. 
+
+De forma similar, para $(\exists F\in\Inj)$ la precondición y el
+\textit{delete}
+son extendidos adicionalmente con la condición \fttt{(libre\_F\_ran ?y)}.
+
+\subsection{Problema}
+
+\label{traduccionproblema}
+El problema PDDL es generado por la llamada $\insred(\sigma,\Phi,\A)$, donde
+$\sigma$ es una firma, $\Phi\in\LSO(\sigma)$ y $\A\in\struc[\sigma]$.
+Los objetos en el problema corresponden a los elementos en el universo
+$|\A|=\{0,\ldots,n-1\}$: $0$ se asigna al objeto
+\fttt{zero}, $n-1$ al objeto \fttt{max}, y los otros elementos
+$0<i<n-1$ a los objetos \fttt{obj\_i}.
+El objetivo es alcanzar la condición \fttt{es\_cierto\_meta}, y la situación
+inicial consiste en condiciones describiendo el valor de verdad de todas las
+relaciones en $\A$ y las relaciones predefinidas como $<$, SUC y otras. Sin
+embargo, no es necesario incluir condiciones para relaciones que no se
+mencionan en $\Phi$. Además, para cada variable de segundo orden $R$, la
+situación inicial tiene condiciones que denotan que los valores de verdad de
+$R$ no han sido asignados (\fttt{libre\_f}), y en casos en los que un símbolo
+represente una función o función inyectiva, la situación inicial incluye
+condiciones del tipo \fttt{libre\_R\_dom} y \fttt{libre\_R\_ran}.
+
+%\subsubsection{Constantes}
+%Los símbolos de constantes que pertenecen a la firma (por ejemplo,
+%$K\in\sigma$) son `preprocesados' y convertidos a relaciones unarias
+%que son ciertas para el elemento en $\A$ que interpreta $K$, i.e. $K^\A$.
+%El preprocesamiento consiste en reescribir la 
+
+%$K^\A$. The preprocessing consists of rewriting the logical %!fix
+%formulae that use the constant into appropriate formulae that
+%use the new relation, and in extending the initial situation of
+%the problem with the value of the relation.
 
 \section{Propiedades formales}
 Las propiedades más importantes a considerar en la herramienta son solidez,
@@ -135,20 +366,22 @@ existe una constante $a$ tal que $a^\A=u$). Entonces,
 $(\A, i) \models (\exists x) \varphi(t_1,\ldots,t_k,x)$ si y sólo si
 existe una constante `$a$' tal que $(\A, i) \models \varphi(t_1,\ldots,t_k,a)$.
 \end{corollary}
+
 \begin{theorem}
+\label{teoremaprimerorden}
 Sea $\varphi \in \LPO(\sigma)$ y $t_1,\ldots,t_k$ $\sigma$-términos instanciados. Sea $\A \in
 \struc[\sigma]$ tal que todo objeto tiene nombre y sea $i : \text{VAR} \longrightarrow |\A|$.
 Entonces, $(\A, i) \models \varphi(t_1,\ldots,t_k)$ si y sólo si
 existe un plan $\pi[t_1,\ldots,t_k]$ que alcanza
 $\FT[\varphi](t_1,\ldots,t_k)$ desde el \textbf{estado inicial} $S[\A]$,
-donde $S[\A]$ es el estado de STRIPS definido por las siguientes condiciones:
+donde $S[\A]$ es el estado de STRIPS en el cual los operadores que construyen la
+prueba empiezan a ser aplicables, definido por las siguientes condiciones:
 \begin{alignat*}{1}
 & S[\A] = \{\texttt{prueba}\} \cup \{ \texttt{R}(a_1,\ldots,a_k) :
 \tup{a_1^\A,\ldots,a_k^\A} \in R^\A\}\\
 & {\color{white} S[\A] = } \cup \{\texttt{no-R}(a_1,\ldots,a_k) : \tup{a_1^\A,\ldots,a_k^\A} \not\in R^\A\}\\
 & {\color{white} S[\A] = } \cup \{\texttt{SUC}(a_i, a_{i+1}) : 0 \leq i < n\}
 \end{alignat*}
-
 \end{theorem}
 \begin{proof}
 Hacemos la demostración por inducción sobre la estructura de $\varphi$. El caso
@@ -207,11 +440,9 @@ $\FT[\varphi_1](t_1,\ldots,t_{k_1})$ desde $[\A]$}\\
 \FT[\varphi](t_1,\ldots,t_k) \textbf{ desde } S[\A]\\
 & \text{Caso $(\A, i) \models \varphi_2(t''_1,\ldots,t''_{k''})$:}\\
 & \quad \quad \text{Análogo al caso anterior.}
+%Caso $\varphi = \varphi_1(t_1',\ldots,t'_{k'}) \Rightarrow \varphi_2(t''_1,\ldots,t''_{k''}) $:
+%\quad Ver caso anterior, pues $\varphi_1 \Rightarrow \varphi_2 = \neg \varphi_1 \lor \varphi_2$.
 \end{alignat*}
-
-Caso $\varphi = \varphi_1(t_1',\ldots,t'_{k'}) \Rightarrow \varphi_2(t''_1,\ldots,t''_{k''}) $:
-
-\quad Ver caso anterior, pues $\varphi_1 \Rightarrow \varphi_2 = \neg \varphi_1 \lor \varphi_2$.
 
 Caso $\varphi = (\exists x)\ \theta(t_1,\ldots,t_k,x):$
 \begin{alignat*}{1}
@@ -254,25 +485,46 @@ constante $a$}\\
 \end{alignat*}
 \end{proof}
 
+Se define ahora formalmente el estado inicial de un problema de planificación
+generado por la traducción. La traducción completa del
+problema está en la sección \ref{traduccionproblema}.
+
+\begin{definition}
+Sea $\Phi = (\exists R_1^{k_1})\cdots(\exists R_m^{k_m}) \varphi$.
+\begin{alignat*}{1}
+& \textsc{init}(f_{\sigma,\Phi}(\A)) = \{\{ \texttt{P}(a_1,\ldots,a_k) :
+\tup{a_1^\A,\ldots,a_k^\A} \in P^\A\}\\
+& {\color{white} \texttt{init}(f_{\sigma,\Phi}(\A)) = } \cup \{\texttt{no-P}(a_1,\ldots,a_k) : \tup{a_1^\A,\ldots,a_k^\A} \not\in P^\A\}\\
+& {\color{white} \texttt{init}(f_{\sigma,\Phi}(\A)) = } \cup \{\texttt{SUC}(a_i, a_{i+1}) : 0 \leq i < n \} \\
+& {\color{white} \texttt{init}(f_{\sigma,\Phi}(\A)) = } \cup
+\{\texttt{libre-R\_i}(t)) : \text{ para todo $t \in |\A|^{k_i}$},
+R_i\in\{R_1,\ldots,R_m\}\} \}
+\end{alignat*}
+\end{definition}
+
+Finalmente, puede probarse que la función es una reducción:
 \begin{theorem}
 Sea $\Phi = (\exists R_1)\cdots(\exists R_n) \varphi$.
-$\A \models \Phi$ si y sólo si existe un plan $\pi$ que alcanza $\FT[\Phi]$ desde $S[\A]$.
+$\A \models \Phi$ si y sólo si existe un plan $\pi$ que alcanza $\FT[\Phi]$
+desde el estado inicial $\textsc{init}(f_{\sigma,\Phi}(\A))$.
 \end{theorem}
 \begin{proof}
 Por definición, $\A \models \Phi$ si y sólo si
 $\tup{\A, R_1',\ldots,R_n'} \models \varphi$.
-La hipótesis inductiva es que existe un plan $\pi'$ que alcanza $\FT[\varphi]$ a partir de $S[\A,
+Por Teorema \ref{teoremaprimerorden}, esto es verdad si y sólo si 
+existe un plan $\pi'$ que alcanza $\FT[\varphi]$ a partir de $S[\A,
 R_1',\ldots,R_n']$.
 Basta mostrar que es posible alcanzar el estado $S[\A, R_1',\ldots,R_n']$ desde
-$S[\A]$. Sea $u_j = a_j^\A$ para $1 \leq j \leq k$.
+$\textsc{init}(f_{\sigma,\Phi}(\A))$. Sea $u_j = a_j^\A$ para $1 \leq j \leq k$.
 \begin{alignat*}{1}
 & \textbf{El plan }\\
-& \langle \ \tup{\texttt{colocar\_verdadera\_R\_i}(a_1,\ldots,a_{k_i}) 
+& \langle \ \tup{\texttt{colocar\_verdadera\_Ri}(a_1,\ldots,a_{k_i}) 
 \text{ para cada } \tup{u_1,\ldots,u_k} \in R_i} \text{ para cada } R_i \ ;\\
-& {\color{white} \langle \ } \tup{\texttt{colocar\_falsa\_R\_i}(a_1,\ldots,a_{k_i}) \text { para cada
+& {\color{white} \langle \ } \tup{\texttt{colocar\_falsa\_Ri}(a_1,\ldots,a_{k_i}) \text { para cada
 } \tup{u_1,\ldots,u_k} \not\in R_i} \text{ para cada } R_i\ ;\\
 & {\color{white} \langle \ } \texttt{comenzar\_prueba}()\ \rangle\\
-& \textbf{alcanza el estado } S[\A, R_1',\ldots,R_n'] \textbf{ desde } S[\A].
+& \textbf{alcanza el estado } S[\A, R_1',\ldots,R_n'] \textbf{ desde }
+\textsc{init}(f_{\sigma,\Phi}(\A)).
 \end{alignat*}
 \end{proof}
 
@@ -338,7 +590,7 @@ sentencia \SOE, a STRIPS-1.
           & \deriv\ \pofbf \\[1em]
 \listrel\ & \deriv\ \rel\ \integer\ \listrel\ |\ \rel\ \integer \\
           & \deriv\ \rel\ \tipof\ \listrel\ |\ \rel\ \tipof\ \\[1em]
-\tipof\   & \deriv\ \fun\ |\ \pfun\ |\ \inj\ |\ \pinj\ \\[1em]
+\tipof\   & \deriv\ \Fun\ |\ \PFun\ |\ \Inj\ |\ \PInj\ \\[1em]
 \pofbf\   & \deriv\ \lpar \rel\ \listvar \rpar \\
           & \deriv\ \lpar \NOT\ \pofbf \rpar \\
           & \deriv\ \lpar \AND\ \listpofbf \rpar \\

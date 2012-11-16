@@ -26,11 +26,16 @@ decir, que sólo cambian con el resultado de las acciones aplicadas).
 STRIPS (\textit{Stanford Research
 Institute Problem Solver}), razón por la cual se llama STRIPS a la clase de
 todos los problemas de planificación.
+
 Los investigadores de esta área han diseñado una representación compacta para
-expresar problemas STRIPS de cualquier dominio, llamado PDDL
-(\textit{Planning Domain Definition Language}) que describe todo lo necesario
+expresar problemas de planificación de cualquier dominio, llamado PDDL
+(\textit{Planning Domain Definition Language}).
+En este trabajo se considera el fragmento más simple de PDDL, que es
+equivalente a STRIPS.
+Este fragmento describe todo lo necesario
 para especificar un problema: el estado inicial, las acciones posibles con sus
-precondiciones y efectos, y el estado meta. 
+precondiciones y efectos, y el estado meta.
+
 La Definición \ref{definicion_planificacion} presenta de manera formal qué es
 un problema de planificación. Los párrafos siguientes contienen una explicación
 intuitiva del problema.
@@ -145,8 +150,11 @@ estado inicial o el estado meta. Por esto se dice que \textit{mundo de bloques}
 es un \textbf{dominio de planificación}, y el término \textbf{problema} se refiere a
 una instancia particular con estados inicial y final definidos, en
 el cual pueden utilizarse las acciones del dominio al que pertenece.
-%! arreglar citas
 
+
+Un problema de planificación en PDDL es un par $\tup{\domain,\instance}$ con
+una descripción de un dominio y una instancia en el lenguaje PDDL
+\cite{mcdermott:pddl,fox:pddl}.
 \subsection{Complejidad en planificación}
 \label{complejidad_planificacion}
 Sea PLANSAT el problema de decisión que pregunta si existe algún plan que
