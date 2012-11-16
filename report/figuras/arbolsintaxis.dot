@@ -1,0 +1,50 @@
+digraph G {
+    node[shape=plaintext];
+
+    "<fbf-so>" -> "so-exists";
+    "<fbf-so>" -> "<list-rel>";
+    "<fbf-so>" -> "<fbf-so>2";
+    "<list-rel>" -> "T";
+    "<list-rel>" -> "1";
+    "<fbf-so>2" -> "<fbf-po>"
+    "<fbf-po>" -> "forall"
+    "<fbf-po>" -> "<list-var>"
+    "<list-var>" -> "y"
+    "<fbf-po>" -> "<fbf-po>2"
+    "<fbf-po>2" -> "exists"
+    "<fbf-po>2" -> "<list-var>2"
+    "<list-var>2" -> "x"
+    "<fbf-po>2" -> "<fbf-po>3"
+    "<fbf-po>3" -> "or"
+    "<fbf-po>3" -> "<fbf-po>4"
+    "<fbf-po>4" -> "and"
+    "<fbf-po>4" -> "<fo-wff>6"
+    "<fbf-po>6" -> "P"
+    "<fbf-po>6" -> "x"
+    "<fbf-po>6" -> "y"
+    "<fbf-po>3" -> "<lista-fbf-po>"
+    "<lista-fbf-po>" -> "<fbf-po>5"
+    "<fbf-po>5" -> "T2"
+    "<fbf-po>5" -> "<lista-var>"
+    "<lista-var>" -> "x2"
+
+    "<fbf-so>2" [label="<fbf-so>"];
+    "<fbf-po>2" [label="<fbf-po>"];
+    "<fbf-po>3" [label="<fbf-po>"];
+    "<fbf-po>4" [label="<fbf-po>"];
+    "<fbf-po>5" [label="<fbf-po>"];
+    "<list-var>2" [label="<list-var>"];
+    "T2" [label="T"];
+    "x2" [label="x"];
+    "so-exists" [shape=ellipse];
+    "T" [shape=ellipse];
+    "T2" [shape=ellipse];
+    "1" [shape=ellipse];
+    "forall" [shape=ellipse];
+    "y" [shape=ellipse];
+    "exists" [shape=ellipse];
+    "x" [shape=ellipse];
+    "x2" [shape=ellipse];
+    "or" [shape=ellipse];
+    //end [shape=Msquare];
+}
