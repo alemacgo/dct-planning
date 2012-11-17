@@ -1,0 +1,18 @@
+graph G {
+    node[shape=ellipse];
+
+    "so-exists T 1" -- "forall y";
+    "forall y" -- "exists x";
+    "exists x" -- "or";
+    "or" -- "and";
+    "and" -- "P(x, y)";
+    "and" -- "T(x)";
+    "or" -- "and2";
+    "and2" -- "N(x, y)";
+    "and2" -- "not";
+    "not" -- "T(x)2";
+
+
+    "T(x)2" [label="T(x)"];
+    "and2" [label="and"];
+}

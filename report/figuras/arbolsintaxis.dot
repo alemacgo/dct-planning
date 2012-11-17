@@ -1,50 +1,106 @@
-digraph G {
+graph G {
     node[shape=plaintext];
 
-    "<fbf-so>" -> "so-exists";
-    "<fbf-so>" -> "<list-rel>";
-    "<fbf-so>" -> "<fbf-so>2";
-    "<list-rel>" -> "T";
-    "<list-rel>" -> "1";
-    "<fbf-so>2" -> "<fbf-po>"
-    "<fbf-po>" -> "forall"
-    "<fbf-po>" -> "<list-var>"
-    "<list-var>" -> "y"
-    "<fbf-po>" -> "<fbf-po>2"
-    "<fbf-po>2" -> "exists"
-    "<fbf-po>2" -> "<list-var>2"
-    "<list-var>2" -> "x"
-    "<fbf-po>2" -> "<fbf-po>3"
-    "<fbf-po>3" -> "or"
-    "<fbf-po>3" -> "<fbf-po>4"
-    "<fbf-po>4" -> "and"
-    "<fbf-po>4" -> "<fo-wff>6"
-    "<fbf-po>6" -> "P"
-    "<fbf-po>6" -> "x"
-    "<fbf-po>6" -> "y"
-    "<fbf-po>3" -> "<lista-fbf-po>"
-    "<lista-fbf-po>" -> "<fbf-po>5"
-    "<fbf-po>5" -> "T2"
-    "<fbf-po>5" -> "<lista-var>"
-    "<lista-var>" -> "x2"
+    "<fbf-so>" -- "so-exists";
+    "<fbf-so>" -- "<lista-rel>";
+    "<fbf-so>" -- "<fbf-so>2";
+    "<lista-rel>" -- "T";
+    "<lista-rel>" -- "1";
+    "<fbf-so>2" -- "<fbf-po>";
+    "<fbf-po>" -- "forall";
+    "<fbf-po>" -- "<lista-var>";
+    "<lista-var>" -- "y";
+    "<fbf-po>" -- "<fbf-po>2";
+    "<fbf-po>2" -- "exists";
+    "<fbf-po>2" -- "<lista-var>2";
+    "<lista-var>2" -- "x";
+    "<fbf-po>2" -- "<fbf-po>3";
+    "<fbf-po>3" -- "or";
+    "<fbf-po>3" -- "<fbf-po>4";
+    "<fbf-po>4" -- "and";
+    "<fbf-po>4" -- "<fbf-po>6";
+    "<fbf-po>6" -- "P";
+
+    "<fbf-po>6" -- "<lista-var>5";
+    "<lista-var>5" -- "x3";
+    "<lista-var>5" -- "<lista-var>6";
+    "<lista-var>6" -- "y2";
+
+    "<fbf-po>4" -- "<lista-fbf-po>2";
+    "<fbf-po>3" -- "<lista-fbf-po>";
+
+    "<lista-fbf-po>2" -- "<fbf-po>9";
+    "<fbf-po>9" -- "T2"
+    "<fbf-po>9" -- "<lista-var>9"
+    "<lista-var>9" -- "x5"
+
+    "<lista-fbf-po>" -- "<fbf-po>7"
+    "<fbf-po>7" -- "and2"
+    "<fbf-po>7" -- "<fbf-po>8"
+    "<fbf-po>8" -- "<fbf-po>11" -- "N"
+    "<fbf-po>11" -- "<lista-var>7"
+    "<lista-var>7" -- "x4"
+    "<lista-var>7" -- "<lista-var>8"
+    "<lista-var>8" -- "y3"
+
+    "<fbf-po>7" -- "<lista-fbf-po>3"
+    "<lista-fbf-po>3" -- "<fbf-po>10"
+    "<fbf-po>10" -- "not"
+    "<fbf-po>10" -- "<fbf-po>12"
+    "<fbf-po>12" -- "T3"
+    "<fbf-po>10" -- "<lista-var>10"
+    "<lista-var>10" -- "x2"
 
     "<fbf-so>2" [label="<fbf-so>"];
     "<fbf-po>2" [label="<fbf-po>"];
     "<fbf-po>3" [label="<fbf-po>"];
     "<fbf-po>4" [label="<fbf-po>"];
-    "<fbf-po>5" [label="<fbf-po>"];
-    "<list-var>2" [label="<list-var>"];
+    "<fbf-po>6" [label="<fbf-po>"];
+    "<fbf-po>7" [label="<fbf-po>"];
+    "<fbf-po>8" [label="<fbf-po>"];
+    "<fbf-po>9" [label="<fbf-po>"];
+    "<fbf-po>10" [label="<fbf-po>"];
+    "<fbf-po>11" [label="<fbf-po>"];
+    "<fbf-po>12" [label="<fbf-po>"];
+    "<lista-fbf-po>2" [label="<lista-fbf-po>"];
+    "<lista-fbf-po>3" [label="<lista-fbf-po>"];
+    "<lista-var>2" [label="<lista-var>"];
+    "<lista-var>5" [label="<lista-var>"];
+    "<lista-var>6" [label="<lista-var>"];
+    "<lista-var>7" [label="<lista-var>"];
+    "<lista-var>8" [label="<lista-var>"];
+    "<lista-var>9" [label="<lista-var>"];
+    "<lista-var>10" [label="<lista-var>"];
     "T2" [label="T"];
+    "T3" [label="T"];
     "x2" [label="x"];
-    "so-exists" [shape=ellipse];
-    "T" [shape=ellipse];
-    "T2" [shape=ellipse];
-    "1" [shape=ellipse];
-    "forall" [shape=ellipse];
-    "y" [shape=ellipse];
-    "exists" [shape=ellipse];
-    "x" [shape=ellipse];
-    "x2" [shape=ellipse];
-    "or" [shape=ellipse];
+    "x3" [label="x"];
+    "x4" [label="x"];
+    "x5" [label="x"];
+    "y2" [label="y"];
+    "y3" [label="y"];
+    "and2" [label="and"];
+
+    "so-exists" [shape=ellipse, style="filled", fillcolor="#eeeeee"];
+    "T" [shape=ellipse, style="filled", fillcolor="#eeeeee"];
+    "T2" [shape=ellipse, style="filled", fillcolor="#eeeeee"];
+    "T3" [shape=ellipse, style="filled", fillcolor="#eeeeee"];
+    "P" [shape=ellipse, style="filled", fillcolor="#eeeeee"];
+    "N" [shape=ellipse, style="filled", fillcolor="#eeeeee"];
+    "1" [shape=ellipse, style="filled", fillcolor="#eeeeee"];
+    "forall" [shape=ellipse, style="filled", fillcolor="#eeeeee"];
+    "y" [shape=ellipse, style="filled", fillcolor="#eeeeee"];
+    "y2" [shape=ellipse, style="filled", fillcolor="#eeeeee"];
+    "y3" [shape=ellipse, style="filled", fillcolor="#eeeeee"];
+    "exists" [shape=ellipse, style="filled", fillcolor="#eeeeee"];
+    "x" [shape=ellipse, style="filled", fillcolor="#eeeeee"];
+    "x2" [shape=ellipse, style="filled", fillcolor="#eeeeee"];
+    "x3" [shape=ellipse, style="filled", fillcolor="#eeeeee"];
+    "x4" [shape=ellipse, style="filled", fillcolor="#eeeeee"];
+    "x5" [shape=ellipse, style="filled", fillcolor="#eeeeee"];
+    "or" [shape=ellipse, style="filled", fillcolor="#eeeeee"];
+    "not" [shape=ellipse, style="filled", fillcolor="#eeeeee"];
+    "and" [shape=ellipse, style="filled", fillcolor="#eeeeee"];
+    "and2" [shape=ellipse, style="filled", fillcolor="#eeeeee"];
     //end [shape=Msquare];
 }
