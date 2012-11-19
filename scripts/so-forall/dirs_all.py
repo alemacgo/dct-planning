@@ -1,22 +1,7 @@
 #! /usr/bin/env python
 import os, re, sys
 
-problems = ["qbf"]
-
-# qbf3_e = ["20e", "40e", "60e", "80e", "100e"]
-# qbf3_a = ["1a", "2a", "3a", "4a", "5a"]
-# 
-# qbf3_a2 = ["1a", "2a", "3a", "4a"]
-# qbf3_e2 = ["20e", "40e", "60e", "80e", "100e", "120e", "140e"]
-# 
-# 
-# qbf_0 = ["1a", "2a", "3a", "4a", "5a"]
-# # qbf_1 = ["5e", "10e", "15e", "20e"]
-# qbf_1 = ["20e", "40e", "60e", "80e", "100e", "120e"]
-# 
-# # qbf_2 = ["6c", "11c", "16c", "21c","26c", "31c"]
-# 
-# qbf_2 = ["20c","30c", "60c", "90c", "120c", "150c", "180c"]
+problems = ["qbf","n_coloring"]
 
 qbf3_e0 = ["10e", "30e", "50e"]
 qbf3_a0 = ["1a", "2a", "3a", "4a"]
@@ -30,6 +15,8 @@ qbf_1 = ["15e", "30e", "60e", "80e", "100e"]
 
 qbf_2 = ["20c", "40c", "60c", "80c", "100c", "150c", "200c"]
 
+coloring_0 = ["4s", "5s", "6s", "7s", "8s", "9s"]
+coloring_1 = ["20p", "40p","60p", "80p", "100p"]
 
 if __name__ == "__main__":
     
@@ -71,6 +58,10 @@ if __name__ == "__main__":
                     os.system("mkdir -p problems-soforall/qbf3aea/" + "/".join([a1, e1, a2, c]))
                     os.system("mkdir -p solutions-soforall/qbf3aea/" + "/".join([a1, e1, a2, c]))
                 
+    #NColoring
+    for i in coloring_0:
+        for j in coloring_1:
+                os.system("mkdir -p problems-soforall/n3coloring/" + "/".join([i,j]))
+                os.system("mkdir -p solutions-soforall/n3coloring/" + "/".join([i,j]))
                 
-        
-    print "Created problem directories"
+    print "Created plem directories"

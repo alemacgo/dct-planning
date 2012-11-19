@@ -4,13 +4,23 @@ RUN = True
 
 import os, re, sys, math
 
-problems = "qbf3eae|qbf3aea|qbfae|qbfea|nqbfae"
+problems = "n3coloring|qbf3eae|qbf3aea|qbfae|qbfea|nqbfae"
 limits = "-t 5400 -r 7200 -m 2048 "
+limitsLama = "ulimit -t 5400; ulimit -m 2048"
 plannerCommand = "planners/m/M"
 output = ">"
 
 def getDomain(problem):
     return re.search(problems, problem).group(0)
+
+def n3coloringBounds(problem):
+    problem_info = problem.split("_")
+    s = int(problem_info[1][:-1])
+    n2 = pow(2,s)
+    # 2 + (1,3) => (3,5) => (5,5) => x
+    # 2^s * (2^s * (5 + 3) + -1 + 3) + 1 
+    # 2^s * (2^s * (5+3) + 2) + 1
+    return (n2* (n2 * (3+3) + 2) + 1, n2* (n2 * (5+3) + 2) + 1)
 
 def qbfaeBounds(problem):
     problem_info = problem.split("_")
@@ -44,7 +54,7 @@ def showBounds(bounds):
     return "-F " + str(bounds[0]) + " -T " + str(bounds[1])
 
 def parallelInstances(bounds):
-    return "-A 1"
+    return "-A 4"
 
 def solveProblems(list, file = None):   
     # print list
@@ -54,7 +64,7 @@ def solveProblems(list, file = None):
     
     submit_file_M.write("executable = /home-users/nlipo/blai/Aldo/dct-planning/planners/m/M\n")
     submit_file_Mp.write("executable = /home-users/nlipo/blai/Aldo/dct-planning/planners/m/Mp\n")
-    submit_file_Lama.write("executable = /home-users/nlipo/seq-sat-lama-2011/src/plan-ipc\n")
+    submit_file_Lama.write("executable = /home-users/nlipo/blai/Aldo/dct-planning/planners/lama\n")
     
     specification = "universe = vanilla\n" +\
                     "Requirements = Memory >= 1024\n"+\
@@ -85,6 +95,9 @@ def solveProblems(list, file = None):
             bounds = qbfeaeBounds(problemFile)
         elif domain == "qbf3aea":
             bounds = qbfaeaBounds(problemFile)
+            continue
+        elif domain == "n3coloring":
+            bounds = n3coloringBounds(problemFile)
             # continue
         else:
             print domain
@@ -97,8 +110,9 @@ def solveProblems(list, file = None):
                      "/home-users/nlipo/blai/Aldo/dct-planning/" + problemFile + ",\\\n"+\
                      "/home-users/nlipo/blai/Aldo/dct-planning/" + domainFile
                      
+                     
         experiment_m = experiment + "\n\n"
-        experiment_lama = experiment + ",\\\n/home-users/nlipo/seq-sat-lama-2011/src/\n\n" 
+        experiment_lama = experiment + ",\\\n/home-users/nlipo/blai/Aldo/dct-planning/planners/lama.tar.gz\n\n" 
 
         output = "output = /home-users/nlipo/blai/Aldo/dct-planning/" +\
                     solutionFile
@@ -107,7 +121,7 @@ def solveProblems(list, file = None):
                       stepSize(bounds), parallelInstances(bounds),
                       domain + ".pddl", nameParts[2], "\n"])
                       
-        arguments_lama = "arguments = seq-sat-lama-2011 " + domain + ".pddl " + nameParts[2] + " " + nameParts[2].rpartition(".")[0] + ".outlama\n" 
+        arguments_lama = "arguments = " + domain + ".pddl " + nameParts[2] + " " + nameParts[2].rpartition(".")[0] + ".outlama\n" 
         error = "error = /home-users/nlipo/blai/Aldo/dct-planning/" +\
                 solutionFile + ".error"
         end  = "queue\n\n"
@@ -121,7 +135,7 @@ def solveProblems(list, file = None):
     
         
         
-find = """find problems-soforall | grep .pddl | grep -v qbfae.pddl | grep -v qbfea.pddl | grep -v qbf3aea.pddl | grep -v qbf3eae.pddl"""
+find = """find problems-soforall | grep .pddl | grep -v qbfae.pddl | grep -v qbfea.pddl | grep -v qbf3aea.pddl | grep -v qbf3eae.pddl | grep -v n3coloring.pddl"""
 
 if __name__ == "__main__":
     # this should be split in two processes! fork

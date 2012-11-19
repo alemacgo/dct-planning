@@ -1,0 +1,17 @@
+(so-forall (?R 1 @node) (so-forall (?G 1 @node) (so-forall (?B 1 @node)
+	(exists (?x @node) 
+	        (or
+	            (exists (?y @node)
+	                (or (and (?E ?x ?y) (?R ?x) (?R ?y))
+	                    (and (?E ?x ?y) (?G ?x) (?G ?y))
+                        (and (?E ?x ?y) (?B ?x) (?B ?y))
+	                )
+	            )
+	            (and (not (?R ?x)) (not (?G ?x)) (not (?B ?x)))
+	            (and (?R ?x) (or (?G ?x) (?B ?x)))
+	            (and (?G ?x) (or (?R ?x) (?B ?x)))
+	            (and (?B ?x) (or (?R ?x) (?G ?x)))
+	        )
+	)
+)))
+

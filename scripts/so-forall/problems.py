@@ -111,6 +111,16 @@ for a1 in qbf3_a2:
                     prob_name = "_".join(["qbf3aea", a1, e1, a2, c, str(seed)])
                     prob_path = "/".join(["problems-soforall", "qbf3aea", a1, e1, a2, c]) + "/"
                     runBash(prob_path, prob_name, True, seed, c[:-1], [a1[:-1], e1[:-1], a2[:-1]], ["1","2","1"], False)
+                    
+#NColoring
+print " n3coloring"
+
+for i in coloring_0:
+    for j in coloring_1:
+        for seed in range(0,1):
+            prob_name = "_".join(["n3coloring", i , j , str(seed)])
+            prob_path = "/".join(["problems-soforall", "n3coloring",  i , j]) + "/"
+            os.system("generators/n3coloring.py " + " ".join([prob_path, prob_name,  i[:-1], j[:-1], str(seed)]))
 
     
 print "Created problems-soforall"

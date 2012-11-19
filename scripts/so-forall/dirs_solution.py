@@ -37,6 +37,10 @@ if __name__ == "__main__":
                     os.system("mkdir -p solutions-soforall/qbf3aea/" + "/".join([a1, e1, a2, c]))
 
 
+    #NColoring
+    for i in coloring_0:
+        for j in coloring_1:
+                os.system("mkdir -p solutions-soforall/n3coloring/" + "/".join([i,j]))
 
 
         

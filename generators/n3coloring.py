@@ -15,9 +15,10 @@ def generate_random_e(n, p):
     for i in range(1,n+1):
         for j in range(i+1,n+1):
             r = random.random()
-            x = bp.name(i, n)
-            y = bp.name(j, n)
-            if r <= p and (x, y) not in e_set:
+            x = " node" + str(i)
+            y = " node" + str(j)
+            if r <= (p/100) and (x, y) not in e_set:
+                # print "IN"
                 s.append("(e" + x + y + ")")
                 # s2.append(";(not_e" + x + y + ")")
                 e_set.add((x, y))
@@ -37,34 +38,29 @@ seed = int(argv[5]) #Seed
 pddl_file = open(argv[1] + argv[2] + ".pddl", "w")
 
 pddl_file.write("(define (problem a)\n")
-pddl_file.write("\t(:domain coloring)\n")
-pddl_file.write("\t(:objects\n\t\t")
+pddl_file.write("\t(:domain n3coloring)\n")
+pddl_file.write("\t(:objects\n")
 
 for i in range(1,num_vert + 1):
-    pddl_file.write("\t\t(node node"+ str(i)+")\n")
+    pddl_file.write("\t\tnode"+ str(i)+"\n")
+pddl_file.write("\t)\n")
+
     
-pddl_file.write("\n\t(:init\n\t\t(begin)\n\t\t")
-            
+pddl_file.write("\t(:init\n\t\t(begin)\n")
+for i in range(1,num_vert + 1):
+    pddl_file.write("\t\t(node node"+ str(i)+")\n")
 pddl_file.write("\t\t(node_min node" + str(1) + ")\n")
 pddl_file.write("\t\t(node_max node" + str(num_vert) + ")\n")
 pddl_file.write("".join(["\t\t(node_suc node" + str(t[0]) + " node" + str(t[1]) +")\n" for t in zip (range(1,num_vert), range(2,num_vert + 1))]))
 
-suc_fluents = bp.generate_suc(num_vert)
-free_rel_fluents = bp.generate_free_rel_2arity(num_vert,"f")
-free_domain_fluents = bp.generate_free_domain(num_vert,"f")
-free_range_fluents = bp.generate_free_range(num_vert,"f")      
-
+for i in range(1,num_vert + 1):
+    pddl_file.write("\t\t(not_r node"+ str(i)+")\n")
+    pddl_file.write("\t\t(not_g node"+ str(i)+")\n")    
+    
 e_fluents, difference = generate_random_e(num_vert, p)
-# static mode
-# e_fluents2 = listDiff(bp.generate_all_2arity("not_e",num_vert), difference)
 
-ssuc_fluents = "\n\t\t".join(suc_fluents) + "\n\t\t"
-se_fluents = "\n\t\t".join(e_fluents) + "\n\t\t"
-# se_fluents2 = "\n\t\t".join(e_fluents2) + "\n\t\t"
-sfree_r = "\n\t\t".join(bp.generate_free_rel_1arity(num_vert,'r')) + "\n\t\t"
-sfree_g = "\n\t\t".join(bp.generate_free_rel_1arity(num_vert,'g')) + "\n\t\t"
-sfree_b = "\n\t\t".join(bp.generate_free_rel_1arity(num_vert,'b'))
+se_fluents = "\t\t" + "\n\t\t".join(e_fluents)
 
-pddl_file.write(ssuc_fluents + se_fluents + sfree_r + sfree_g + sfree_b)
+pddl_file.write(se_fluents)
 
 pddl_file.write("\n\t)\n\t(:goal (holds_goal)\n\t)\n)")  

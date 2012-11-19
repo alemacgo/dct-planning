@@ -1,0 +1,17 @@
+(so-forall (?R 1 @node) 
+	(so-forall (?G 1 @node)
+	    (exists (?x @node) 
+	        (or
+	            (exists (?y @Node)
+	                ; no two adjacent vertices of the same color
+	                (or (and (?E ?x ?y) (?R ?x) (?R ?y))
+	                    (and (?E ?x ?y) (?G ?x) (?G ?y))
+	                    (and (?E ?x ?y) (not (?R ?x)) (not (?R ?y)) (not (?G ?x)) (not (?G ?y)))
+	                )
+	            )
+	            (and (?R ?x) (?G ?x))
+	        )
+	    )
+	)
+)
+

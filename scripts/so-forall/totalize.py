@@ -1,7 +1,7 @@
 #! /usr/bin/env python
 from dirs_all import *
 
-first_text = """\\documentclass[a1paper]{article}\n\
+first_text = """\\documentclass[a3paper]{article}\n\
                 \\usepackage[left=0.5cm,top=3cm,right=1cm,nohead,nofoot]{geometry}\n\
                 \\usepackage{nopageno}\n\
                 \\usepackage{lscape}\n\
@@ -9,8 +9,8 @@ first_text = """\\documentclass[a1paper]{article}\n\
                 \\setlength{\\evensidemargin}{-1cm}\n\
                 \\setlength{\\oddsidemargin}{-1cm}\n\
                 \\pagestyle{plain}\n\
-                \\begin{document}\n"""
-                # \\begin{landscape}\n"""
+                \\begin{document}\n\
+                \\begin{landscape}\n"""
 
 def retriveResults(dir_name, problem_dir, c, fs, total_positive_i, total_negative_i, 
                    total_time_i, total_i):
@@ -118,10 +118,19 @@ def addQbf2Table(set0, set1, clauses_set, domain, planner, quantifier_order, f):
 def addQbf3Table (set0, set1, set2, clauses_set, domain, planner, quantifier_order, f):
     n_cline = str(4*len(clauses_set)+3)
     writeTableHeader(clauses_set, domain, planner, quantifier_order, 3, n_cline)
+    pageB = 0
     for h in set0:
         f.write("\multirow{" + str(len(set1)*(len(set2) + 2) ) + "}{*}{" + h[:-1] + "} ")
         qbf2Table(set1, set2, clauses_set, domain + "/" + h + "/", planner, n_cline, 3, f, int(h[:-1]))
         f.write("	\\\\\\cline{2-" + n_cline + "} \\\\")
+        print h
+        print set0[-1]
+        if pageB == 1 and (not h == set0[-1]):
+            f.write("\\end{tabular}\n")
+            writeTableHeader(clauses_set, domain, planner, quantifier_order, 3, n_cline)    
+            pageB = 0
+            continue
+        pageB += 1
     f.write("\\end{tabular}\n")
     
 
@@ -147,7 +156,7 @@ if __name__ == "__main__":
     
     addQbf2Table([i[:-1] + "a" for i in qbf_1], [i[:-1] + "e" for i in qbf_0], qbf_2, "nqbfae", "m", "A\_vars & E\_vars", f)
     # createTableQbf(qbf_1, qbf_0, qbf_2, "qbfea", "mp", "E\_vars & A\_vars")
-
+    f.write("\\end{landscape}")
     f.write("\\end{document}")
     f.close()
     os.system("pdflatex resultsQbf.tex; rm *.aux; rm *.log; open resultsQbf.pdf ")

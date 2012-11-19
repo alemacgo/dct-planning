@@ -317,6 +317,7 @@ def parse_rel(tokens, relation, arity):
            
     n_types_to_get = 0
     #TODO clean up
+    print arity
     if arity != 'func' and arity != 'inj':
         arity = int(arity)
         n_types_to_get = arity

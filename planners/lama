@@ -1,0 +1,4 @@
+#! /bin/bash
+
+tar xfz lama.tar.gz
+ulimit -t 5400; ulimit -m 2048;seq-sat-lama-2011/plan $1 $2 $3
