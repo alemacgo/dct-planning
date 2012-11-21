@@ -30,7 +30,7 @@ la propiedad en $\Phi$ puede obtenerse del plan en tiempo lineal.
 \begin{figure}[h]
 \centering
 \includegraphics[width=\textwidth]{figuras/esquema_herramienta.pdf}
-\caption{Esquema de operación de la herramienta}
+\caption{Esquema de operación de la herramienta.}
 \label{esquema_herramienta}
 \end{figure}
 
@@ -149,9 +149,10 @@ $\bar x$ son las variables libres de $\theta$.}
   La primera acción $\texttt{probar\_universal\_base}[\theta](\bar x)$ prueba $\theta'(\bar x,0)$.
   La acción tiene parámetros $\bar x$, precondición $\FT[\theta'](\bar x,0)$
   y efecto \textit{add} $\FT[(\forall y\leq z)\theta'(\bar x,y)](\bar x,0)$.
-  (Observar que la traducción de la condición es aplicada a diferentes
+%! no entiendo esto
+  Observe que la traducción de la condición es aplicada a diferentes
 fórmulas,
-  en las cuales la cuantificación está acotada por $z$.)
+  en las cuales la cuantificación está acotada por $z$.
 
   La segunda acción $\texttt{probar\_universal\_inductivo}[\theta]_1(\bar x,z',z'')$ prueba inductivamente
   $(\forall y\leq z)\theta'(x,y)$ una vez que $(\forall y<z)\theta'(x,y)$ es
@@ -162,7 +163,7 @@ verdad.
 \end{enumerate}
 Todas estas acciones tienen como precondición adicional la condición
 \fttt{prueba}. Además, nótese que no hay acciones para las fórmulas literales.
-Éstas son manejadas por la traducción de condiciones, cuya función es asignar
+Estas son manejadas por la traducción de condiciones, cuya función es asignar
 fórmulas a condiciones de esta manera:
 \begin{enumerate}[--]
 \item $\FT[Q(\bar x)](\bar x)=Q(\bar x)$,
@@ -172,8 +173,8 @@ fórmulas a condiciones de esta manera:
 \item en cualquier otro caso, $\FT[\theta](\bar x)=\fttt{es\_cierto\_<id>}(\bar x)$
   donde \fttt{<id>} es un identificador único para $\theta$.
 \end{enumerate}
-La función de traducción también se encarga de instanciar variables a términos
-cuando es aplicada a literales que involucran a constantes.
+%La función de traducción también se encarga de instanciar variables a términos
+%cuando es aplicada a literales que involucran a constantes.
 
 \subsubsection{Otras acciones}
 La traducción requiere de dos otras acciones. La primera,
@@ -267,22 +268,22 @@ llamada \fttt{empezar\_prueba} sirve para cambiar la fase de
 Al haber abreviaciones, las acciones para las variables de segundo orden son
 extendidos para hacer la traducción más eficiente. Para $(\exists F\in\Fun)$,
 la precondición y el \textit{delete} de \fttt{colocar\_verdadera\_F} son
-extendidos con la condición \fttt{(libre\_F\_dom ?x)} de modo de que pueda
+extendidos con la condición \fttt{(libre-F\_dom ?x)} de modo de que pueda
 haber a lo sumo una condición $F(x,y)$ verdadera para cada $x$. Así, no hay
 necesidad de incluir la subfórmula $\psi_\text{fun}$. 
 
 De forma similar, para $(\exists F\in\Inj)$ la precondición y el
 \textit{delete}
-son extendidos adicionalmente con la condición \fttt{(libre\_F\_ran ?y)}.
+son extendidos adicionalmente con la condición \fttt{(libre-F\_ran ?y)}.
 
 \subsection{Problema}
 
 \label{traduccionproblema}
-El problema PDDL es generado por la llamada $\insred(\sigma,\Phi,\A)$, donde
+El problema PDDL es generado por $\insred(\sigma,\Phi,\A)$, donde
 $\sigma$ es una firma, $\Phi\in\LSO(\sigma)$ y $\A\in\struc[\sigma]$.
 Los objetos en el problema corresponden a los elementos en el universo
 $|\A|=\{0,\ldots,n-1\}$: $0$ se asigna al objeto
-\fttt{zero}, $n-1$ al objeto \fttt{max}, y los otros elementos
+\fttt{cero}, $n-1$ al objeto \fttt{max}, y los otros elementos
 $0<i<n-1$ a los objetos \fttt{obj\_i}.
 El objetivo es alcanzar la condición \fttt{es\_cierto\_meta}, y la situación
 inicial consiste en condiciones describiendo el valor de verdad de todas las
@@ -290,9 +291,9 @@ relaciones en $\A$ y las relaciones predefinidas como $<$, SUC y otras. Sin
 embargo, no es necesario incluir condiciones para relaciones que no se
 mencionan en $\Phi$. Además, para cada variable de segundo orden $R$, la
 situación inicial tiene condiciones que denotan que los valores de verdad de
-$R$ no han sido asignados (\fttt{libre\_f}), y en casos en los que un símbolo
+$R$ no han sido asignados (\fttt{libre-f}), y en casos en los que un símbolo
 represente una función o función inyectiva, la situación inicial incluye
-condiciones del tipo \fttt{libre\_R\_dom} y \fttt{libre\_R\_ran}.
+condiciones del tipo \fttt{libre-R\_dom} y \fttt{libre-R\_ran}.
 
 
 \section{Propiedades formales}
@@ -594,11 +595,14 @@ sentencia \SOE, a un problema STRIPS-1 que se ubica en la clase de complejidad
 NP.
 
 \section{Diseño del lenguaje}
+
+\subsection{Especificación de la fórmula $\Phi$}
 El lenguaje de entrada de la herramienta debe ser capaz de expresar
-sintácticamente cualquier fórmula \LSO existencial. En el capítulo
+sintácticamente cualquier fórmula \LSO\ existencial. En el capítulo
 \ref{Chapter4} se presenta una extensión de la herramienta que le permite
 traducir problemas en la clase más compleja PH, por lo que es necesario
-agregarle al lenguaje el operador $\forall$ de segundo orden, $\SOForall$.
+agregar al lenguaje, además de los operadores estudiados hasta el momento,
+el operador $\forall$ de segundo orden, $\SOForall$.
 La figura \ref{gramatica} muestra la gramática del lenguaje propuesto
 en forma Backus-Naur, que permite especificar fórmulas lógicas generales de
 segundo orden.
@@ -619,24 +623,44 @@ segundo orden.
           & \deriv\ \lpar \Exists\ \lpar \listvar \rpar\ \pofbf \rpar \\
           & \deriv\ \lpar \Forall\ \lpar \listvar \rpar\ \pofbf \rpar \\[1em]
 \listvar\ & \deriv\ \var\ \listvar\ |\ \var \\[1em]
+& \var \in \texttt{\textbackslash?[a-z][a-z0-9\_]*}, \\
+& \rel \in \texttt{\textbackslash?[A-Z][A-Z0-9\_]*}, \\
+& \integer \in \mathbb{Z}^+ \\
 \end{alignat*}
 \label{gramatica}
 \caption{Gramática en BNF del lenguaje que se utiliza para expresar $\Phi$ en
 la herramienta.}
 \end{figure}
 
-Para especificar una firma $\sigma = \tup{R_1^{k_1},\ldots,R_n^{k_n}}$ se utiliza la notación:
+\subsection{Especificación de la firma $\sigma$}
+Para especificar una firma $\sigma = \tup{R_1^{k_1},\ldots,R_n^{k_n}}$ se
+utiliza un archivo de texto que sigue la notación:
 \begin{verbatim}
 ?R_1 k_1
 ...
 ?R_n k_n
 \end{verbatim}
+Las relaciones \texttt{?R\_i} pueden tener cualquier nombre de acuerdo a la
+expresión regular \texttt{\textbackslash?[A-Z][A-Z0-9]*}.
 
 Para especificar constantes en la firma se utilizan relaciones unarias que son
 ciertas sólo para el elemento de $|\A|$ que interpreta la constante.
 Esto simplifica el procesamiento. Por ejemplo, si se quiere agregar una
-constante $K$ se agrega una relación unaria a la
+constante $K$, simplemente se agrega una relación unaria a la
 firma \texttt{?K 1}.
+
+\subsection{Especificación de la estructura $\A$}
+La estructura de primer orden $\A$ será transformada en una instancia PDDL
+mediante $\insred(\sigma,\Phi,\A)$.
+
+Una estructura $\A$ se especifica en un archivo de texto que contiene una
+$k$-tupla por cada línea, precedida por la relación que le corresponde.
+Para expresar que $(a_1,\ldots,a_k) \in R_i$ en $\A$, se agrega la línea
+\texttt{(?R\_i a\_1 } $\ldots$ \texttt{a\_k}).
+
+Como se ha dicho anteriormente, las constantes se denotan utilizando relaciones
+unarias. Por lo tanto, si por ejemplo quiere expresarse $K = m\acute{a}x$,
+basta con añadir la línea \texttt{?K max}.
 
 %\subsubsection{Constantes}
 %Los símbolos de constantes que pertenecen a la firma (por ejemplo,
@@ -650,11 +674,56 @@ firma \texttt{?K 1}.
 %the problem with the value of the relation.
 
 \section{Implementación de la herramienta}
-La herramienta fue implementada en el lenguaje de programación \textit{python}.
+La herramienta fue implementada en el lenguaje de programación \textit{Python}.
 
-El \textit{software} consiste en un analizador sintáctico LL(1) implementado
+La primera parte del \textit{software} consiste en un analizador sintáctico LL(1) implementado
 de forma descendente recursiva. Según este esquema, se construye un árbol
-sintáctico
+sintáctico de acuerdo a la gramática de la Figura \ref{gramatica}. Puede verse
+un ejemplo del árbol sintáctico resultante al analizar la fórmula de SAT en el
+Apéndice \ref{apendiceB}.
+
+Cuando el árbol sintáctico está construido, el siguiente paso es transformar
+las implicaciones a disyunciones. Esto puede hacerse económicamente con un
+recorrido cualquiera por el árbol en el que se reemplace el operador
+\texttt{implies} por el operador \texttt{or} y se coloque una negación en el
+primer argumento del operador.
+
+Posteriormente, debe realizarse una propagación de las negaciones hacia los
+literales, pues la traducción que se ha definido sólo considera negaciones en
+este nivel. Afortunadamente, esto se logra con un sencillo recorrido en
+profundidad del árbol guiado por el siguiente algoritmo:
+
+\begin{center}
+\begin{verbatim}
+proc recorrido(nodo, modo):
+    si nodo es NOT:
+        eliminar negación
+        recorrido(nodo, !modo)
+    si no:
+        si modo es PROPAGAR_NEGACIONES:
+            si nodo es AND:
+                reemplazar por OR
+                recorrido(nodo, modo)
+            si nodo es OR:
+                reemplazar por AND
+                recorrido(nodo, modo)
+            si nodo es FORALL:
+                reemplazar por EXISTS
+                recorrido(nodo, modo)
+            si nodo es EXISTS:
+                reemplazar por FORALL
+                recorrido(nodo, modo)
+            si nodo es LITERAL:
+                colocar NOT antes de LITERAL
+
+donde (!modo) es una operación que convierte el modo
+RECORRER en PROPAGAR_NEGACIONES y viceversa.
+\end{verbatim}
+\end{center}
+
+El algoritmo descrito no es más que la aplicación recursiva de las leyes de De~Morgan
+hasta lograr que todas las negaciones aparezcan junto a literales, en lugar de
+en subfórmulas generales.
 
 %\begin{theorem}
 %La función $f_{\sigma, \Phi}$ es una reducción en tiempo polinomial del
