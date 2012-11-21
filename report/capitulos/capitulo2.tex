@@ -12,7 +12,8 @@ de sus entradas y salidas. Luego, se define formalmente una función de
 traducción de lógica a planificación, demostrando las propiedades pertinentes.
 Finalmente, se presenta la gramática de un lenguaje de especificación basado en lógica 
 y se describe brevemente la implementación de la herramienta, que consiste en un 
-analizador sintáctico para el lenguaje lógico encadenado con la función de traducción descrita.
+analizador sintáctico para el lenguaje lógico que luego realiza operaciones
+sobre el árbol sintáctico para traducir la entrada.
 
 \section{Perspectiva general}
 Desde el punto de vista del usuario, la contribución de esta herramienta es
@@ -45,6 +46,7 @@ que el \textit{software} es especialmente útil para la modelación y resolució
 de problemas de grafos.
 
 \section{Reducción de LSO a STRIPS}
+\label{reduccion}
 Una \textbf{reducción} de un problema $A$ a un problema $B$ es una función
 computable $f$ tal que para cada instancia
 $\omega$, $\omega\in A$ si y sólo si $f(\omega)\in B$.
@@ -656,7 +658,7 @@ mediante $\insred(\sigma,\Phi,\A)$.
 Una estructura $\A$ se especifica en un archivo de texto que contiene una
 $k$-tupla por cada línea, precedida por la relación que le corresponde.
 Para expresar que $(a_1,\ldots,a_k) \in R_i$ en $\A$, se agrega la línea
-\texttt{(?R\_i a\_1 } $\ldots$ \texttt{a\_k}).
+\texttt{(?R\_i a\_1 } $\ldots$ \texttt{ a\_k}).
 
 Como se ha dicho anteriormente, las constantes se denotan utilizando relaciones
 unarias. Por lo tanto, si por ejemplo quiere expresarse $K = m\acute{a}x$,
@@ -696,34 +698,56 @@ profundidad del árbol guiado por el siguiente algoritmo:
 \begin{center}
 \begin{verbatim}
 proc recorrido(nodo, modo):
-    si nodo es NOT:
-        eliminar negación
-        recorrido(nodo, !modo)
-    si no:
-        si modo es PROPAGAR_NEGACIONES:
-            si nodo es AND:
-                reemplazar por OR
-                recorrido(nodo, modo)
-            si nodo es OR:
-                reemplazar por AND
-                recorrido(nodo, modo)
-            si nodo es FORALL:
-                reemplazar por EXISTS
-                recorrido(nodo, modo)
-            si nodo es EXISTS:
-                reemplazar por FORALL
-                recorrido(nodo, modo)
-            si nodo es LITERAL:
-                colocar NOT antes de LITERAL
-
-donde (!modo) es una operación que convierte el modo
-RECORRER en PROPAGAR_NEGACIONES y viceversa.
+    para cada hijo de nodo:
+        si hijo es NOT:
+            hijo = sucesor(hijo) // se elimina la negación
+            recorrido(hijo, !modo)
+        si no:
+            si modo es PROPAGAR_NEGACIONES:
+                si hijo es LITERAL:
+                    colocar NOT antes de LITERAL
+                si no:
+                    hijo = complemento(hijo)
+                    recorrido(hijo, modo)
+            si no:
+                recorrido(hijo, modo)
 \end{verbatim}
 \end{center}
-
+Donde:
+\begin{itemize}
+\item \texttt{(!modo)} es una operación que convierte el modo
+\texttt{RECORRER} en \texttt{PROPAGAR\_NEGACIONES} y viceversa.
+\item \texttt{complemento(AND) = OR}, \texttt{complemento(OR) = AND},
+\texttt{complemento(EXISTS) = FORALL}, \texttt{complemento(FORALL) = EXISTS}.
+\end{itemize}
+El recorrido se inicia con la llamada \texttt{recorrido(arbol, RECORRER)},
+donde \texttt{arbol} es el nodo superior (la subfórmula más externa).
 El algoritmo descrito no es más que la aplicación recursiva de las leyes de De~Morgan
 hasta lograr que todas las negaciones aparezcan junto a literales, en lugar de
 en subfórmulas generales.
+
+Luego, se hace un último recorrido del árbol para generar las condiciones
+y acciones de PDDL que configurarán la traducción del dominio PDDL.
+Para obtener $\domain=\domred(\sigma,\Phi)$ a partir del árbol sintáctico se
+realiza una búsqueda en profundidad de la siguiente manera:
+\begin{center}
+\begin{verbatim}
+traducir(nodo):
+    para cada hijo de nodo:
+        traducir(hijo)
+    agregar_acciones(nodo)
+\end{verbatim}
+\end{center}
+\texttt{agregar\_acciones(nodo)} genera las acciones que especifica la traducción de la
+subfórmula particular que se encuentra en \texttt{nodo}, tal como
+es descrito en la Sección \ref{reduccion}.
+
+Finalmente, para obtener $\instance=\insred(\sigma,\Phi,\A)$ se interpreta la
+estructura $\A$ en el archivo de texto como la situación inicial del problema
+de planificación, y se especifica que la instancia $\instance$ pertenece al
+dominio $\domain$, con lo cual las acciones aplicables sobre el problema
+$\instance$ serán exactamente las especificadas en $\domain$, ya traducidas con
+el último recorrido del árbol sintáctico.
 
 %\begin{theorem}
 %La función $f_{\sigma, \Phi}$ es una reducción en tiempo polinomial del
