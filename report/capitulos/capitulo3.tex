@@ -3,3 +3,414 @@
 \chapter{Traducción de problemas PH}
 \label{Chapter3}
 \lhead{Capítulo 3. \emph{Traducción de problemas PH}}
+
+In a recent contribution,
+(hereafter referred to as PMB) show how to automatically reduce
+instances of decision problems in NP into plan-existence decision
+problems for \STRIPS.
+In this approach, a decision problem $\Pi$ in NP is encoded as a
+second-order existential (\SOE) formula $\Phi$ while a particular
+instance is encoded as first-order structure $\A$ in a way that
+$\A\models\Phi$ iff the instance encoded by $\A$ satisfies belongs to $\Pi$.
+This is a general and feasible idea as it is known that \SOE
+captures the class NP \cite{immerman:book}.
+The pair $\tup{\Phi,\A}$ is then fed into a (software) tool that
+outputs a \STRIPS problem $P$ that has a solution (plan) iff $\A\models\Phi$,
+thus allowing the utilization of the current planning technology
+to automatically solve the problems in NP that are expressed as
+second-order formulas.
+Moreover, the problem $P$ is not an arbitrary \STRIPS problem but
+one that can be solved in polytime by a non-deterministic
+Turing machine, thus guaranteeing that the whole approach is not
+an overkill from the standpoint of complexity theory.
+Furthermore, the function $\tup{\Phi,\cdot}:\struc\mapsto\STRIPS$ 
+that is implemented by the tool for fixed $\Phi$ and that maps
+first-order structures $\A$ into \STRIPS problems $P$ is computable
+in polynomial time and thus corresponds to a genuine \emph{polytime many-one reduction}
+from $\Pi$ into \STRIPS.
+
+Since it is known that other (bigger) complexity classes are also
+captured in second-order logic, PMB left as an open issue the
+development of a tool capable of targeting such classes.
+This paper bridges this gap and shows in a concise and crisp manner
+how the tool can be extended to work for decision problems in the
+Polynomial-time Hierarchy (\PH) \cite{sipser:book}.
+Yet, although the resulting reductions will run in polynomial
+time, the resulting \STRIPS problems will not be solvable in
+non-deterministic polynomial time.
+This is so because such problems only admit plans of
+\emph{exponential length} in the worst case as \PH contains, besides
+NP, the classes coNP and $\Sigma^p_k$ for any $k\geq 1$.
+The resulting planning problems are thus short, meaning that they can
+be encoded by short bit sequences (relative to the encoding length of
+$\A$) but have long solutions.
+
+The consequences of having small problems with long solutions
+are several. Among others, such problems pose a difficult
+challenge on the current state-of-the-art planners which are
+all based on heuristic search. In particular, heuristics functions
+that are based on the delete relaxation or that do not take into
+account that the same action may be applied a large (i.e., exponential)
+number of times will probably fail at being effective for guiding
+the search.
+Surprisingly, the current best SAT-based planner, the planner M,
+is able to solve some of these challenging
+\STRIPS problems for which forward-search planners like LAMA'11
+are totally lost. Yet, more surprisingly, LAMA'11 is quite
+superior to M in one of the tested domains (more about this below).
+
+Being this a short paper, we don't have the space to present
+a detailed account of the approach; the reader is referred
+to PMB's work for it.
+In the following sections, we revise some known results from
+Descriptive Complexity, describe how problems in PH can be
+automatically translated into \STRIPS, and present experimental
+results.
+
+
+\section{Capturing \PH in Second-Order Logic}
+
+NP is captured by \SOE \cite{fagin:spectra}.
+This result means that any decision problem $\Pi$ in NP can be
+characterized by a second-order formula $\Phi$ that looks like
+\begin{equation}
+\label{eq:soe}
+\Phi = (\exists R_1^{a_1})\cdots(\exists R_n^{a_n})\psi
+\end{equation}
+where each symbol $R_i^{a_i}$ is a existentially-quantified relation
+of arity $a_i$, and $\psi$ is an arbitrary first-order sentence 
+over a vocabulary containing $\{R_1^{a_1},\ldots,R_n^{a_n}\}$.
+That is, $\Pi$ is the set of instances (words in a language)
+that when encoded as structures $\A$ satisfy the formula $\Phi$.
+
+Likewise, coNP is captured by \SOA that contains formulas
+like Eq.~\eqref{eq:soe} but with the second-order existential
+quantifiers replaced by second-order universal quantifiers.
+In general, $\Sigma^p_k$ is captured by formulas
+whose second-order quantifiers display a structure of $k$
+alternating blocks of quantifiers, beginning with existentials.
+For example, $\Sigma^p_2=\SOEA$ corresponds to formulas of
+the form:
+\begin{equation}
+\Phi = (\exists R_1^{a_1}) \cdots (\exists R_n^{a_n}) 
+       (\forall S_1^{a'_1}) \cdots (\forall S_m^{a'_m})
+       \psi \,.
+\end{equation}
+Since \PH equals $\bigcup_{k\geq 1}\Sigma^p_k$ and is
+fully characterized by arbitrary second-order formulas \cite{immerman:book},
+the extended tool we sought must target such formulas
+instead of the more restricted \SOE formulas.
+On the other hand, we know that $\PH\subseteq\PSPACE$, the
+decision problem for \STRIPS is \PSPACE-complete and there
+are no known syntactic restrictions on \STRIPS that place
+its decision problem in \PH. Thus, the new tool will focus
+on generating (unrestricted) \STRIPS problems.
+
+Consider now the simple formula $\Phi=(\forall R^1)\psi$
+and an structure $\A$ with universe $|\A|$ (i.e., $|\A|$
+is the set of objects in $\A$).
+This formula is valid in $\A$ iff for \emph{every interpretation}
+$R^\A$ of $R$, where $R^\A\subseteq|\A|$, we have $\tup{\A,R^\A}\models\psi$.
+Thus, since there are $2^{\|\A\|}$ different interpretations for $R$,
+a proof for $\A\models\Phi$ may be of \emph{exponential length}.
+For example, if $\Phi_{\UNSAT}$ denotes UNSAT, then a proof that a
+structure $\A$ (encoding a set of clauses) is unsatisfiable is
+typically of exponential length as it must consider all the truth
+valuations for the propositional variables in $\A$.
+Indeed, the solutions for the planning problem $P$ generated
+by the pair $\tup{\Phi_\UNSAT,\A}$ encode such proofs and are
+of exponential length.
+
+
+\section{Automatic Translations into \STRIPS}
+
+Before extending PMB's work over \PH, we found convenient to add
+to it a simple \emph{type system}. We refer to a
+system $\t^*$ made from a finite set $\t=\{\mathbf{t}_0,\mathbf{t}_1,\ldots,\mathbf{t}_N\}$
+of \emph{atomic types} where $\t^*$ is the smallest set that
+contains $\t$ and all types of the form $t=t'\times t''$
+for $t'\in\t^*$ and $t''\in\t$.
+The idea is that each object in a first-order structure
+is assigned an atomic type, with $\mathbf{t}_0$ standing for the
+type containing all objects.
+The types are used to qualify all the first-order and
+second-order quantifications in formulas.
+For example, $(\forall x\in t)$ refers to a first-order
+quantification over all objects of type $t\in\t$, while
+$(\forall R^t)$ refers to a second-order universally
+quantified predicate $R$ with type $t\in\t^*$.
+The only restriction that we pose is that the complex
+types in $\t^*\setminus\t$ should only appear in
+second-order quantifications.
+
+\medskip
+
+Let us consider a general \SO formula of the form 
+\begin{equation}
+\Phi = (\Q_1R_1^{t_1})(\Q_2R_2^{t_2})\cdots(\Q_nR_n^{t_n})\psi
+\end{equation}
+where each $\Q_i\in\{\exists,\forall\}$ is a second-order
+quantifier,  $R_i$ is a relational symbol of type $t_i\in\t^*$,
+and $\psi$ is a first-order sentence.
+Further, let $\A$ be a first-order structure over the
+vocabulary of $\psi$.
+We now show how to generate a planning problem $P$ 
+that has solution iff $\A\models\Phi$.
+
+Following PMB, $P$ has atoms of the form Holds-$\FT[\theta]$
+for every subformula $\theta$ of $\psi$ and with parameters
+that match the free variables in $\theta$. For example,
+if $\Phi$ is the formula for SAT:
+\begin{alignat*}{1}
+\Phi_\SAT &= (\exists T^\text{Var})\psi_\SAT \,, \\
+\psi_\SAT &= (\forall y\in \text{Cls})(\exists x\in\text{Var}) \notag \\
+          &\quad\quad\quad\quad
+               [(P(x,y) \land T(x)) \lor (N(x,y) \lor \neg T(x))]
+\end{alignat*}
+where `Var' and `Cls' are the types for variables and clauses,
+then there is an atom Holds-$\FT[\theta]$ with parameters
+$\tup{x,y}$ for the subformula $\theta(x,y)=N(x,y)\lor\neg T(x)$.
+In $\psi_\SAT$, the relation $P(x,y)$ (resp.\ $N(x,y)$) denotes
+that the variable $x$ appears positively (resp.\ negatively) in
+the clause $y$; these relations are fixed for a given SAT instance
+and their interpretation is given in the structure $\A$ that
+encodes the instance.
+On the other hand, the existentially-quantified relation $T$
+encodes the sought model in a way that $T(x)$ is true iff the
+variable $x$ is assigned the truth-value true.
+
+The problem $P$ has actions for choosing the valuation $T$,
+that is represented by fluents of the form `$\texttt{T}(?x)$'
+and `$\texttt{not\_T}(?x)$', and actions for building a
+proof for $\psi_\SAT$ that are designed to work by following
+the recursive structure of $\psi_\SAT$.
+The goal of the problem is defined as the single fluent
+Holds-$\FT[\psi_\SAT]$ which has no parameters as $\psi_\SAT$
+is assumed to be a sentence.
+
+\smallskip
+
+In our approach, we make use of the same fluents that denote
+the validity of subformulas and the quantified relations.
+The difference though is in how the quantified relations
+are built and \emph{interleaved} with the proofs of the
+subformulas. 
+The interleaving issue does not arise for \SOE\ as there is
+just one interpretation to construct for each existentially-quantified
+relation, but for general formulas, one needs to construct
+and test many different interpretations.
+To make this point clear, let us consider the formula
+for UNSAT that involves a universally-quantified unary relation $T$:
+\begin{alignat*}{1}
+\Phi_\UNSAT &= (\forall T^\text{Var})\psi_\UNSAT \\
+\psi_\UNSAT &= (\exists y\in\text{Cls})(\forall x\in\text{Var}) \\
+            &\quad\quad\ [(\neg P(x,y) \lor \neg T(x))\land(\neg N(x,y)\lor T(x))] \,.
+\end{alignat*}
+This formula
+says that for every relation $T$ over variables (that encodes
+a model), there is a clause $y$ such that for every variable $x$,
+if $x$ appears positive in $y$, then $x$ is false, and if $x$
+appears negative in $y$, $x$ is true.
+UNSAT can thus be automatically translated into \STRIPS by 
+considering actions that ``iterate'' over all possible relations
+$T$, and actions for obtaining the fluent
+Holds-$\FT[\psi_\UNSAT]$ for each such $T$.
+
+For unary $T$, there are $2^n$ different relations on $n$
+variables. Each relation can be encoded with a binary string
+of length $n$ (one bit per variable) so that the $i$th bit
+is 1 iff the $i$th variable $x_i$ belongs to $T$.
+Thus, to iterate over all relations is equivalent to iterating over
+all such strings. This can be done by starting with the empty
+relation, corresponding to `0\ldots00', and successively
+``adding 1'' until reaching `1\ldots11'.
+Figure~\ref{fig:unsat} shows 5 actions that do the iteration;
+these actions make use of the extra fluents Need- and
+Holds-$\FT[\Phi_\UNSAT]$, for the second-order formula
+$\Phi_\UNSAT$, and the fluents `Marker($x$)',
+`VarFirst($x$)', `VarSucc($x,y$)' and `VarLast($x$)'.
+The last three type of fluents are \emph{static} fluents
+that are set in the initial situation and implement an
+static order of the objects that refer to propositional
+variables.
+
+Let us briefly explain how the iteration works.
+The initial situation contains
+the static fluents defining the Var and Cls types,
+and the binary relations $N(x,y)$ and $P(x,y)$, plus
+the fluent Need-$\FT[\Phi_\UNSAT]$, while the goal
+contains only Holds-$\FT[\Phi_\UNSAT]$.
+Initially, the only applicable action is A1 that
+sets $T$ as the empty relation and adds 
+Need-$\FT[\psi_\UNSAT]$.
+Although not shown, this fluent triggers actions
+for achieving a proof of $\psi_\UNSAT$ for the
+current $T$, which as a side effect add 
+Holds-$\FT[\psi_\UNSAT]$ once $\psi_\UNSAT$
+is proved.
+If $\psi_\UNSAT$ is proved, A2 becomes the only operator
+applicable and it removes
+Holds-$\FT[\psi_\UNSAT]$ and adds Marker($x$) for the
+first variable $x$ in the static order.
+After A2, A3 must be applied and it
+changes $T$
+from the model corresponding to 0\ldots00 to the
+model corresponding to 0\ldots01, and adds 
+Need-$\FT[\psi_\UNSAT]$ that asks for a proof
+of $\psi_\UNSAT$ for the new $T$.
+This iteration proceeds in a similar manner until
+proving $\psi_\UNSAT$ for the last model corresponding
+to 1\ldots11, a time at which A5 is the only applicable
+and adds Holds-$\FT[\Phi_\UNSAT]$.\footnote{It
+should be noted that the fluents Marker, etc.\
+are for the SO quantifier $T$. Later, when composing
+translations, each SO quantifier is associated with
+its own fluents.}
+
+\begin{figure}[t]
+\centering
+\fbox{
+  %\resizebox{3.1in}{!}{
+  \resizebox{!}{1.5in}{
+    \begin{minipage}{3.6in}
+    \begin{tabbing}
+    Pre: \= \kill
+    [A1] \textsc{StartProof}: \\[.2em]
+    Pre: \> Need-$\FT[\Phi_\UNSAT]$ \\
+    Eff: \> for each $x\in\text{Var}$: not-T($x$) \,, \\
+         \> $\neg$Need-$\FT[\Phi_\UNSAT]$ \,,\, Need-$\FT[\psi_\UNSAT]$ \\[1em]
+    %%%
+    [A2] \textsc{NextIterate}($x$): \\[.2em]
+    Pre: \> Holds-$\FT[\psi_\UNSAT]$ \,,\, VarFirst($x$) \\
+    Eff: \> $\neg$Holds-$\FT[\psi_\UNSAT]$ \,,\, Marker($x$) \\[1em]
+    %%%
+    [A3] \textsc{NextOverExcluded}($x$): \\[.2em]
+    Pre: \> Marker($x$) \,,\, not-T($x$) \\
+    Eff: \> $\neg$not-T($x$) \,,\, T($x$) \,,\, $\neg$Marker($x$) \,,\, Need-$\FT[\psi_\UNSAT]$ \\[1em]
+    %%%
+    [A4] \textsc{NextOverIncluded}($x,y$): \\[.2em]
+    Pre: \> Marker($x$) \,,\, T($x$) \,,\, VarSucc($x,y$) \\
+    Eff: \> $\neg$T($x$) \,,\, not-T($x$) \,,\, $\neg$Marker($x$) \,,\, Marker($y$) \\[1em]
+    %%%
+    [A5] \textsc{FinishProof}($x$): \\[.2em]
+    Pre: Marker($x$) \,,\, T($x$) \,,\, VarLast($x$) \\
+    Eff: $\neg$T($x$) \,,\, not-T($x$) \,,\, $\neg$Marker($x$) \,,\, Holds-$\FT[\Phi_\UNSAT]$
+    \end{tabbing}
+    \end{minipage}
+  }
+}
+\caption{Actions for iterating over the $2^n$ unary relations $T$
+  that encode the $2^n$ truth-assignments for $n$ propositional
+  variables in UNSAT.}
+\label{fig:unsat}
+\end{figure}
+
+It should be noted that this iteration method also  works
+for relations of arity $k>1$.
+The only change needed is to replace $x$ and $y$ for 
+$k$-tuples of variables.
+Likewise, the fluents that implement the static order
+on variables are changed by fluents that  implement an
+static order over $k$-tuples.
+
+In the case of SAT, our translation differs from PMB's by
+having fluents for the SO formula $\Phi_\SAT$ and by ``passing control''
+to the actions
+that prove Holds-$\FT[\psi_\SAT]$ in a way similar to UNSAT;
+Fig.~\ref{fig:sat} shows the operators for SAT.
+
+The translations for SAT and UNSAT share a common protocol
+that controls which operators become active or inactive
+depending on which part of the formula is being proved.
+This protocol is designed to allow the composition of
+the two types of SO quantifiers, and thus to make a
+translation for \PH.
+For example, a formula in $\Sigma^p_2$ of the form
+$\Phi=(\exists T^{t_1})(\forall R^{t_2})\psi$ can
+be decomposed as
+\begin{equation}
+\Phi = (\exists T^{t_1})\Psi \quad\text{with}\quad \Psi = (\forall R^{t_2})\psi \,, 
+\end{equation}
+so that operators like the ones for SAT, with fluents
+Need- and Holds-$\FT[\Psi]$, may be combined with operators
+like the ones for UNSAT with fluents Need- and Holds-$\FT[\psi]$.
+In such combination, the E5 operator for the inner SO
+existential must delete the fluents for the subformulas in
+order to have a ``fresh state'' for the next proof.
+
+\begin{figure}[t]
+\centering
+\fbox{
+  \resizebox{3.1in}{!}{
+    \begin{minipage}{3.6in}
+    \begin{tabbing}
+    Pre: \= \kill
+    [E1] \textsc{StartProof}: \\[.2em]
+    Pre: \> Need-$\FT[\Phi_\SAT]$ \\
+    Eff: \> for each $x\in\text{Var}$: not-T($x$) \,,\, $\neg$Need-$\FT[\Phi_\SAT]$ \,,\, Guess \\[1em]
+    %%%
+    [E2] \textsc{SetTrue}($x$): \\[.2em]
+    Pre: \> Guess \quad;\quad
+    Eff: T($x$) \,,\, $\neg$not-T($x$) \\[1em]
+    %%%
+    [E3] \textsc{SetFalse}($x$): \\[.2em]
+    Pre: \> Guess \quad;\quad
+    Eff: not-T($x$) \,,\, $\neg$T($x$) \\[1em]
+    %%%
+    [E4] \textsc{ProofSubformula}: \\[.2em]
+    Pre: \> Guess \quad;\quad
+    Eff: $\neg$Guess \,,\, Need-$\FT[\psi_\SAT]$ \\[1em]
+    %%%
+    [E5] \textsc{FinishProof}: \\
+    Pre: \> Holds-$\FT[\psi_\SAT]$ \quad;\quad
+    Eff: $\neg$Holds-$\FT[\psi_\SAT]$ \,,\, Holds-$\FT[\Phi_\SAT]$
+    \end{tabbing}
+    \end{minipage}
+  }
+}
+\caption{Actions that implement the second-order existential
+  quantifier in SAT.}
+\label{fig:sat}
+\end{figure}
+ 
+\subsection{Horizon Windows for SAT-based Planners}
+
+Given a SO formula $\Phi$ describing property $\Pi$ and a
+structure $\A$ encoding an instance of the problem, one
+wants to decide whether the instance satisfy the property
+or not; i.e., $\A\models\Phi$. The tool just described 
+generates in polytime (in the size $\|\A\|$) an \STRIPS
+problem $P$ that has solution iff $\A\models\Phi$.
+Thus, $P$ can be solved with any complete planner to
+answer the original question. However, SAT-based planners
+are inherently incomplete when there is no solution as
+they continue the search forever unless an upper bound
+on the length of the plan is given in advance.\footnote{Of
+course, $2^n$ where $n$ is the number of fluents in $P$
+is a trivial upper bound. Clearly, for $n\geq100$ (or less)
+such a bound is inconsequential. Very often problems have
+more than 100 fluents.}
+
+PMB shows how to calculate \emph{tight} lower and upper bounds
+$l(\psi)$ and $u(\psi)$ on the number of actions needed to prove
+a first-order sentence $\psi$ once the interpretations of the
+relational symbols occurring in $\psi$ are fixed.
+We use such estimates to calculate lower and upper bounds on
+the length of \emph{parallel plans} for SO formulas.
+We proceed inductively
+in the structure of $\Phi$, for $X\in\{l,u\}$:
+\begin{enumerate}[1.]
+\item if $\Phi=\psi$ (first-order formula), then $X(\Phi)=X(\psi)$.
+\item If $\Phi=(\exists R^t)\Psi$, then $X(\Phi)=3+[\![X=u]\!]+X(\Psi)$.
+\item If $\Phi=(\forall R^t)\Psi$, then
+  $X(\Phi)=2^{\#t}[X(\Psi)+3]-1$%   2^{\#t+1}+2^{\#t}X(\Psi)=2^{\#t}[2+X(\Psi)]$
+where
+  $\#t$ is number of $t$-type tuples, $2^{\#t}$
+  is number of relations $R$, and $2^{\#t+1}-2$ is number
+  of bits flipped when incrementing a $\#t$-bit counter
+  from zero to its maximum \cite{cormen:algorithms}.
+\end{enumerate}
+In 2, $[\![X=u]\!]$ is 1 or 0 whether $X$ refers to the 
+upper bound $u$ or not. It is not hard to see that one
+can get the unique expression $X(\Phi)=4+X(\Psi)$ for the
+lower and upper bounds in 2 by pushing the lower bound 1 unit.

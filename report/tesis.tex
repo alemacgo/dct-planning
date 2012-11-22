@@ -66,6 +66,7 @@
 \newcommand{\ground}{\mathfrak{G}}
 \newcommand{\fttt}[1]{{\texttt{\footnotesize #1}}}
 \newcommand{\prove}{{\texttt{\footnotesize prove}}}
+\renewcommand{\t}{\ensuremath{\tau}}
 
 \parindent 3ex % Agrega sangrías de 3 espacios (3 veces el espacio de la x)
 \setlength{\baselineskip}{1.5pt} % Interlineado 1.5
@@ -128,6 +129,21 @@
 \newcommand{\true}{\textbf{true}}
 \newcommand{\false}{\textbf{false}}
 \newcommand{\SAT}{\textsc{Sat}}
+\newcommand{\CLIQUE}{\textsc{Clique}}
+\newcommand{\CHD}{\textsc{CHD}}
+\newcommand{\TDM}{\textsc{3DM}}
+\newcommand{\TCOL}{\textsc{3Col}}
+\newcommand{\KCOL}{\ensuremath{k\textsc{Col}}}
+\newcommand{\qAE}{\ensuremath{\forall\exists}\xspace}
+\newcommand{\qEA}{\ensuremath{\exists\forall}\xspace}
+\newcommand{\qEAE}{\ensuremath{\exists\forall\exists}\xspace}
+\newcommand{\qAEA}{\ensuremath{\forall\exists\forall}\xspace}
+\newcommand{\coCOL}{\ensuremath{\overline{\text{3Col}}}\xspace}
+\newcommand{\STRIPS}{\text{STRIPS}\xspace}
+\newcommand{\TC}{\text{TC}}
+\newcommand{\PH}{\ensuremath{\text{PH}}\xspace}
+\newcommand{\PSPACE}{\text{PSPACE}\xspace}
+\newcommand{\UNSAT}{\textsc{Unsat}}
 
 \renewcommand{\O}{\ensuremath{\mathcal{O}}}
 \newcommand{\pwin}{long}
@@ -242,8 +258,12 @@ Agradecimientos aquí.
 \listofsymbols{ll}  % Include a list of Abbreviations (a table of two columns)
 {
 % \textbf{Acronym} & \textbf{W}hat (it) \textbf{S}tands \textbf{F}or \\
-\textbf{CNF} & \textbf{B}ackus-\textbf{N}aur \textbf{F}orm\\
+\textbf{3Col} & \textbf{3}-\textbf{Col}orabilidad\\
+\textbf{3DM} & \textbf{3}-\textbf{D}imensional \textbf{M}atching\\
+\textbf{CHD} & \textbf{C}amino \textbf{H}amiltoniano \textbf{D}irigido\\
+\textbf{BNF} & \textbf{B}ackus-\textbf{N}aur \textbf{F}orm\\
 \textbf{CNF} & \textbf{C}onjunctive \textbf{N}ormal \textbf{F}orm\\
+\textbf{kCol} & $k$-\textbf{Col}orabilidad\\
 \textbf{LPO} & \textbf{L}ógica de \textbf{P}rimer \textbf{O}rden\\
 \textbf{LSO} & \textbf{L}ógica de \textbf{S}egundo \textbf{O}rden\\
 \textbf{LSO} & \textbf{T}eoría de \textbf{C}omplejidad \textbf{D}escriptiva\\
@@ -253,13 +273,13 @@ Agradecimientos aquí.
 \textbf{SAT} & boolean \textbf{SAT}isfiability\\
 \textbf{STRIPS} & \textbf{S}tanford \textbf{R}esearch \textbf{I}nstitute \textbf{P}roblem \textbf{S}olver\\
 \textbf{TCD} & \textbf{T}eoría de \textbf{C}omplejidad \textbf{D}escriptiva\\
-&\\
-\hline
-&\\
-\textbf{Fun} & abreviación de función total\\
-\textbf{Inj} & abreviación de función total inyectiva\\
-\textbf{PFun} & abreviación de función parcial\\
-\textbf{PInj} & abreviación de función parcial inyectiva\\
+%&\\
+%\hline
+%&\\
+%\textbf{Fun} & abreviación de función total\\
+%\textbf{Inj} & abreviación de función total inyectiva\\
+%\textbf{PFun} & abreviación de función parcial\\
+%\textbf{PInj} & abreviación de función parcial inyectiva\\
 &\\
 \hline
 &\\

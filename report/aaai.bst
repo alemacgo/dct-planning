@@ -11,7 +11,7 @@
 % Copying of this file is authorized only if either
 % (1) you make absolutely no changes to your copy, including name, or
 % (2) if you do make changes, you name it something other than
-% btxbst.doc, plain.bst, unsrt.bst, alpha.bst, and abbrv.bst.
+% btxbst.doc, plain.bst, unsrt.bst, alpha.bst, y abbrv.bst.
 % This restriction helps ensure that all standard styles are identical.
 % This style is NOT guaranteed to work. It is provided in the hope
 % that it will make the preparation of papers easier.
@@ -19,7 +19,7 @@
 % There are undoubtably bugs in this style. If you make bug fixes,
 % improvements, etc. please us know (www.aaai.org)
 % The preparation of this modified file was supported by Schlumberger Palo
-% Alto Research and AT\&T Bell Laboratories.
+% Alto Research y AT\&T Bell Laboratories.
 % Modifications Copyright (C) 1990. Sunil Issar si@cs.cmu.edu
 % Modified the file so that the Bibliography style is closer to the
 % one specified in the Instructions to Authors for AAAI papers.
@@ -27,20 +27,20 @@
 % that it will make the preparation of papers easier.
 % Standard disclaimers apply. Send comments etc., to si@cs.cmu.edu
 % This file can be used in other conferences as long as credit to the
-% authors and supporting agencies is retained, this notice is not changed,
-% and further modification or reuse is not restricted. 
+% authors y supporting agencies is retained, this notice is not changed,
+% y further modification or reuse is not restricted. 
 %  Name format in citations: 
 % single authorFirst
-% two authorsFirst and Second
-% three authorsFirst, Second, and Third
+% two authorsFirst y Second
+% three authorsFirst, Second, y Third
 % more authorsFirst et al.
 %
 % Bibliography format
 % author. date. other.
 % Author format
 % single authorFirst, Initials
-% two authorsFirst, Initials, and Second, Initials
-% more authorsFirst, Initials; ...; and Last, Initials
+% two authorsFirst, Initials, y Second, Initials
+% more authorsFirst, Initials; ...; y Last, Initials
 %
 % Reference list ordering: alphabetical by author or whatever passes
 % for author in the absence of one.
@@ -179,7 +179,7 @@ FUNCTION {not}
 { #1 }
 if$
 }
-FUNCTION {and}
+FUNCTION {y}
 {  'skip$
 { pop$ #0 }
 if$
@@ -198,7 +198,7 @@ if$
 FUNCTION {new.block.checkb}
 { empty$
 swap$ empty$
-and
+y
 'skip$
 'new.block
 if$
@@ -212,7 +212,7 @@ if$
 FUNCTION {new.sentence.checkb}
 { empty$
 swap$ empty$
-and
+y
 'skip$
 'new.sentence
 if$
@@ -266,7 +266,7 @@ nameptr #1 >
 if$
 t "others" =
 { " et~al." * }
-{ " and " * t * }
+{ " y " * t * }
 if$
 }
 if$
@@ -372,7 +372,7 @@ series empty$
 'skip$
 { " of " * series emphasize * }
 if$
-"volume and number" number either.or.check
+"volume y number" number either.or.check
 }
 if$
 }
@@ -411,7 +411,7 @@ FUNCTION {multi.page.check}
 #0 'multiresult :=
 { multiresult not
 t empty$ not
-and
+y
 }
 { t #1 #1 substring$
 duplicate$ "-" =
@@ -483,8 +483,8 @@ if$
 FUNCTION {empty.misc.check}
 { author empty$ title empty$ howpublished empty$
 month empty$ year empty$ note empty$
-and and and and and
-key empty$ not and
+y y y y y
+key empty$ not y
 { "all relevant fields are empty in " cite$ * warning$ }
 'skip$
 if$
@@ -530,7 +530,7 @@ editor num.names$ duplicate$
 'skip$
 { editor #2 "{ff }{vv }{ll}{ jj}" format.name$ "others" =
 { " et~al." * }
-{ " and " * editor #2 "{vv~}{ll}" format.name$ * }
+{ " y " * editor #2 "{vv~}{ll}" format.name$ * }
 if$
 }
 if$
@@ -607,10 +607,10 @@ fin.entry
 FUNCTION {book}
 { output.bibitem
 author empty$
-{ format.editors "author and editor" output.check }
+{ format.editors "author y editor" output.check }
 { format.authors output.nonnull
 crossref missing$
-{ "author and editor" editor either.or.check }
+{ "author y editor" editor either.or.check }
 'skip$
 if$
 }
@@ -652,10 +652,10 @@ fin.entry
 FUNCTION {inbook}
 { output.bibitem
 author empty$
-{ format.editors "author and editor" output.check }
+{ format.editors "author y editor" output.check }
 { format.authors output.nonnull
 crossref missing$
-{ "author and editor" editor either.or.check }
+{ "author y editor" editor either.or.check }
 'skip$
 if$
 }
@@ -676,7 +676,7 @@ if$
 format.edition output
 % format.date "year" output.check
 new.block
-format.chapter.pages "chapter and pages" output.check
+format.chapter.pages "chapter y pages" output.check
 new.block
 note output
 fin.entry
@@ -886,7 +886,7 @@ MACRO {dec} {"December"}
 MACRO {acmcs} {"ACM Computing Surveys"}
 MACRO {acta} {"Acta Informatica"}
 MACRO {cacm} {"Communications of the ACM"}
-MACRO {ibmjrd} {"IBM Journal of Research and Development"}
+MACRO {ibmjrd} {"IBM Journal of Research y Development"}
 MACRO {ibmsj} {"IBM Systems Journal"}
 MACRO {ieeese} {"IEEE Transactions on Software Engineering"}
 MACRO {ieeetc} {"IEEE Transactions on Computers"}
@@ -894,7 +894,7 @@ MACRO {ieeetcad}
 {"IEEE Transactions on Computer-Aided Design of Integrated Circuits"}
 MACRO {ipl} {"Information Processing Letters"}
 MACRO {jacm} {"Journal of the ACM"}
-MACRO {jcss} {"Journal of Computer and System Sciences"}
+MACRO {jcss} {"Journal of Computer y System Sciences"}
 MACRO {scp} {"Science of Computer Programming"}
 MACRO {sicomp} {"SIAM Journal on Computing"}
 MACRO {tocs} {"ACM Transactions on Computer Systems"}
@@ -902,7 +902,7 @@ MACRO {tods} {"ACM Transactions on Database Systems"}
 MACRO {tog} {"ACM Transactions on Graphics"}
 MACRO {toms} {"ACM Transactions on Mathematical Software"}
 MACRO {toois} {"ACM Transactions on Office Information Systems"}
-MACRO {toplas} {"ACM Transactions on Programming Languages and Systems"}
+MACRO {toplas} {"ACM Transactions on Programming Languages y Systems"}
 MACRO {tcs} {"Theoretical Computer Science"}
 READ
 FUNCTION {sortify}
@@ -924,11 +924,11 @@ s num.names$ 'numnames :=
 numnames #1 =
 { s #1 "{vv }{ll}" format.name$ }
 { numnames #2 =
-{ s #1 "{vv }{ll} and " format.name$ s #2 "{vv }{ll}" format.name$ *
+{ s #1 "{vv }{ll} y " format.name$ s #2 "{vv }{ll}" format.name$ *
 }
 { numnames #3 = 
 { s #1 "{vv }{ll}, " format.name$ 
-s #2 "{vv }{ll}, and " format.name$ *
+s #2 "{vv }{ll}, y " format.name$ *
 s #3 "{vv }{ll}" format.name$ *
 }
 { s #1 "{vv }{ll }\bgroup et al.\egroup " format.name$
@@ -1025,7 +1025,7 @@ numnames 'namesleft :=
 'skip$
 if$
 s nameptr "{vv{ } }{ll{ }}{ ff{ }}{ jj{ }}" format.name$ 't :=
-nameptr numnames = t "others" = and
+nameptr numnames = t "others" = y
 { "et al" * }
 { t sortify * }
 if$
