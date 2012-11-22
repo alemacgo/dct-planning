@@ -28,101 +28,94 @@ que tome en cuenta planes paralelos tendría ventajas sobre un planificador
 serial.
 
 Recuerde que en los dominios traducidos por la herramienta propuesta en este
-trabajo, las acciones \texttt{colocar\_verdadera} y \texttt{colocar\_falsa}
+trabajo, las acciones \texttt{colocar-verdadera}
 aplicadas a diferentes variables o tuplas son completamente independientes, y
 por tanto paralelizables.
 
-Existen SAT-\textit{planners} que resuelven problemas de
-planificación paralela de manera muy eficiente. Se escogió el planificador del
-estado del arte basado en SAT \texttt{M} \citep{rintanen:m} para realizar los experimentos, 
+Existen planificadores basados en SAT que resuelven problemas de
+planificación paralela de manera muy eficiente. Se escogió el
+SAT-\textit{planner} del
+estado del arte \texttt{M} \citep{rintanen:m} para realizar los experimentos, 
 debido a su superior desempeño.
 
 \subsection{Ventanas de horizonte}
 
-In the following, we derive tight bounds on the length
-of parallel plans for the resulting problems. These bounds
-are used with SAT-based planner to show that a given
-STRIPS problem has no solution and also to improve the
-performance of the planners.
+En esta sección se derivan cotas estrictas sobre la longitud de los planes
+paralelos para los problemas resultantes. Estas cotas se utilizan con un
+planificador basado en SAT para demostrar que un problema STRIPS no tiene
+solución o para mejorar el desempeño de los planificadores.
 
-A horizon window for a STRIPS problem $P$ is an
-interval of the form $[s,f]$ such that $P$ has a
-plan iff it has a plan of length $\ell\in[s,f]$.
-A window is a parallel-horizon window if $\ell$
-refers to the makespan of a parallel plan.
-Horizon windows can be effectively used to prune
-the search space.
+Una ventana de horizonte para un problema STRIPS $P$ es un intervalo de la
+forma $[i,f]$, tal que $P$ tiene solución si y sólo si tiene un plan paralelo 
+de tamaño $\ell\in[i,f]$. Las ventanas se pueden utilizar para podar el espacio de
+búsqueda.
 
-The recursive structure of the generated problem
-permits the calculation of non-trivial horizon
-windows and of tight parallel-horizon windows.
-Indeed, since all set operators can be applied
-concurrently, a parallel plan needs at most one
-time step to execute them. The plan also requires
-the operators \fttt{begin-proof} and \fttt{prove-goal}.
-Thus, the parallel-horizon window is $[2,3]$ (the lower
-bound 2 applies when there is a plan that uses no
-set operators) plus the parallel-horizon window
-$\pwin(\psi)$ of the sentence $\psi$;
-parallel-horizon windows are inductively defined by
+La estructura recursiva del problema generado permite el cálculo de ventanas de
+horizonte no triviales. Como todas las acciones \texttt{colocar-verdadera}
+pueden ser aplicadas de manera concurrente, un plan paralelo necesita a lo sumo un paso para
+ejecutarlas. El plan también requiere de las acciones \texttt{empezar-prueba}
+y \texttt{probar-meta}. De este modo, la ventana de horizonte es $[2,3]$ más la
+ventana de horizonte $\pwin(\psi)$ de la sentencia $\psi$. Las ventanas de
+horizonte son definidas inductivamente por
+
 \begin{enumerate}[--]
-\item $\pwin(\theta)\doteq [0,0]$ if $\theta$ is a literal,
+\item $\pwin(\theta)\doteq [0,0]$ si $\theta$ es un literal,
 \item $\pwin(\wedge_{i=1}^n \theta_i)\doteq 1+\bigvee_{i=1}^n \pwin(\theta_i)$,
 \item $\pwin(\vee_{i=1}^n \theta_i)\doteq 1+\bigwedge_{i=1}^n \pwin(\theta_i)$,
-\item $\pwin((\exists y)\theta(\bar x,y))\doteq 1+\pwin(\theta)$, and
+\item $\pwin((\exists y)\theta(\bar x,y))\doteq 1+\pwin(\theta)$, y
 \item $\pwin((\forall y)\theta(\bar x,y))\doteq \|A\|+\pwin(\theta)$,
 \end{enumerate}
-where $\A$ is the structure associated to the problem,
-and the operations between windows and scalars are
-$[a,b]\vee[a',b']\doteq[\max\{a,a'\},\max\{b,b'\}]$,
-$[a,b]\wedge[a',b']\doteq[\min\{a,a'\},\max\{b,b'\}]$ and
+donde $\A$ es la estructura asociada al problema, y las operaciones entre
+ventanas y escalares son
+$[a,b]\vee[a',b']\doteq[\max(a,a'),\max(b,b')]$,
+$[a,b]\wedge[a',b']\doteq[\min(a,a'),\max(b,b')]$ y
 $c+[a,b]\doteq[c+a,c+b]$.
-SAT, for example, has the window $[\|\A\|+5,\|\A\|+6]$
-which means that the CNF encoded by a structure $\A$
-is satisfiable iff there is a parallel plan of
-makespan $\ell$ such that $\|\A\|+5\leq\ell\leq\|\A\|+6$.
 
-By bounding the upper limit of parallel horizon 
-windows, we obtain the following surprising result.
+SAT, por ejemplo, tiene la ventana $[\|\A\|+5,\|\A\|+6]$,
+lo que significa que el CNF codificado por la estructura $\A$ es satisfacible
+si y sólo si existe un plan paralelo de longitud $\|\A\|+5\leq\ell\leq\|\A\|+6$.
 
-\begin{theorem}
-Consider a signature $\sigma$, $\Phi\in\SOE(\sigma)$ and
-$\A\in\struc[\sigma]$. Then, to decide $\A\models\Phi$,
-it is enough to consider parallel plans of makespan
-linear on $\|\A\|$ for fixed $\Phi$ but independently
-of the arities in $\sigma$ and $\Phi$.
-More precisely, it is enough to consider plans of makespan
-at most $q(\|\A\|-1)+d+3$ where $q$ is the maximum nesting
-of universal quantifiers in $\psi$, $d$ is the depth of
-$\psi$ and $\psi$ is the FOL part of $\Phi$.
-\end{theorem}
-\begin{proof}
-Let $n=\|\A\|$ and $T$ the parse tree of height $h$ for $\psi$.
-For a maximal branch $b\in T$, let $q_b$ be the number
-of universal quantifiers in $b$, $h_b$ its height, and
-$u(b)$ the upper limit of the parallel horizon window
-along $b$. The upper limit $u(\psi)$ of $\pwin(\psi)$
-is $\max_{b\in T} u(b)$. On the other hand,
-\[ u(b) = q_bn + h_b - q_b = q_b(n-1) + h_b \leq q(n-1) + h. \]
-End with $h=d$ and that $3$ must be added to $u(\psi)$.
-\end{proof}
-
-This bound is tight for SAT.
-The result is surprising because one would expect 
-the need to consider parallel plans of makespan $\O(\|\A\|^k)$
-for some $k$. However, note that a linear makespan
-does not mean a linear number of operators.
+%By bounding the upper limit of parallel horizon 
+%windows, we obtain the following surprising result.
+%
+%\begin{theorem}
+%Consider a signature $\sigma$, $\Phi\in\SOE(\sigma)$ and
+%$\A\in\struc[\sigma]$. Then, to decide $\A\models\Phi$,
+%it is enough to consider parallel plans of makespan
+%linear on $\|\A\|$ for fixed $\Phi$ but independently
+%of the arities in $\sigma$ and $\Phi$.
+%More precisely, it is enough to consider plans of makespan
+%at most $q(\|\A\|-1)+d+3$ where $q$ is the maximum nesting
+%of universal quantifiers in $\psi$, $d$ is the depth of
+%$\psi$ and $\psi$ is the FOL part of $\Phi$.
+%\end{theorem}
+%\begin{proof}
+%Let $n=\|\A\|$ and $T$ the parse tree of height $h$ for $\psi$.
+%For a maximal branch $b\in T$, let $q_b$ be the number
+%of universal quantifiers in $b$, $h_b$ its height, and
+%$u(b)$ the upper limit of the parallel horizon window
+%along $b$. The upper limit $u(\psi)$ of $\pwin(\psi)$
+%is $\max_{b\in T} u(b)$. On the other hand,
+%\[ u(b) = q_bn + h_b - q_b = q_b(n-1) + h_b \leq q(n-1) + h. \]
+%End with $h=d$ and that $3$ must be added to $u(\psi)$.
+%\end{proof}
+%
+%This bound is tight for SAT.
+%The result is surprising because one would expect 
+%the need to consider parallel plans of makespan $\O(\|\A\|^k)$
+%for some $k$. However, note that a linear makespan
+%does not mean a linear number of operators.
 
 \section{Diseño de los experimentos}
+En esta sección se describe el protocolo experimental utilizado.
+
 \subsection{Procedimiento}
 
-\subsection{Modelaje de problemas NP}
-
-\subsection{Modelaje de problemas PH}
+Los detalles sobre la modelación de cada problema pueden encontrarse en el
+Apéndice \ref{apendiceA}.
 
 \section{Resultados en resolución de problemas NP}
 
-\section{Resultados en resolución de problemas PH}
 
 Lorem Ipsum Blah Lorem Ipsum Blah Lorem Ipsum Blah Lorem Ipsum Blah Lorem Ipsum Blah
 Lorem Ipsum Blah Lorem Ipsum Blah Lorem Ipsum Blah Lorem Ipsum Blah Lorem Ipsum Blah
@@ -287,5 +280,7 @@ Total         &  1,614/1,920 &    706 &    908 &     180.9 \\ % a rellenar al fi
 \caption[Resultados de M para *]{Resultados de M para *}
 %\label{table:results}
 \end{table}
+
+\section{Resultados en resolución de problemas PH}
 
 \onecolumn

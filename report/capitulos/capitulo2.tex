@@ -96,7 +96,7 @@ acciones}.
 
 \subsubsection{Acciones para las variables}
 Para cada variable de segundo orden $R_i$ de aridad $a_i$,
-existe una acción \fttt{colocar\_verdadera\_Ri} con $a_i$ parámetros que
+existe una acción \fttt{colocar-verdadera\_Ri} con $a_i$ parámetros que
 coloca la condición \fttt{Ri} y quita $\fttt{libre-Ri}$, el cual debe ser
 verdadero en el estado inicial de cualquier problema;
 estas condiciones se usan para denotar el valor de
@@ -180,7 +180,7 @@ fórmulas a condiciones de esta manera:
 
 \subsubsection{Otras acciones}
 La traducción requiere de dos otras acciones. La primera,
-llamada \fttt{empezar\_prueba} sirve para cambiar la fase de
+llamada \fttt{empezar-prueba} sirve para cambiar la fase de
 `conjetura' a `prueba', tiene precondición \fttt{conjetura}, agrega
 \fttt{prueba} y quita \fttt{conjetura}. La otra acción se llama
 \fttt{probar-meta}, tiene precondición $\FT[\psi]$ y agrega 
@@ -269,7 +269,7 @@ llamada \fttt{empezar\_prueba} sirve para cambiar la fase de
 \subsubsection{Abreviaciones}
 Al haber abreviaciones, las acciones para las variables de segundo orden son
 extendidos para hacer la traducción más eficiente. Para $(\exists F\in\Fun)$,
-la precondición y el \textit{delete} de \fttt{colocar\_verdadera\_F} son
+la precondición y el \textit{delete} de \fttt{colocar-verdadera\_F} son
 extendidos con la condición \fttt{(libre-F\_dom ?x)} de modo de que pueda
 haber a lo sumo una condición $F(x,y)$ verdadera para cada $x$. Así, no hay
 necesidad de incluir la subfórmula $\psi_\text{fun}$. 
@@ -498,11 +498,11 @@ Basta mostrar que es posible alcanzar el estado $I[\A, R_1',\ldots,R_n']$ desde
 $\textsc{init}(f_{\sigma,\Phi}(\A))$. Sea $u_j = a_j^\A$ para $1 \leq j \leq k$.
 \begin{alignat*}{1}
 & \textbf{El plan }\\
-& \langle \ \tup{\texttt{colocar\_verdadera\_Ri}(a_1,\ldots,a_{k_i}) 
+& \langle \ \tup{\texttt{colocar-verdadera\_Ri}(a_1,\ldots,a_{k_i}) 
 \text{ para cada } \tup{u_1,\ldots,u_k} \in R_i} \text{ para cada } R_i \ ;\\
-& {\color{white} \langle \ } \tup{\texttt{colocar\_falsa\_Ri}(a_1,\ldots,a_{k_i}) \text { para cada
+& {\color{white} \langle \ } \tup{\texttt{colocar-falsa\_Ri}(a_1,\ldots,a_{k_i}) \text { para cada
 } \tup{u_1,\ldots,u_k} \not\in R_i} \text{ para cada } R_i\ ;\\
-& {\color{white} \langle \ } \texttt{comenzar\_prueba}()\ \rangle\\
+& {\color{white} \langle \ } \texttt{empezar-prueba}()\ \rangle\\
 & \textbf{alcanza el estado } I[\A, R_1',\ldots,R_n'] \textbf{ desde }
 \textsc{init}(f_{\sigma,\Phi}(\A)).
 \end{alignat*}
@@ -573,8 +573,8 @@ Para toda estructura $\A$, $f_{\sigma, \Phi}(\A)$ es un problema STRIPS-1.
 \end{theorem}
 \begin{proof}
 Ninguna de las acciones de $f_{\sigma, \Phi}(\A)$ tienen \textit{deletes} excepto
-\texttt{comenzar\_prueba} y las acciones \texttt{colocar\_verdadera} y
-\texttt{colocar\_falsa}, pero todas estas borran una precondición que no es
+\texttt{empezar-prueba} y las acciones \texttt{colocar-verdadera} y
+\texttt{colocar-falsa}, pero todas estas borran una precondición que no es
 añadida por ninguna otra acción (i.e., pertenecen a $A_1$ según la definición
 de STRIPS-1).
 \end{proof}
@@ -748,6 +748,14 @@ de planificación, y se especifica que la instancia $\instance$ pertenece al
 dominio $\domain$, con lo cual las acciones aplicables sobre el problema
 $\instance$ serán exactamente las especificadas en $\domain$, ya traducidas con
 el último recorrido del árbol sintáctico.
+
+\section{Simplificación de la traducción}
+Una sencilla modificación a la traducción es reemplazar las
+condiciones \texttt{libre-Ri}, presentes en el estado inicial, con
+condiciones \texttt{no-Ri}. Con esta simplificación, sólo es necesaria la
+acción \texttt{colocar-verdadera}, pues inicialmente se supone que ninguna
+$k$-tupla pertenece a $R_i^k$. De este modo, se establece una \textit{conjetura
+inicial} y se reduce el espacio de búsqueda al eliminar acciones.
 
 %\begin{theorem}
 %La función $f_{\sigma, \Phi}$ es una reducción en tiempo polinomial del
