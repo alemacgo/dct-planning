@@ -433,37 +433,6 @@ Unsat-untyped
 )
 
 Unsat-typed
-(so-forall (?T 1 @ist)
-    (exists (?y @cls)
-        (forall (?x @var)
-            (or
-                (and (?N ?x ?y)
-                     (?T ?x)
-                )
-                (and (?P ?x ?y)
-                    (not (?T ?x))
-                )
-                (?NotIn ?x ?y)
-            )
-        )
-    )
-)     
-
-QBF EA
-(so-exists (?E0 1 @ise0)
-    (so-forall (?A0 1 @isa0)
-        (forall (?c @cls)
-            (exists (?x @var)
-                (or
-                    (and (?P ?x ?c) (?E0 ?x))
-                    (and (?P ?x ?c) (?A0 ?x))
-                    (and (?N ?x ?c) (not (?E0 ?x)))
-                    (and (?N ?x ?c) (not (?A0 ?x)))
-                )
-            )
-        )
-    )
-)
 
 N3COLORING
 (so-forall (?R 1 @node).

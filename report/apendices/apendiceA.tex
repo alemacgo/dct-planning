@@ -4,7 +4,7 @@
 \label{apendiceA}
 \lhead{Apéndice A. \emph{Problemas NP y PH modelados en lógica}}
 
-\section{SAT}
+\section{SAT, Satisfacibilidad proposicional}
 \begin{verbatim}
 (so-exists (?T 1)
     (forall (?y)
@@ -16,13 +16,10 @@
                 (and (?N ?x ?y)
                      (not (?T ?x))
                 )
-            )
-        )
-    )
-)    
+        ))))
 \end{verbatim}
 
-\section{Clique}
+\section{CLIQUE, Clique de tamaño $k$}
 \begin{verbatim}
 (so-exists (?F Inj)
   (and (forall (?y) (exists (?x) (?F ?x ?y)))  ; totality
@@ -42,7 +39,7 @@
 (exists F in Inj)(forall x y)[f(x) < K & f(y) < K -> E(x,y)]
 \end{verbatim}
 
-\section{Camino hamiltoniano dirigido}
+\section{\CHD, Camino Hamiltoniano Dirigido}
 \begin{verbatim}
 (so-exists (?F Inj)
   (forall (?x)
@@ -63,7 +60,7 @@
 ; (exists F in Inj)(forall x)[x < MAX -> E(f(x),f(x+1))]
 \end{verbatim}
 
-\section{\textit{Matching} 3-dimensional}
+\section{\TDM, \textit{3-Dimensional Matching}}
 \begin{verbatim}
 (so-exists (?F Inj)
     (so-exists (?G Inj)
@@ -80,30 +77,29 @@
 )
 \end{verbatim}
 
-\section{3-colorabilidad}
+\section{\TCOL, 3-colorabilidad}
 \begin{verbatim}
 (so-exists (?R 1) (so-exists (?G 1) (so-exists (?B 1)
     (forall (?x) 
         (and
+            ; no hay dos vértices adyacentes del mismo color
             (forall (?y)
-                ; no two adjacent vertices of the same color
                 (implies (?E ?x ?y) (not (or (and (?R ?x) (?R ?y))
                                              (and (?G ?x) (?G ?y))
                                              (and (?B ?x) (?B ?y))
-                                          ))
-                )
-            )
-            (or (?R ?x) (?G ?x) (?B ?x))  ; all vertices must be colored
-            ; only one color per vertex
+            ))))
+
+            ; los vértices tienen al menos un color
+            (or (?R ?x) (?G ?x) (?B ?x))
+
+            ; los vértices tienen a lo sumo un color
             (implies (?R ?x) (and (not (?G ?x)) (not (?B ?x))))
             (implies (?G ?x) (and (not (?R ?x)) (not (?B ?x))))
             (implies (?B ?x) (and (not (?R ?x)) (not (?G ?x))))
-        )
-    )
-)))
+        )))))
 \end{verbatim}
 
-\section{k-colorabilidad}
+\section{\KCOL, k-colorabilidad}
 \begin{verbatim}
 (so-exists (?F Func)
     (forall (?x) 
@@ -112,11 +108,52 @@
                                    (not (exists (?z)
                                         (and (?F ?x ?z)
                                              (?F ?y ?z)
-                                        ))
-                                   )
-                            )
-             )
-        )
-    )
-)
+        ))))))))
+\end{verbatim}
+
+\section{UNSAT, No-Satisfacibilidad proposicional}
+\begin{verbatim}
+(so-forall (?T 1 @ist)
+    (exists (?y @cls)
+        (forall (?x @var)
+            (or
+                (and (?N ?x ?y)
+                     (?T ?x)
+                )
+                (and (?P ?x ?y)
+                    (not (?T ?x))
+                )
+                (?NotIn ?x ?y)
+             ))))
+\end{verbatim}
+
+\section{\qEA-QBF, \textit{Quantified Boolean Formula}}
+\begin{verbatim}
+(so-exists (?E0 1 @ise0)
+    (so-forall (?A0 1 @isa0)
+        (forall (?c @cls)
+            (exists (?x @var)
+                (or
+                    (and (?P ?x ?c) (?E0 ?x))
+                    (and (?P ?x ?c) (?A0 ?x))
+                    (and (?N ?x ?c) (not (?E0 ?x)))
+                    (and (?N ?x ?c) (not (?A0 ?x)))
+                )))))
+\end{verbatim}
+
+\section{N-\TCOL, No-3-Colorabilidad}
+
+\begin{verbatim}
+(so-forall (?R 1 @node)
+    (so-forall (?G 1 @node)
+        (exists (?x @node)
+            (or 
+                (exists (?y @node)
+                    ; no two adjacent vertices of the same color
+                    (or (and (?E ?x ?y) (?R ?x) (?R ?y))
+                        (and (?E ?x ?y) (?G ?x) (?G ?y))
+                        (and (?E ?x ?y) (not (?R ?x)) (not (?R ?y)) (not (?G ?x)) (not (?G ?y)))
+                    )
+                )
+                (and (?R ?x) (?G ?x))))))
 \end{verbatim}
