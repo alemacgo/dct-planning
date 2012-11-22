@@ -345,8 +345,19 @@ El último valor de $k$ para cada instancia es el número cromático.}
 \label{table:chromatic}
 \end{table}
 
+The chromatic number of a graph $G=(V,E)$ is the least
+$k$ such that $G$ is $k$-colorable. It is NP-hard to 
+compute the chromatic number of a graph, but we can
+do it by testing for $k$-colorability for increasing
+values of $k=1,\ldots,|V|$.\footnote{One can do better
+by performing a binary search on $k$.}
+Table~\ref{table:chromatic} shows results for the computation
+of chromatic numbers on random graphs.
+For each instance, it shows the chromatic number $\chi$
+and the time to prove/disprove the existence of a
+$k$-coloring for increasing values of $k$.
+
 \section{Resultados en resolución de problemas PH}
-hola
 \begin{table}[t]
 \centering
 \resizebox{3.3in}{!}{

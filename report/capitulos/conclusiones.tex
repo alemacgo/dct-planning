@@ -1,7 +1,73 @@
 % Chapter 5
-
 \chapter{Conclusiones y Recomendaciones}
 \label{Capitulo5}
-\lhead{Capítulo 5. \emph{Experimentos y resultados}}
+\lhead{\emph{Conclusiones y Recomendaciones}}
+
+We presented a ``black box'' that given as input a
+signature $\sigma$, a second-order existential sentence
+$\Phi$ and a structure $\A\in\struc[\sigma]$, outputs
+a STRIPS problem $P$ that has a plan iff $\A\models\Phi$.
+The black box is fully automated and runs in polynomial
+time in the size $\|\A\|$, and thus can be thought of
+as an efficient method to generate polytime reductions
+from NP into STRIPS.
+
+STRIPS however is more general than NP, it is PSPACE-complete.
+Thus, for any decision problem in PSPACE there is a polytime
+reduction from it into STRIPS.
+Currently, we do not know if such reductions can be %!fix
+automatically and efficiently constructed as in the case
+for NP.  
+
+In the future we plan to work on this problem.
+In order to illustrate some of the subtleties that
+lie ahead, consider the following ``complementation problem''.
+Since PSPACE is closed under complementation, there is a
+polytime reduction $f:\text{STRIPS}\rightarrow\text{STRIPS}$
+that given as input a problem $P$ outputs problem $P'=f(P)$
+such that $P'$ has solution iff $P$ does not.
+What does $f$ do to $P$? At this moment, we do not know
+and this understanding seems necessary to be able to
+construct automated reductions from PSPACE into STRIPS.
+
+On the side of DCT, PSPACE corresponds to second-order logic
+extended with transitive closures. Hence, we will not only
+have to deal with the complementation problem but also with
+the computation of transitive closures for predicates definable
+in second-order logic.
+
+Finally, DCT presents a crisp syntactic separation between 
+complexity classes such as PSPACE, the levels of the polynomial-time
+hierarchy (PH) and PH itself; e.g., $\Sigma^p_2=\SOEA$ and $\PH=\SO$.
+%$\Pi^p_3=\SOAEA$ and $\PH=\SO$.
+But on the side of planning, we do not know of any syntactic
+or structural characterization of STRIPS that puts the
+plan-existence problem in, say, $\Sigma^p_2$.
+Thus, in the case that we find a method for generating reductions
+from, say, \SOEA\ into STRIPS, it would most likely generate
+unrestricted STRIPS problems whose complexity is in PSPACE.
+Hence, further knowledge about the complexity of STRIPS 
+planning awaits to be discovered \ldots
+
+We have extended PMB's tool with a type system and over
+arbitrary SO formulas that capture PH:
+given such a $\Phi$ and a structure $\A$, the tool
+generates a planning problem $P$ that has solution iff $\A\models\Phi$.
+Since problems in PH has no short certificates in general, the solutions
+for the STRIPS problems have exponential length in general.
+Thus, we do not expect that planners based on forward search in state space
+will be able to succeed unless heuristics that account for the multiple
+application of actions are used.
+However, the results for LAMA'11 on \coCOL contradict this expectation and
+thus deserve an explanation. Indeed, we conjecture that the reason for
+the success of LAMA'11 on these instances is the \emph{implicit serialization}
+of subgoals that is achieved as a side effect of the multiple (open) queues
+used by LAMA'11 \cite{richter:lama,lipovetzky:ecai12-width}.
+
+The extension over \PSPACE is now foreseeable as \PSPACE equals SO plus
+transitive closure (TC) \cite{immerman:book}, and TC is just the
+computation of a connectivity relation in an implicit graph which
+is easy to do in STRIPS.
+
 \section{Aportes realizados}
 \section{Direcciones futuras}

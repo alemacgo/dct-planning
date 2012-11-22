@@ -67,7 +67,6 @@ Descriptive Complexity, describe how problems in PH can be
 automatically translated into \STRIPS, and present experimental
 results.
 
-
 \section{Capturing \PH in Second-Order Logic}
 
 NP is captured by \SOE \cite{fagin:spectra}.
@@ -414,3 +413,73 @@ In 2, $[\![X=u]\!]$ is 1 or 0 whether $X$ refers to the
 upper bound $u$ or not. It is not hard to see that one
 can get the unique expression $X(\Phi)=4+X(\Psi)$ for the
 lower and upper bounds in 2 by pushing the lower bound 1 unit.
+
+\begin{verbatim}
+Unsat-untyped
+(so-forall (?T 1)
+    (exists (?y)
+        (forall (?x)
+            (or
+                (and (?P ?x ?y)
+                     (not (?T ?x))
+                )
+                (and (?N ?x ?y)
+                     (?T ?x)
+                )
+				(?M ?x ?y)
+            )
+        )
+    )
+)
+
+Unsat-typed
+(so-forall (?T 1 @ist)
+    (exists (?y @cls)
+        (forall (?x @var)
+            (or
+                (and (?N ?x ?y)
+                     (?T ?x)
+                )
+                (and (?P ?x ?y)
+                    (not (?T ?x))
+                )
+                (?NotIn ?x ?y)
+            )
+        )
+    )
+)     
+
+QBF EA
+(so-exists (?E0 1 @ise0)
+    (so-forall (?A0 1 @isa0)
+        (forall (?c @cls)
+            (exists (?x @var)
+                (or
+                    (and (?P ?x ?c) (?E0 ?x))
+                    (and (?P ?x ?c) (?A0 ?x))
+                    (and (?N ?x ?c) (not (?E0 ?x)))
+                    (and (?N ?x ?c) (not (?A0 ?x)))
+                )
+            )
+        )
+    )
+)
+
+N3COLORING
+(so-forall (?R 1 @node).
+    (so-forall (?G 1 @node)
+        (exists (?x @node).
+            (or 
+                (exists (?y @Node)
+                    ; no two adjacent vertices of the same color
+                    (or (and (?E ?x ?y) (?R ?x) (?R ?y))
+                        (and (?E ?x ?y) (?G ?x) (?G ?y))
+                        (and (?E ?x ?y) (not (?R ?x)) (not (?R ?y)) (not (?G ?x)) (not (?G ?y)))
+                    )   
+                )   
+                (and (?R ?x) (?G ?x))
+            )   
+        )   
+    )      
+)
+\end{verbatim}
