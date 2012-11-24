@@ -38,7 +38,7 @@ SAT-\textit{planner} del
 estado del arte \texttt{M} \citep{rintanen:m} para realizar los experimentos, 
 debido a su superior desempeño.
 
-\subsection{Ventanas de horizonte}
+\subsection{Ventanas de horizonte para la traducción de NP}
 
 En esta sección se derivan cotas estrictas sobre la longitud de los planes
 paralelos para los problemas resultantes. Estas cotas se utilizan con un
@@ -75,6 +75,44 @@ SAT, por ejemplo, tiene la ventana $[\|\A\|+5,\|\A\|+6]$,
 lo que significa que el CNF codificado por la estructura $\A$ es satisfacible
 si y sólo si existe un plan paralelo de longitud $\|\A\|+5\leq\ell\leq\|\A\|+6$.
 
+\subsection{Ventanas de horizonte para la traducción de PH}
+%Given a SO formula $\Phi$ describing property $\Pi$ and a
+%structure $\A$ encoding an instance of the problem, one
+%wants to decide whether the instance satisfy the property
+%or not; i.e., $\A\models\Phi$. The tool just described 
+%generates in polytime (in the size $\|\A\|$) an \STRIPS
+%problem $P$ that has solution iff $\A\models\Phi$.
+%Thus, $P$ can be solved with any complete planner to
+%answer the original question. However, SAT-based planners
+%are inherently incomplete when there is no solution as
+%they continue the search forever unless an upper bound
+%on the length of the plan is given in advance.\footnote{Of
+%course, $2^n$ where $n$ is the number of fluents in $P$
+%is a trivial upper bound. Clearly, for $n\geq100$ (or less)
+%such a bound is inconsequential. Very often problems have
+%more than 100 fluents.}
+
+En esta sección se muestra cómo calcular cotas superiores e inferiores estrictas
+sobre la longitud de planes paralelos para fórmulas $\Phi \in$ \LSO.
+Como en la sección anterior, se procede inductivamente sobre la estructura de $\Phi$:
+\begin{enumerate}[1.]
+\item si $\Phi=\psi$ (fórmula de primer orden), entonces $\pwin(\Phi)=\pwin(\psi)$.
+\item si $\Phi=(\exists R^t)\Psi$, entonces $\pwin(\Phi)=3+[\![\pwin=u]\!]+\pwin(\Psi)$.
+\item si $\Phi=(\forall R^t)\Psi$, entonces
+  $\pwin(\Phi)=2^{\#t} \cdot \pwin(\Psi)+3 - 1 $%   2^{\#t+1}+2^{\#t}\pwin(\Psi)=2^{\#t}[2+\pwin(\Psi)]$
+\ , donde\\
+  $\#t$ es el número de tuplas de tipo $t$,\\ 
+  $2^{\#t}$ es el número de relaciones $R$, \\
+  y $2^{\#t+1}-2$ es el número de bits cambiados cuando se incrementa un
+contador de $\#t$ bits desde cero hasta su máximo \citep{cormen:algorithms}.
+\end{enumerate}
+% que es pwin = u?
+%! Aclarar esto
+En 2, $[\![\pwin=u]\!]$ es 1 o 0 dependiendo de si $\pwin$ se refiere a la cota
+superior $u$ o no. 
+%upper bound $u$ or not. It is not hard to see that one
+%can get the unique expression $\pwin(\Phi)=4+\pwin(\Psi)$ for the
+%lower and upper bounds in 2 by pushing the lower bound 1 unit.
 %By bounding the upper limit of parallel horizon 
 %windows, we obtain the following surprising result.
 %
@@ -112,8 +150,8 @@ si y sólo si existe un plan paralelo de longitud $\|\A\|+5\leq\ell\leq\|\A\|+6$
 
 \subsection{Procedimiento}
 
-Los experimentos consisten en la modelación, traducción y resolución
-de problemas NP y PH. Para cada tipo de problema se ejecuta el planificador
+Los experimentos consistieron en la modelación, traducción y resolución
+de problemas NP y PH. Para cada tipo de problema se ejecutó el planificador
 \texttt{M} sobre instancias de
 distintos tamaños y características, para luego analizar cuántos y cuáles
 instancias fueron resueltas satisfactoriamente en un tiempo limitado, y cuáles
@@ -358,52 +396,52 @@ and the time to prove/disprove the existence of a
 $k$-coloring for increasing values of $k$.
 
 \section{Resultados en resolución de problemas PH}
-\begin{table}[t]
+\begin{table}[h!]
 \centering
 \resizebox{3.3in}{!}{
   \begin{tabular}{lllrrrrrrrrrl}
     %\toprule
-    \qEA  & $\#\exists$ & $\#\forall$ &             & $n$ & $+$ & $-$ &    time &   len & {\sc\small pddl} \\
+    \qEA  & $\#\exists$ & $\#\forall$ &             & $n$ & $+$ & $-$ &    time &   len &  \\
     \midrule
-          &          60 &           1 &             &   5 & --- &   5 &   184.3 &    na &             18.4 \\
-          &             &           2 &             &   5 & --- &   1 & 4,382.5 &    na &             18.5 \\
+          &          60 &           1 &             &   5 & --- &   5 &   184.3 &    na &  \\
+          &             &           2 &             &   5 & --- &   1 & 4,382.5 &    na &  \\
     \cmidrule{2-10}
-          &         100 &           1 &             &   5 &   4 &   1 &   176.6 &   316 &             20.4 \\ % #actions=36,017
-          &             &           2 &             &   5 &   3 &   2 & 3,471.9 &   628 &             20.5 \\ % #actions= 2,737
+          &         100 &           1 &             &   5 &   4 &   1 &   176.6 &   316 &  \\ % #actions=36,017
+          &             &           2 &             &   5 &   3 &   2 & 3,471.9 &   628 &  \\ % #actions= 2,737
     \midrule
-    \qEAE & $\#\exists$ & $\#\forall$ & $\#\exists$ & $n$ & $+$ & $-$ &    time &   len & {\sc\small pddl} \\
+    \qEAE & $\#\exists$ & $\#\forall$ & $\#\exists$ & $n$ & $+$ & $-$ &    time &   len &  \\
     \midrule
-          &          10 &           2 &          30 &   5 & --- &   5 & 4,199.2 &    na &             17.5 \\
-          &             &           2 &          50 &   5 & --- &   5 & 2,313.9 &    na &             18.4 \\
+          &          10 &           2 &          30 &   5 & --- &   5 & 4,199.2 &    na &  \\
+          &             &           2 &          50 &   5 & --- &   5 & 2,313.9 &    na &  \\
     \cmidrule{2-10}
-          &          30 &           2 &          30 &   5 & --- &   5 & 3,210.7 &    na &             18.5 \\
-          &             &           2 &          50 &   5 & --- &   5 & 3,166.3 &    na &             19.4 \\
+          &          30 &           2 &          30 &   5 & --- &   5 & 3,210.7 &    na &  \\
+          &             &           2 &          50 &   5 & --- &   5 & 3,166.3 &    na &  \\
     \cmidrule{2-10}
-          &          50 &           2 &          30 &   5 & --- &   1 & 3,313.4 &    na &             19.4 \\
-          &             &           2 &          50 &   5 &   3 &   2 & 3,450.9 &   640 &             20.4 \\ % #actions=3,182.0
+          &          50 &           2 &          30 &   5 & --- &   1 & 3,313.4 &    na &  \\
+          &             &           2 &          50 &   5 &   3 &   2 & 3,450.9 &   640 &  \\ % #actions=3,182.0
     \midrule
-    \qAE  & $\#\forall$ & $\#\exists$ &             & $n$ & $+$ & $-$ &    time &   len & {\sc\small pddl} \\
+    \qAE  & $\#\forall$ & $\#\exists$ &             & $n$ & $+$ & $-$ &    time &   len &  \\
     \midrule
-          &           1 &         100 &             &   5 &   5 & --- &   147.9 &   319 &             20.2 \\ % #actions=45,378.6
+          &           1 &         100 &             &   5 &   5 & --- &   147.9 &   319 &  \\ % #actions=45,378.6
     \cmidrule{2-10}
-          &           2 &          30 &             &   5 & --- &   5 & 2,060.4 &    na &             16.9 \\
-          &             &          60 &             &   5 &   4 &   1 & 3,100.7 &   637 &             18.4 \\ % #actions=3,086.0
-          &             &          80 &             &   5 &   5 & --- & 2,893.2 &   637 &             19.3 \\ % #actions=2,961.4
-          &             &         100 &             &   5 &   5 & --- & 2,092.8 &   637 &             20.2 \\ % #actions=3,171.8
+          &           2 &          30 &             &   5 & --- &   5 & 2,060.4 &    na &  \\
+          &             &          60 &             &   5 &   4 &   1 & 3,100.7 &   637 &  \\ % #actions=3,086.0
+          &             &          80 &             &   5 &   5 & --- & 2,893.2 &   637 &  \\ % #actions=2,961.4
+          &             &         100 &             &   5 &   5 & --- & 2,092.8 &   637 &  \\ % #actions=3,171.8
     \cmidrule{2-10}
-          &           3 &          15 &             &   5 & --- & --- &      na &    na &              --- \\
+          &           3 &          15 &             &   5 & --- & --- &      na &    na &  \\
     \midrule
-    \qAEA & $\#\forall$ & $\#\exists$ & $\#\forall$ & $n$ & $+$ & $-$ &    time &   len & {\sc\small pddl} \\
+    \qAEA & $\#\forall$ & $\#\exists$ & $\#\forall$ & $n$ & $+$ & $-$ &    time &   len &  \\
     \midrule
-          &           1 &          60 &           1 &   5 &   1 & --- &   404.7 &   635 &             21.1 \\
-          &             &          60 &           2 &   5 & --- & --- &     --- &    na &             21.2 \\
-          &             &          80 &           1 &   5 &   5 & --- &   403.2 &   635 &             22.0 \\
-          &             &         100 &           1 &   5 &   5 & --- &   390.8 &   635 &             23.1 \\
+          &           1 &          60 &           1 &   5 &   1 & --- &   404.7 &   635 &  \\
+          &             &          60 &           2 &   5 & --- & --- &     --- &    na &  \\
+          &             &          80 &           1 &   5 &   5 & --- &   403.2 &   635 &  \\
+          &             &         100 &           1 &   5 &   5 & --- &   390.8 &   635 &  \\
     \cmidrule{2-10}
-          &           2 &          60 &           1 &   5 &   2 & --- &   456.7 & 1,269 &             21.2 \\
-          &             &          60 &           2 &   5 & --- & --- &     --- &    na &             21.3 \\
-          &             &          80 &           1 &   5 &   5 & --- &   499.5 & 1,269 &             22.1 \\
-          &             &         100 &           1 &   5 &   5 & --- &   454.9 & 1,269 &             23.2 \\
+          &           2 &          60 &           1 &   5 &   2 & --- &   456.7 & 1,269 &  \\
+          &             &          60 &           2 &   5 & --- & --- &     --- &    na &  \\
+          &             &          80 &           1 &   5 &   5 & --- &   499.5 & 1,269 &  \\
+          &             &         100 &           1 &   5 &   5 & --- &   454.9 & 1,269 &  \\
     %\bottomrule
   \end{tabular}
 }

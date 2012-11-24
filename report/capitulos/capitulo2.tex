@@ -96,7 +96,7 @@ acciones}.
 
 \subsubsection{Acciones para las variables}
 Para cada variable de segundo orden $R_i$ de aridad $a_i$,
-existe una acción \fttt{colocar-verdadera\_Ri} con $a_i$ parámetros que
+existe una acción \fttt{colocar-verdadera-Ri} con $a_i$ parámetros que
 coloca la condición \fttt{Ri} y quita $\fttt{libre-Ri}$, el cual debe ser
 verdadero en el estado inicial de cualquier problema;
 estas condiciones se usan para denotar el valor de
@@ -269,7 +269,7 @@ llamada \fttt{empezar-prueba} sirve para cambiar la fase de
 \subsubsection{Abreviaciones}
 Al haber abreviaciones, las acciones para las variables de segundo orden son
 extendidos para hacer la traducción más eficiente. Para $(\exists F\in\Fun)$,
-la precondición y el \textit{delete} de \fttt{colocar-verdadera\_F} son
+la precondición y el \textit{delete} de \fttt{colocar-verdadera-F} son
 extendidos con la condición \fttt{(libre-F\_dom ?x)} de modo de que pueda
 haber a lo sumo una condición $F(x,y)$ verdadera para cada $x$. Así, no hay
 necesidad de incluir la subfórmula $\psi_\text{fun}$. 
@@ -498,7 +498,7 @@ Basta mostrar que es posible alcanzar el estado $I[\A, R_1',\ldots,R_n']$ desde
 $\textsc{init}(f_{\sigma,\Phi}(\A))$. Sea $u_j = a_j^\A$ para $1 \leq j \leq k$.
 \begin{alignat*}{1}
 & \textbf{El plan }\\
-& \langle \ \tup{\texttt{colocar-verdadera\_Ri}(a_1,\ldots,a_{k_i}) 
+& \langle \ \tup{\texttt{colocar-verdadera-Ri}(a_1,\ldots,a_{k_i}) 
 \text{ para cada } \tup{u_1,\ldots,u_k} \in R_i} \text{ para cada } R_i \ ;\\
 & {\color{white} \langle \ } \tup{\texttt{colocar-falsa\_Ri}(a_1,\ldots,a_{k_i}) \text { para cada
 } \tup{u_1,\ldots,u_k} \not\in R_i} \text{ para cada } R_i\ ;\\
@@ -630,7 +630,7 @@ segundo orden.
 & \integer \in \mathbb{Z}^+ \\
 \end{alignat*}
 \label{gramatica}
-\caption{Gramática en BNF del lenguaje que se utiliza para expresar $\Phi$ en
+\caption[Gramática en BNF del lenguaje lógico]{Gramática en BNF del lenguaje que se utiliza para expresar $\Phi$ en
 la herramienta.}
 \end{figure}
 
