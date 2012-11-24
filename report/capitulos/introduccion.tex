@@ -71,7 +71,6 @@ existan solucionadores: es precisamente esto lo que se ha hecho en el presente
 trabajo con la función que traduce descripciones declarativas a problemas
 de planificación, área para la cual existe una amplia variedad de solucionadores.
 
-%! Qué formato puede requerir este enfoque?
 Otro trabajo relacionado a este proyecto es el de \cite{cadoli:safedelay}. Los
 autores presentan una manera de razonar sobre los problemas de
 decisión, intentando reformularlos para hacerlos más fáciles de resolver. Se
@@ -81,11 +80,12 @@ Sin embargo, dependiendo del solucionador, se podría requerir que la fórmula
 declarativa a solucionar esté en un formato particular, lo cual no es tan
 conveniente como un enfoque que independiente del dominio.
 
-% Objetivos generales y específicos
 El objetivo general del proyecto es permitir la resolución de problemas
-de la jerarquía polinomial (PH) expresados a través de un lenguaje declarativo basado en 
-la lógica de segundo orden, asegurando que la complejidad del problema
-resultante no será mayor a la del problema original. Al alcanzar este objetivo, problemas cuya aplicación es
+NP y de la jerarquía polinomial (PH) expresados a través de un lenguaje declarativo basado en 
+la lógica de segundo orden.
+%, asegurando que la complejidad del problema
+%resultante no será mayor a la del problema original.
+Al alcanzar este objetivo, problemas cuya aplicación es
 ampliamente conocida en Ciencias de la Computación podrán ser expresados
 en un lenguaje conciso y ser resueltos sin la intervención del usuario luego de
 la fase de modelación.
@@ -94,7 +94,7 @@ A fin de lograr el objetivo general, se plantean las siguientes metas
 específicas:
 \begin{itemize}
 \item El desarrollo de una herramienta que procese la descripción lógica de un problema 
-PH y genere automáticamente un problema de planificación equivalente 
+NP o PH y genere automáticamente un problema de planificación equivalente 
 formulado en el lenguaje PDDL (\textit{Planning Domain Definition Language}),
 de uso estándar en la comunidad de planificación automática.
 \item Una interfaz \textit{web} para este sistema que permita un acceso flexible

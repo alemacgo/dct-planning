@@ -128,11 +128,11 @@ $\A$. Por ello, las soluciones para el problema de planificación $P$ generado
 por el par $\tup{\Phi_\UNSAT,\A}$ codifican tales pruebas y son de tamaño
 exponencial.
 
-\section{Traducciones automáticas a \STRIPS}
+\section{Traducción a \STRIPS}
 
-%! Explicar sistema de tipos
+*** ACLARAR DEFINICIÓN FORMAL DE SISTEMA DE TIPOS ***
 \subsection{Sistema de tipos}
-Antes de extender la traducción a \PH, es conveniente agregarle un sistema
+Antes de extender la traducción a \PH es conveniente agregarle un sistema
 sencillo de tipos.
 
 Sea $\t^*$ un sistema, creado a partir de un conjunto finito 
@@ -213,7 +213,8 @@ pero para fórmulas generales es necesario construir e intentar probar varias
 interpretaciones diferentes.
 Para aclarar este punto, considere la fórmula para UNSAT, que contiene una
 relación unaria $T$ cuantificada universalmente:
-%! No es la misma traduccion que sale en el apendice
+
+*** ACLARAR: NO ES LA MISMA TRADUCCIÓN QUE SALE EN EL APÉNDICE ***
 \begin{alignat*}{1}
 \Phi_\UNSAT &= (\forall T^\text{Var})\psi_\UNSAT \\
 \psi_\UNSAT &= (\exists y\in\text{Cls})(\forall x\in\text{Var}) \\
@@ -285,7 +286,7 @@ aplicable y agrega $\FT[\Phi_\UNSAT]$, completando el plan.
     Pre: \> $\FT[\psi_\UNSAT]$ \,,\, VarPrimera-T($x$) \\
     Efe: \> $\neg$$\FT[\psi_\UNSAT]$ \,,\, Marcador-T($x$) \\[1em]
     %%%
-%! por que estos nombres?
+*** ¿POR QUÉ ESTOS NOMBRES? ***
     [A3] \textsc{SiguienteSobreExcluidos}($x$): \\[.2em]
     Pre: \> Marcador-T($x$) \,,\, no-T($x$) \\
     Efe: \> $\neg$no-T($x$) \,,\, T($x$) \,,\, $\neg$Marcador-T($x$) \,,\, \texttt{necesita-}$\FT[\psi_\UNSAT]$ \\[1em]
@@ -299,7 +300,7 @@ aplicable y agrega $\FT[\Phi_\UNSAT]$, completando el plan.
     Efe: $\neg$T($x$) \,,\, no-T($x$) \,,\, $\neg$Marcador-T($x$) \,,\, $\FT[\Phi_\UNSAT]$
     \end{tabbing}
     \end{minipage}
-%! por qué hace falta T y no-T?
+*** ¿POR QUÉ HACE FALTA T Y NO-T? ***
   }
 }
 \caption[Acciones para realizar la iteración del cuantificador universal de

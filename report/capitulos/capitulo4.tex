@@ -35,7 +35,7 @@ por tanto paralelizables.
 Existen planificadores basados en SAT que resuelven problemas de
 planificación paralela de manera muy eficiente. Se escogió el
 SAT-\textit{planner} del
-estado del arte \texttt{M} \citep{rintanen:m} para realizar los experimentos, 
+estado del arte \texttt{M} \citep{rintanen:m2010} para realizar los experimentos, 
 debido a su superior desempeño.
 
 \subsection{Ventanas de horizonte para la traducción de NP}
@@ -80,7 +80,7 @@ si y sólo si existe un plan paralelo de longitud $\|\A\|+5\leq\ell\leq\|\A\|+6$
 %structure $\A$ encoding an instance of the problem, one
 %wants to decide whether the instance satisfy the property
 %or not; i.e., $\A\models\Phi$. The tool just described 
-%generates in polytime (in the size $\|\A\|$) an \STRIPS
+%generates in polytiempo (in the size $\|\A\|$) an \STRIPS
 %problem $P$ that has solution iff $\A\models\Phi$.
 %Thus, $P$ can be solved with any complete planner to
 %answer the original question. However, SAT-based planners
@@ -106,10 +106,9 @@ Como en la sección anterior, se procede inductivamente sobre la estructura de $
   y $2^{\#t+1}-2$ es el número de bits cambiados cuando se incrementa un
 contador de $\#t$ bits desde cero hasta su máximo \citep{cormen:algorithms}.
 \end{enumerate}
-% que es pwin = u?
-%! Aclarar esto
 En 2, $[\![\pwin=u]\!]$ es 1 o 0 dependiendo de si $\pwin$ se refiere a la cota
-superior $u$ o no. 
+superior $u$ o no.  ***ACLARAR***
+
 %upper bound $u$ or not. It is not hard to see that one
 %can get the unique expression $\pwin(\Phi)=4+\pwin(\Psi)$ for the
 %lower and upper bounds in 2 by pushing the lower bound 1 unit.
@@ -209,6 +208,14 @@ uuf75         &         1/40 &      0 &      1 &   1,746.4 \\ % 0.0
 %\label{table:results}
 \end{table}
 
+M fue capaz de resolver todos los problemas pequeños de SAT, tardándose más en
+las instancias no satisfacibles (para probar que no había solución). Como se
+puede constatar con los problemas de 75 variables, es evidente que la herramienta 
+no es la forma más eficiente de resolver problemas: solucionadores específicos
+de SAT pueden resolver problemas mucho mayores en menor tiempo. Sin embargo, ha
+sido un buen ejercicio constatar la equivalencia teórica entre el problema
+NP estándar, SAT, y planificación en STRIPS-1.
+
 \subsection{Problemas de grafos y \TDM}
 Las instancias de problemas de grafos se generaron de acuerdo con el modelo $G(n, p)$
 \cite{bollobas:random-graphs}, variando $n$ y $p$, y las instancias para \TDM\ se generaron
@@ -247,6 +254,10 @@ $y$ en un grafo con $x$ nodos.}
 %\label{table:results}
 \end{table}
 
+Es interesante que la herramienta sea capaz de producir problemas de
+\textit{clique} resolubles en menos de cinco minutos para grafos de hasta 25 nodos, sin la
+utilización de ninguna heurística ni optimización específica al problema.
+
 \begin{table}[h!]
 \begin{center}
 \begin{tabular}{lllllll}
@@ -268,6 +279,9 @@ columna indica el número de nodos del grafo.}
 %\label{table:results}
 \end{table}
 
+El planificador tuvo mayores dificultades en este dominio que en el anterior, a
+juzgar por la cantidad de problemas resueltos con el mismo número de nodos.
+
 \begin{table}[h!]
 \begin{center}
 \begin{tabular}{lllllll}
@@ -279,7 +293,7 @@ columna indica el número de nodos del grafo.}
 10            &        40/40 &     36 &      4 &       9.6 \\ % 2.8
 15            &        40/40 &     40 &      0 &     251.5 \\ % 65.5
 20            &        13/40 &     13 &      0 &   1,191.0 \\ % 42.1 (avg/std) is over 3 instances !!!
-25            &         0/40 &      0 &      0 &       --- \\ % ---
+25            &         0/40 &      0 &      0 &       -- \\ % --
 \midrule
 \end{tabular}
 \end{center}
@@ -287,6 +301,12 @@ columna indica el número de nodos del grafo.}
 columna indica la cardinalidad del conjunto.}
 %\label{table:results}
 \end{table}
+
+\TDM\ es un dominio particularmente difícil: como la cota inferior es $3n+4$, 
+el planificador debe empezar a buscar planes que son más largos que en los
+dominios anteriores. De cualquier modo, es conveniente poder resolver este problema 
+de hipergrafos para instancias pequeñas utilizando sólo planificación automática
+en lugar de un \textit{software especializado}, gracias a la herramienta.
 
 \begin{table}[h!]
 \begin{center}
@@ -311,6 +331,12 @@ columna indica el número de nodos del grafo.}
 %\label{table:results}
 \end{table}
 
+\TCOL\ fue el dominio que arrojó las mejores resultados, comparándolo con otros
+problemas de grafos de tamaño similar. Nótese que en la mayoría de los casos de
+los grafos más grandes no existía una 3-coloración válida, y la ventana de
+horizontes le permitió al planificador dar una respuesta en un tiempo
+relativamente corto.
+
 \begin{table}[h!]
 \begin{center}
 \begin{tabular}{lllllll}
@@ -330,9 +356,9 @@ columna indica el número de nodos del grafo.}
 20-2          &        40/40 &      3 &     37 &     254.9 \\ % 68.2
 20-3          &        40/40 &     12 &     28 &     395.9 \\ % 221.8
 20-4          &        40/40 &     20 &     20 &     497.3 \\ % 178.0
-25-2          &         0/40 &      0 &      0 &       --- \\ % ---
-25-3          &         0/40 &      0 &      0 &       --- \\ % ---
-25-4          &         0/40 &      0 &      0 &       --- \\ % ---
+25-2          &         0/40 &      0 &      0 &       -- \\ % --
+25-3          &         0/40 &      0 &      0 &       -- \\ % --
+25-4          &         0/40 &      0 &      0 &       -- \\ % --
 \midrule
 \end{tabular}
 \end{center}
@@ -342,17 +368,29 @@ se intenta colorear.}
 %\label{table:results}
 \end{table}
 
-\begin{table}[h!]
-\begin{center}
-\begin{tabular}{lllllll}
-              &    $N^*$/$N$ & \#pos. & \#neg. & tiempo prom. \\
-\midrule
-Total         &  1,614/1,920 &    706 &    908 &     180.9 \\ % a rellenar al final
-\end{tabular}
-\end{center}
-\caption[Resultados de M para *]{Resultados de M para *}
-%\label{table:results}
-\end{table}
+Los problemas de \KCOL\ arrojaron buenos resultados hasta considerar los
+grafos de 25 nodos, para los cuales no se halló ninguna solución dentro de los
+30 minutos por problema que se le dio al computador. Esto muestra que la
+dificultad de los problemas NP escala muy rápidamente, incluso cuando hay aumentos
+pequeños en el tamaño del problema.
+
+En total, de todos los 1920 problemas que se intentó resolver, fueron
+solucionadas 1614 instancias (el 84\%), 706 de las cuales eran positivas (es
+decir, se consiguió un plan que solucionaba el problema. El tiempo de corrida
+promedio entre todas las instancias resueltas fue de 180.9 segundos.
+
+\subsection{Número cromático}
+
+El número cromático $\chi$ de un grafo $G=(V,E)$ es el menor $k$ tal que $G$ es
+$k$-coloreable. Determinar este número es un problema NP-hard, pero puede
+hacerse probando su $k$-colorabilidad por valores incrementales\footnote{Esto
+se puede mejorar realizando una búsqueda binaria en $k$.} de
+$k=1,\ldots,|V|$.
+
+La Tabla \ref{chromatic} muestra los detalles de corrida de ocho instancias de
+grafos a los cuales se les determinó su número cromático utilizando la
+traducción de la herramienta y el planificador M como un oráculo para decidir
+la colorabilidad para distintos $k$.
 
 \begin{table}[h!]
 \centering
@@ -383,95 +421,273 @@ El último valor de $k$ para cada instancia es el número cromático.}
 \label{table:chromatic}
 \end{table}
 
-The chromatic number of a graph $G=(V,E)$ is the least
-$k$ such that $G$ is $k$-colorable. It is NP-hard to 
-compute the chromatic number of a graph, but we can
-do it by testing for $k$-colorability for increasing
-values of $k=1,\ldots,|V|$.\footnote{One can do better
-by performing a binary search on $k$.}
-Table~\ref{table:chromatic} shows results for the computation
-of chromatic numbers on random graphs.
-For each instance, it shows the chromatic number $\chi$
-and the time to prove/disprove the existence of a
-$k$-coloring for increasing values of $k$.
+Nótese que los mayores tiempos de corrida corresponden generalmente a
+la prueba de $k$-colorabilidad para $k = \chi - 1$. Esto se debe a que
+para un grafo con número cromático $\chi$
+no es trivial descartar que sea $(\chi - 1)$-coloreable, y el programa debe
+agotar todas las posibles formas de colorearlo antes de rendirse e intentar con
+un color adicional.
 
-\section{Resultados en resolución de problemas PH}
+\section{Experimentos y resultados de problemas PH}
+Se llevaron a cabo diferentes experimentos para probar la dificultad de los
+problemas generados. Las dos categorías de problemas estudiados fueron QBF, un
+problema que se ubica en PH, y el complemento al problema de 3-colorabilidad de
+un grafo, \coCOL, perteneciente a la clase co-NP.
+Para QBF se utilizó M, el mismo planificador basado en SAT con el que se
+resolvieron los problemas NP. Para \coCOL se utilizó otro planificador del
+estado del arte, llamado LAMA'11 \cite{richter:lama}. *** JUSTIFICAR, COMO SALE EN EL PAPER ***.
+
+Los experimentos se ejecutaron en un CPU Xeon 5140 corriendo a 2.33 GHz,
+con 2 GB de RAM y un tiempo límite de una hora y media.
+
+\subsection{QBF}
+Se realizaron experimentos sobre varios tipos de problemas QBF
+(\textit{quantified Boolean formula}). QBF es una generalización de SAT
+en la cual se tiene una fórmula CNF con variables cuantificadas existencial o
+universalmente. Por ejemplo, la fórmula
+\[ (\exists y_1y_2)\ (\forall x_1x_2) \ ((x_1 \lor \neg y) \land (\neg x_2 \lor
+    y) \land (\neg x_1 \lor \neg y_2 \lor y_1)) \]
+expresa el problema de hallar una asignación de verdad para $y_1$ y $y_2$ tal
+que la fórmula interna sea satisfecha por todas las posibles asignaciones de
+verdad de $x_1$ y $x_2$.
+Los QBF estudiados, que se ubican en los niveles iniciales de la jerarquía
+polinomial, son de la forma siguiente:
+
+\begin{center}
+\begin{tabular}{c|c}
+Forma del QBF & clase de complejidad\\
+\hline
+\qEA & $\Sigma_p^2$\\
+\qAE & co-$\Sigma_p^2$\\ 
+\qEAE & $\Sigma_p^3$\\
+\qAEA & co-$\Sigma_p^3$\\
+\end{tabular}
+\end{center}
+
+Por ejemplo, la fórmula $\Phi$ para \qAE-QBF es:
+\begin{alignat*}{1}
+\label{eq:qbf:ea}
+&(\forall T_1^{\text{V}_1})(\exists T_2^{\text{V}_2})(\forall y\in\text{Cls})(\exists x\in\text{Var}) \\
+&\quad \bigl[P(x,y) \land [(\text{V}_1(x) \land T_1(x))\lor(\text{V}_2(x) \land T_2(x))]\bigr]\ \lor \\
+&\quad \bigl[N(x,y) \land [(\text{V}_1(x) \land \neg T_1(x))\lor(\text{V}_2(x) \land \neg T_2(x))]\bigr]
+\end{alignat*}
+donde $V_1$ y $V_2$ son tipos que particionan las variables en universales y
+existenciales.
+
+Se presentan los resultados de resolver, utilizando el planificador M, 
+los cuatro tipos de problemas QBF mencionados,
+traducidos por la herramienta. Las instancias son aleatorias,
+generadas con \textsc{BlocksQBF}\footnote{\url{http://fmv.jku.at/blocksqbf}},
+%!incluir referencia
+que está basado en el modelo aleatorio de \cite{chen:random:qbf}. Cada
+problema tiene 150 cláusulas. En las columnas de las tablas se muestra
+el número de variables de cada tipo, el número de
+instancias que se intentaron resolver ($n$), el número de instancias
+resueltas con solución ($+$) y en las que no hay solución ($-$), y promedios
+de tiempo en segundos y longitud del plan paralelo (para las instancias
+resueltas donde hay solución).
+
+*** COLOCAR VENTANAS PARA LOS QBF ***
 \begin{table}[h!]
 \centering
-\resizebox{3.3in}{!}{
   \begin{tabular}{lllrrrrrrrrrl}
-    %\toprule
-    \qEA  & $\#\exists$ & $\#\forall$ &             & $n$ & $+$ & $-$ &    time &   len &  \\
+    \multicolumn{10}{@{}c}{\footnotesize\qEA-QBF: $\pwin=[]$} \\
     \midrule
-          &          60 &           1 &             &   5 & --- &   5 &   184.3 &    na &  \\
-          &             &           2 &             &   5 & --- &   1 & 4,382.5 &    na &  \\
+    %\toprule
+    & $\#\exists$ & $\#\forall$ &             & $n$ & $+$ & $-$ & tiempo &   long. plan &  \\
+    \midrule
+          &          60 &           1 &             &   5 & -- &   5 &   184.3 &    -- &  \\
+          &             &           2 &             &   5 & -- &   1 & 4,382.5 &    -- &  \\
     \cmidrule{2-10}
           &         100 &           1 &             &   5 &   4 &   1 &   176.6 &   316 &  \\ % #actions=36,017
           &             &           2 &             &   5 &   3 &   2 & 3,471.9 &   628 &  \\ % #actions= 2,737
     \midrule
-    \qEAE & $\#\exists$ & $\#\forall$ & $\#\exists$ & $n$ & $+$ & $-$ &    time &   len &  \\
-    \midrule
-          &          10 &           2 &          30 &   5 & --- &   5 & 4,199.2 &    na &  \\
-          &             &           2 &          50 &   5 & --- &   5 & 2,313.9 &    na &  \\
-    \cmidrule{2-10}
-          &          30 &           2 &          30 &   5 & --- &   5 & 3,210.7 &    na &  \\
-          &             &           2 &          50 &   5 & --- &   5 & 3,166.3 &    na &  \\
-    \cmidrule{2-10}
-          &          50 &           2 &          30 &   5 & --- &   1 & 3,313.4 &    na &  \\
-          &             &           2 &          50 &   5 &   3 &   2 & 3,450.9 &   640 &  \\ % #actions=3,182.0
-    \midrule
-    \qAE  & $\#\forall$ & $\#\exists$ &             & $n$ & $+$ & $-$ &    time &   len &  \\
-    \midrule
-          &           1 &         100 &             &   5 &   5 & --- &   147.9 &   319 &  \\ % #actions=45,378.6
-    \cmidrule{2-10}
-          &           2 &          30 &             &   5 & --- &   5 & 2,060.4 &    na &  \\
-          &             &          60 &             &   5 &   4 &   1 & 3,100.7 &   637 &  \\ % #actions=3,086.0
-          &             &          80 &             &   5 &   5 & --- & 2,893.2 &   637 &  \\ % #actions=2,961.4
-          &             &         100 &             &   5 &   5 & --- & 2,092.8 &   637 &  \\ % #actions=3,171.8
-    \cmidrule{2-10}
-          &           3 &          15 &             &   5 & --- & --- &      na &    na &  \\
-    \midrule
-    \qAEA & $\#\forall$ & $\#\exists$ & $\#\forall$ & $n$ & $+$ & $-$ &    time &   len &  \\
-    \midrule
-          &           1 &          60 &           1 &   5 &   1 & --- &   404.7 &   635 &  \\
-          &             &          60 &           2 &   5 & --- & --- &     --- &    na &  \\
-          &             &          80 &           1 &   5 &   5 & --- &   403.2 &   635 &  \\
-          &             &         100 &           1 &   5 &   5 & --- &   390.8 &   635 &  \\
-    \cmidrule{2-10}
-          &           2 &          60 &           1 &   5 &   2 & --- &   456.7 & 1,269 &  \\
-          &             &          60 &           2 &   5 & --- & --- &     --- &    na &  \\
-          &             &          80 &           1 &   5 &   5 & --- &   499.5 & 1,269 &  \\
-          &             &         100 &           1 &   5 &   5 & --- &   454.9 & 1,269 &  \\
-    %\bottomrule
   \end{tabular}
-}
-\caption{\small Random QBF problems with 150 clauses each
-  and 4 types of QBFs: \qEA, \qEAE, \qAE and \qAEA.
-  Columns for number of variables of each type, number of instances ($n$),
-  number of positive ($+$) and negative ($-$) instances, and averages for
-  time (in seconds), \emph{parallel} plan length (for solved instances),
-  and PDDL size (in KB).
-}
-\label{table:exp:qbf}
 \end{table}
+
+De los problemas QBF-\qEA con 60 variables existenciales y una universal fueron
+resueltos en tiempos relativamente cortos, aunque no al nivel de un
+solucionador especializado de problemas QBF.
+solución. Es probable que las instancias con 60 variables existenciales
+y 2 universales no tuvieran ninguna solución, pero el planificador no pudo
+determinarlo porque fue abortado al agotarse el tiempo estipulado para los
+experimentos. Con 100 variables existenciales, el planificador encuentra
+soluciones con mayor facilidad. El incremento de tiempo al agregar una sola
+variable universal adicional es enorme, pues debe construirse una prueba para
+todos los modelos posibles de dos variables independientes.
 
 \begin{table}[h!]
 \centering
-\begin{tabular}{crrrrrr}
-$|V|$ & $n$ & $+$ & $-$ &  time & plan len & {\sc\small pddl} \\
+  \begin{tabular}{lllrrrrrrrrrl}
+    \multicolumn{10}{@{}c}{\footnotesize\qEAE-QBF: $\pwin=[]$} \\
+    \midrule
+    & $\#\exists$ & $\#\forall$ & $\#\exists$ & $n$ & $+$ & $-$ & tiempo &   long. plan &  \\
+    \midrule
+          &          10 &           2 &          30 &   5 & -- &   5 & 4,199.2 &    -- &  \\
+          &             &           2 &          50 &   5 & -- &   5 & 2,313.9 &    -- &  \\
+    \cmidrule{2-10}
+          &          30 &           2 &          30 &   5 & -- &   5 & 3,210.7 &    -- &  \\
+          &             &           2 &          50 &   5 & -- &   5 & 3,166.3 &    -- &  \\
+    \cmidrule{2-10}
+          &          50 &           2 &          30 &   5 & -- &   1 & 3,313.4 &    -- &  \\
+          &             &           2 &          50 &   5 &   3 &   2 & 3,450.9 &   640 &  \\ % #actions=3,182.0
+    \midrule
+  \end{tabular}
+\end{table}
+%! por qué no experimentos con una sola variable universal?
+
+El planificador pudo determinar que la mayoría de los problemas \qEAE-QBF no
+tenían solución. Los tiempos fueron cercanos al límite de 1.5 horas, y los
+planes no fueron significativamente más largos que en los problemas \qEA-QBF,
+debido a que se mantuvo fijo el número de variables universales (que son las
+responsables por un crecimiento exponencial en el tamaño del plan).
+
+\begin{table}[h!]
+\centering
+  \begin{tabular}{lllrrrrrrrrrl}
+    \multicolumn{10}{@{}c}{\footnotesize\qAE-QBF: $\pwin=[]$} \\
+    \midrule
+    & $\#\forall$ & $\#\exists$ &             & $n$ & $+$ & $-$ & tiempo & long. plan &  \\
+    \midrule
+          &           1 &         100 &             &   5 &   5 & -- &   147.9 &   319 &  \\ % #actions=45,378.6
+    \cmidrule{2-10}
+          &           2 &          30 &             &   5 & -- &   5 & 2,060.4 &    -- &  \\
+          &             &          60 &             &   5 &   4 &   1 & 3,100.7 &   637 &  \\ % #actions=3,086.0
+          &             &          80 &             &   5 &   5 & -- & 2,893.2 &   637 &  \\ % #actions=2,961.4
+          &             &         100 &             &   5 &   5 & -- & 2,092.8 &   637 &  \\ % #actions=3,171.8
+    \cmidrule{2-10}
+          &           3 &          15 &             &   5 & -- & -- &      -- &    -- &  \\
+    \midrule
+    %\bottomrule
+  \end{tabular}
+\end{table}
+
+Los tiempos y longitudes en los problemas \qAE-QBF fueron muy similares a los
+de problemas complementarios \qEA-QBF. Como era de esperarse, las instancias
+con más de dos variables universales no pudieron ser resueltos, ni siquiera al
+disminuir significativamente el número de variables existenciales buscando que
+el planificador pudiera demostrar que los problemas no tienen solución. Para
+solucionar estas instancias haría falta mucho más tiempo, y se prevé que la longitud de los
+planes sea mucho mayor.
+
+\begin{table}[h!]
+\centering
+  \begin{tabular}{lllrrrrrrrrrl}
+    \multicolumn{10}{@{}c}{\footnotesize\qAEA-QBF: $\pwin=[]$} \\
+    \midrule
+    & $\#\forall$ & $\#\exists$ & $\#\forall$ & $n$ & $+$ & $-$ & tiempo &   long. plan &  \\
+    \midrule
+          &           1 &          60 &           1 &   5 &   1 & -- &   404.7 &   635 &  \\
+          &             &          60 &           2 &   5 & -- & -- &     -- &    -- &  \\
+          &             &          80 &           1 &   5 &   5 & -- &   403.2 &   635 &  \\
+          &             &         100 &           1 &   5 &   5 & -- &   390.8 &   635 &  \\
+    \cmidrule{2-10}
+          &           2 &          60 &           1 &   5 &   2 & -- &   456.7 & 1,269 &  \\
+          &             &          60 &           2 &   5 & -- & -- &     -- &    -- &  \\
+          &             &          80 &           1 &   5 &   5 & -- &   499.5 & 1,269 &  \\
+          &             &         100 &           1 &   5 &   5 & -- &   454.9 & 1,269 &  \\
+    %\bottomrule
+  \end{tabular}
+\end{table}
+
+% por qué los resultados con dos variables externas dan mejor?
+*** EXPLICAR ESTOS RESULTADOS ***
+
+%\begin{table}[h!]
+%\centering
+%\resizebox{3.3in}{!}{
+%  \begin{tabular}{lllrrrrrrrrrl}
+%    %\toprule
+%    \qEA  & $\#\exists$ & $\#\forall$ &             & $n$ & $+$ & $-$ & tiempo &   long. plan &  \\
+%    \midrule
+%          &          60 &           1 &             &   5 & -- &   5 &   184.3 &    -- &  \\
+%          &             &           2 &             &   5 & -- &   1 & 4,382.5 &    -- &  \\
+%    \cmidrule{2-10}
+%          &         100 &           1 &             &   5 &   4 &   1 &   176.6 &   316 &  \\ % #actions=36,017
+%          &             &           2 &             &   5 &   3 &   2 & 3,471.9 &   628 &  \\ % #actions= 2,737
+%    \midrule
+%    \qEAE & $\#\exists$ & $\#\forall$ & $\#\exists$ & $n$ & $+$ & $-$ & tiempo &   long. plan &  \\
+%    \midrule
+%          &          10 &           2 &          30 &   5 & -- &   5 & 4,199.2 &    -- &  \\
+%          &             &           2 &          50 &   5 & -- &   5 & 2,313.9 &    -- &  \\
+%    \cmidrule{2-10}
+%          &          30 &           2 &          30 &   5 & -- &   5 & 3,210.7 &    -- &  \\
+%          &             &           2 &          50 &   5 & -- &   5 & 3,166.3 &    -- &  \\
+%    \cmidrule{2-10}
+%          &          50 &           2 &          30 &   5 & -- &   1 & 3,313.4 &    -- &  \\
+%          &             &           2 &          50 &   5 &   3 &   2 & 3,450.9 &   640 &  \\ % #actions=3,182.0
+%    \midrule
+%    \qAE  & $\#\forall$ & $\#\exists$ &             & $n$ & $+$ & $-$ & tiempo & long. plan &  \\
+%    \midrule
+%          &           1 &         100 &             &   5 &   5 & -- &   147.9 &   319 &  \\ % #actions=45,378.6
+%    \cmidrule{2-10}
+%          &           2 &          30 &             &   5 & -- &   5 & 2,060.4 &    -- &  \\
+%          &             &          60 &             &   5 &   4 &   1 & 3,100.7 &   637 &  \\ % #actions=3,086.0
+%          &             &          80 &             &   5 &   5 & -- & 2,893.2 &   637 &  \\ % #actions=2,961.4
+%          &             &         100 &             &   5 &   5 & -- & 2,092.8 &   637 &  \\ % #actions=3,171.8
+%    \cmidrule{2-10}
+%          &           3 &          15 &             &   5 & -- & -- &      -- &    -- &  \\
+%    \midrule
+%    \qAEA & $\#\forall$ & $\#\exists$ & $\#\forall$ & $n$ & $+$ & $-$ & tiempo &   long. plan &  \\
+%    \midrule
+%          &           1 &          60 &           1 &   5 &   1 & -- &   404.7 &   635 &  \\
+%          &             &          60 &           2 &   5 & -- & -- &     -- &    -- &  \\
+%          &             &          80 &           1 &   5 &   5 & -- &   403.2 &   635 &  \\
+%          &             &         100 &           1 &   5 &   5 & -- &   390.8 &   635 &  \\
+%    \cmidrule{2-10}
+%          &           2 &          60 &           1 &   5 &   2 & -- &   456.7 & 1,269 &  \\
+%          &             &          60 &           2 &   5 & -- & -- &     -- &    -- &  \\
+%          &             &          80 &           1 &   5 &   5 & -- &   499.5 & 1,269 &  \\
+%          &             &         100 &           1 &   5 &   5 & -- &   454.9 & 1,269 &  \\
+%    %\bottomrule
+%  \end{tabular}
+%}
+%\end{table}
+\subsection{\coCOL}
+El complemento de \TCOL, \coCOL, es el problema de decisión que pregunta si un
+grafo \textbf{no} es 3-coloreable. En el caso de que la respuesta para un grafo
+sea afirmativa, la prueba de ello debe mostrar que se realizó la asignación de
+los tres colores posibles a todos los nodos del grafo, y en todos los casos
+fue imposible probar que la coloración era válida. Este problema está en co-NP,
+su formulación detallada se encuentra en el Apéndice \ref{apendiceA}.
+
+Para probar este dominio, se generaron nuevamente grafos aleatorios con el modelo
+$G(n,p)$. Los experimentos se realizaron en la misma máquina y con las
+mismas restricciones que los experimentos de problemas QBF.
+
+En este caso no se obtuvo buenos resultados con el planificador M.
+Los resultados de LAMA'11 \cite{richter:lama} se muestran en la
+Tabla \ref{table:exp:co-3col}.
+
+\begin{table}[h!]
+\centering
+\begin{tabular}{crrrrr}
+$|V|$ & $n$ & $+$ & $-$ &  tiempo & long. plan  \\
 \midrule
-    4 &   5 &   1 &   4 &   0.6 &   1,731 & 0.4 \\
-    5 &   5 &   2 &   3 &  41.0 &   6,695 & 0.6 \\
-    6 &   5 &   2 &   3 & 280.3 &  26,163 & 0.7 \\
-    7 &   5 &   2 &   2 &  38.2 & 102,935 & 0.8 \\
-    8 &   5 &   1 &   2 & 211.9 & 406,851 & 1.0 \\
-    9 &   5 & --- &   1 &   0.3 &      na & 1.1 \\
+    4 &   5 &   1 &   4 &   0.6 &   1,731  \\
+    5 &   5 &   2 &   3 &  41.0 &   6,695  \\
+    6 &   5 &   2 &   3 & 280.3 &  26,163  \\
+    7 &   5 &   2 &   2 &  38.2 & 102,935  \\
+    8 &   5 &   1 &   2 & 211.9 & 406,851  \\
+    9 &   5 & -- &   1 &   0.3 &      -- \\
 \end{tabular}
-\caption{\small \coCOL on random graphs.
-  Columns for number of vertices ($|V|$), number of instances ($n$),
-  number of positive ($+$) and negative ($-$) instances, and averages for
-  time (in seconds), plan length (for solved positive instances), and
-  PDDL size (in KB).
+\caption[Resultados de \coCOL]{\small \coCOL en grafos aleatorios.
+  Las columnas muestran el número de vértices ($|V|$), el número de instancias ($n$),
+  el número de instancias positivas ($+$) y negativas ($-$), los tiempos
+  promedio en segundos y la longitud del plan de las instancias positivas
+  resueltas.
 }
 \label{table:exp:co-3col}
 \end{table}
+
+Sorprendentemente, LAMA'11 es capaz de encontrar planes sumamente largos: en
+una instancia consiguió uno con más de 400.000 pasos.
+*** EXPLICAR POR QUÉ, EXPLICAR LOS RESULTADOS ***
+
+\section{La herramienta en la web}
+
+Para la presentación de este trabajo en la Conferencia Internacional de
+Planificación Automática (ICAPS '11) se implementó una sencilla aplicación web
+utilizando \textit{Python} y tecnología \textit{CGI}.
+
+*** INCLUIR CAPTURA DE PANTALLA ***

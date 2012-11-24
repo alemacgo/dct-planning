@@ -151,7 +151,7 @@ $\bar x$ son las variables libres de $\theta$.}
   La primera acción $\texttt{probar\_universal\_base}[\theta](\bar x)$ prueba $\theta'(\bar x,0)$.
   La acción tiene parámetros $\bar x$, precondición $\FT[\theta'](\bar x,0)$
   y efecto \textit{add} $\FT[(\forall y\leq z)\theta'(\bar x,y)](\bar x,0)$.
-%! no entiendo esto
+  *** ACLARAR ***
   Observe que la traducción de la condición es aplicada a diferentes
 fórmulas,
   en las cuales la cuantificación está acotada por $z$.
@@ -599,16 +599,6 @@ NP.
 \section{Diseño del lenguaje}
 
 \subsection{Especificación de la fórmula $\Phi$}
-El lenguaje de entrada de la herramienta debe ser capaz de expresar
-sintácticamente cualquier fórmula \LSO\ existencial. En el capítulo
-\ref{Chapter4} se presenta una extensión de la herramienta que le permite
-traducir problemas en la clase más compleja PH, por lo que es necesario
-agregar al lenguaje, además de los operadores estudiados hasta el momento,
-el operador $\forall$ de segundo orden, $\SOForall$.
-La figura \ref{gramatica} muestra la gramática del lenguaje propuesto
-en forma Backus-Naur, que permite especificar fórmulas lógicas generales de
-segundo orden.
-
 \begin{figure}[h]
 \begin{alignat*}{1}
 \sofbf\   & \deriv\ \lpar \SOExists\ \lpar \listrel \rpar\ \sofbf \rpar \\
@@ -630,9 +620,17 @@ segundo orden.
 & \integer \in \mathbb{Z}^+ \\
 \end{alignat*}
 \label{gramatica}
-\caption[Gramática en BNF del lenguaje lógico]{Gramática en BNF del lenguaje que se utiliza para expresar $\Phi$ en
-la herramienta.}
+\caption[Gramática en BNF del lenguaje lógico]{Gramática en BNF del lenguaje que se utiliza para expresar $\Phi$ en la herramienta.}
 \end{figure}
+El lenguaje de entrada de la herramienta debe ser capaz de expresar
+sintácticamente cualquier fórmula \LSO\ existencial. En el capítulo
+\ref{Chapter4} se presenta una extensión de la herramienta que le permite
+traducir problemas en la clase más compleja PH, por lo que es necesario
+agregar al lenguaje, además de los operadores estudiados hasta el momento,
+el operador $\forall$ de segundo orden, $\SOForall$.
+La Figura \ref{gramatica} muestra la gramática del lenguaje propuesto
+en forma Backus-Naur, que permite especificar fórmulas lógicas generales de
+segundo orden.
 
 \subsection{Especificación de la firma $\sigma$}
 Para especificar una firma $\sigma = \tup{R_1^{k_1},\ldots,R_n^{k_n}}$ se
@@ -670,7 +668,7 @@ basta con añadir la línea \texttt{?K max}.
 %que son ciertas para el elemento en $\A$ que interpreta $K$, i.e. $K^\A$.
 %El preprocesamiento consiste en reescribir la 
 
-%$K^\A$. The preprocessing consists of rewriting the logical %!fix
+%$K^\A$. The preprocessing consists of rewriting the logical 
 %formulae that use the constant into appropriate formulae that
 %use the new relation, and in extending the initial situation of
 %the problem with the value of the relation.

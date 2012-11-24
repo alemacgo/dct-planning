@@ -169,7 +169,7 @@
 Presentado ante la Ilustre Universidad Simón Bolívar \\
 como requisito parcial para optar al título de \\
 Ingeniero de Computación}
-    \date{Sartenejas, Diciembre de 2012}
+    \date{Sartenejas, Noviembre de 2012}
 \end{titlepage}
 %%%% Título
 
@@ -215,7 +215,7 @@ Ingeniero de Computación}
 Aquí va el resumen.
 
 \noindent \textbf{Palabras clave}: Planificación Automática, Teoría de
-Complejidad, Inteligencia Artificial.
+Complejidad, Lógica, Ingeniería del Conocimiento, Inteligencia Artificial.
 
 \clearpage % Abstract ended, start a new page
 %% ----------------------------------------------------------------
@@ -269,6 +269,7 @@ Complejidad, Inteligencia Artificial.
 \textbf{NP} & \textbf{N}ondeterministic \textbf{P}olynomial time (clase de complejidad)\\
 \textbf{PDDL} & \textbf{P}lanning \textbf{D}omain \textbf{D}efinition \textbf{L}anguage \\
 \textbf{PH} & \textbf{P}olynomial \textbf{H}ierarchy (clase de complejidad)\\
+\textbf{QBF} & \textbf{Q}uantified \textbf{B}oolean \textbf{F}ormula\\
 \textbf{SAT} & boolean \textbf{SAT}isfiability\\
 \textbf{STRIPS} & \textbf{S}tanford \textbf{R}esearch \textbf{I}nstitute \textbf{P}roblem \textbf{S}olver\\
 \textbf{TCD} & \textbf{T}eoría de \textbf{C}omplejidad \textbf{D}escriptiva\\
@@ -314,6 +315,14 @@ $[u:=v]$ & sustitución textual de $u$ por $v$
 \input{./capitulos/conclusiones}
 
 %% ----------------------------------------------------------------
+\label{Bibliography}
+\lhead{\emph{Bibliografía}}  % Change the left side page header to "Bibliography"
+\bibliographystyle{aaai}  % Use the "unsrtnat" BibTeX style
+
+%the Bibliography 
+\bibliography{bibliografia}  % The references (bibliography) information are stored in the file named "Bibliography.bib"
+
+%% ----------------------------------------------------------------
 % Now begin the Appendices, including them as separate files
 
 \addtocontents{toc}{\vspace{2em}} % Add a gap in the Contents, for aesthetics
@@ -325,13 +334,5 @@ $[u:=v]$ & sustitución textual de $u$ por $v$
 
 \addtocontents{toc}{\vspace{2em}}  % Add a gap in the Contents, for aesthetics
 \backmatter
-
-%% ----------------------------------------------------------------
-\label{Bibliography}
-\lhead{\emph{Bibliografía}}  % Change the left side page header to "Bibliography"
-\bibliographystyle{aaai}  % Use the "unsrtnat" BibTeX style
-
-%the Bibliography 
-\bibliography{bibliografia}  % The references (bibliography) information are stored in the file named "Bibliography.bib"
 
 \end{document}
