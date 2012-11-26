@@ -671,7 +671,7 @@ $|V|$ & $n$ & $+$ & $-$ &  tiempo & long. plan  \\
     8 &   5 &   1 &   2 & 211.9 & 406,851  \\
     9 &   5 & -- &   1 &   0.3 &      -- \\
 \end{tabular}
-\caption[Resultados de \coCOL]{\small \coCOL en grafos aleatorios.
+\caption[Resultados de LAMA'11 para \coCOL]{\small \coCOL en grafos aleatorios.
   Las columnas muestran el número de vértices ($|V|$), el número de instancias ($n$),
   el número de instancias positivas ($+$) y negativas ($-$), los tiempos
   promedio en segundos y la longitud del plan de las instancias positivas
@@ -690,4 +690,24 @@ Para la presentación de este trabajo en la Conferencia Internacional de
 Planificación Automática (ICAPS '11) se implementó una sencilla aplicación web
 utilizando \textit{Python} y tecnología \textit{CGI}.
 
-*** INCLUIR CAPTURA DE PANTALLA ***
+%!*** INCLUIR CAPTURA DE PANTALLA ***
+
+La aplicación web consta de una sección en donde el usuario puede introducir
+una fórmula $\Phi$ en \LSO\ y una firma $\sigma$ para generar un dominio de
+planificación en PDDL, utilizando el lenguaje lógico y la
+sintaxis de archivos de texto definidos en el Capítulo 2 sobre campos de texto
+libres en la ventana del navegador.
+El usuario puede escoger si desea utilizar la primera reducción, diseñada para
+problemas NP, o la segunda, que le permite traducir problemas de lógica de
+segundo orden general.
+
+Al haber generado un dominio, se le da al usuario la posibilidad de descargar
+el dominio traducido en PDDL, y se le presenta otro campo de texto para
+permitirle especificar una estructura finita $\A \in \struc[\sigma]$.
+Al completar este paso, el usuario tiene la posibilidad de descargar tanto el
+dominio como el problema PDDL, archivos que puede utilizar con el planificador
+de su preferencia para la resolución de problemas.
+
+En el sitio web también se proveen fórmulas predefinidas para los problemas NP
+y PH estudiados en este trabajo, a modo de facilitar el uso de la herramienta
+con problemas frecuentes a los potenciales usuarios.

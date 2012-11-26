@@ -3,71 +3,77 @@
 \label{Capitulo5}
 \lhead{\emph{Conclusiones y Recomendaciones}}
 
-We presented a ``black box'' that given as input a
-signature $\sigma$, a second-order existential sentence
-$\Phi$ and a structure $\A\in\struc[\sigma]$, outputs
-a STRIPS problem $P$ that has a plan iff $\A\models\Phi$.
-The black box is fully automated and runs in polynomial
-time in the size $\|\A\|$, and thus can be thought of
-as an efficient method to generate polytime reductions
-from NP into STRIPS.
+Este trabajo ha presentado dos reducciones de la lógica de segundo orden a
+problemas de planificación automática que se adhieren a la Teoría de
+Complejidad Descriptiva. Las herramientas reciben como entrada una firma
+$\sigma$, una sentencia en lógica de segundo orden (segundo orden existencial,
+en el caso de la traducción de NP) y una estructura $\A\in\struc[\sigma]$, y
+producen como salida un par de archivos en PDDL $\tup{\domain,\instance}$, que
+representan un dominio y una instancia de planificación en STRIPS. La
+conversión corre en tiempo polinomial en el tamaño de la estructura $\|\A\|$, y
+por lo tanto puede usarse como un método eficiente para generar reducciones de
+problemas NP a STRIPS. Esta salida puede utilizarse con un planificador 
+para obtener una solución al problema original.
 
-STRIPS however is more general than NP, it is PSPACE-complete.
-Thus, for any decision problem in PSPACE there is a polytime
-reduction from it into STRIPS.
-Currently, we do not know if such reductions can be %!fix
-automatically and efficiently constructed as in the case
-for NP.  
+Los resultados de los experimentos muestran que la herramienta puede utilizarse
+para crear solucionadores a problemas específicos NP o PH que tienen un buen desempeño
+sobre problemas pequeños. Así, por ejemplo, un profesional del área de
+computación que tenga la necesidad de resolver problemas pequeños de grafos, o
+requiera realizar pruebas de concepto para estudiar problemas académicos o de la vida
+real, puede seguir el siguiente proceso para conseguir una solución rápida que
+cumpla con sus objetivos:
+\begin{enumerate}
+\item Comparar el problema de interés con problemas de decisión conocidos en el
+área de teoría de grafos, optimización, u otras.
+\item Modelar el problema de interés utilizando lógica de segundo orden, y
+escribirlo en la sintaxis propuesta por este trabajo.
+\item Utilizar la herramienta para producir el dominio y distintas instancias
+en PDDL, usar un planificador para conseguir soluciones a estas instancias y
+analizar las soluciones arrojadas para constatar cómo se interpretan en el contexto del
+problema de interés.
+\end{enumerate}
 
-In the future we plan to work on this problem.
-In order to illustrate some of the subtleties that
-lie ahead, consider the following ``complementation problem''.
-Since PSPACE is closed under complementation, there is a
-polytime reduction $f:\text{STRIPS}\rightarrow\text{STRIPS}$
-that given as input a problem $P$ outputs problem $P'=f(P)$
-such that $P'$ has solution iff $P$ does not.
-What does $f$ do to $P$? At this moment, we do not know
-and this understanding seems necessary to be able to
-construct automated reductions from PSPACE into STRIPS.
+Debe notarse que no todos los problemas son fácilmente modelables utilizando un
+lenguaje descriptivo como el que hemos desarrollado en este trabajo. Así como
+no existe un lenguaje de programación \textbf{ideal} que permita la expresión
+de cualquier problema de una forma sencilla, sino que existen distintos
+\textbf{paradigmas} y el programador debe tener la experticia para reconocer
+cuál es el más adecuado para cada problema determinado, no hay una única forma
+``óptima'' de tratar con todos los problemas de decisión.
+Por ejemplo, sería particularmente engorroso intentar
+modelar el problema de \textit{subset sum} (\textbf{suma de subconjuntos}),
+utilizando el lenguaje lógico descrito, a pesar de que es un problema
+NP-completo, pues se debe simular un sistema formal
+aritmético que permita la suma de números en tal lógica. La teoría establece
+que es posible, pero no se recomienda el uso de la herramienta para ello ya que
+el ejercicio puede tomar mucho tiempo.
 
-On the side of DCT, PSPACE corresponds to second-order logic
-extended with transitive closures. Hence, we will not only
-have to deal with the complementation problem but also with
-the computation of transitive closures for predicates definable
-in second-order logic.
+Además, la herramienta es de interés para los investigadores del área de
+planificación automática, pues los problemas de planificación que genera
+presentan un reto para los planificadores actuales y pueden utilizarse como una
+medida de comparación entre diferentes enfoques a cómo construir planificadores
+generales y eficientes, particularmente en el caso de \textit{SAT-planners} y
+en la búsqueda de planes paralelos.
 
-Finally, DCT presents a crisp syntactic separation between 
-complexity classes such as PSPACE, the levels of the polynomial-time
-hierarchy (PH) and PH itself; e.g., $\Sigma^p_2=\SOEA$ and $\PH=\SO$.
-%$\Pi^p_3=\SOAEA$ and $\PH=\SO$.
-But on the side of planning, we do not know of any syntactic
-or structural characterization of STRIPS that puts the
-plan-existence problem in, say, $\Sigma^p_2$.
-Thus, in the case that we find a method for generating reductions
-from, say, \SOEA\ into STRIPS, it would most likely generate
-unrestricted STRIPS problems whose complexity is in PSPACE.
-Hence, further knowledge about the complexity of STRIPS 
-planning awaits to be discovered \ldots
+La reducción a NP presentada en ese trabajo fue presentada en el mes de junio
+de 2011 en la Conferencia Internacional de
+Planificación Automática (ICAPS '11) en la ciudad de Freiburg, Alemania.
+La extensión a la herramienta que le permite procesar problemas en PH ha sido
+propuesta como artículo de investigación corto en ICAPS '13, conferencia que
+tendrá lugar en Roma, Italia. Se recibirán noticias sobre su aceptación en
+enero de 2013.
 
-We have extended PMB's tool with a type system and over
-arbitrary SO formulas that capture PH:
-given such a $\Phi$ and a structure $\A$, the tool
-generates a planning problem $P$ that has solution iff $\A\models\Phi$.
-Since problems in PH has no short certificates in general, the solutions
-for the STRIPS problems have exponential length in general.
-Thus, we do not expect that planners based on forward search in state space
-will be able to succeed unless heuristics that account for the multiple
-application of actions are used.
-However, the results for LAMA'11 on \coCOL contradict this expectation and
-thus deserve an explanation. Indeed, we conjecture that the reason for
-the success of LAMA'11 on these instances is the \emph{implicit serialization}
-of subgoals that is achieved as a side effect of the multiple (open) queues
-used by LAMA'11 \cite{richter:lama,lipovetzky:ecai12-width}.
+Para seguir adelante con esta línea de investigación se proponen las siguientes
+recomendaciones:
 
-The extension over \PSPACE is now foreseeable as \PSPACE equals SO plus
-transitive closure (TC) \cite{immerman:book}, and TC is just the
-computation of a connectivity relation in an implicit graph which
-is easy to do in STRIPS.
-
-\section{Aportes realizados}
-\section{Direcciones futuras}
+\begin{enumerate}[--]
+\item Diseñar una segunda extensión a la herramienta, modificando el lenguaje
+para incorporar el formalismo de \textbf{clausura transitiva}, necesario para
+resolver problemas generales de la clase de complejidad PSPACE. Con tal
+extensión, el poder expresivo del lenguaje presentado aquí se equipararía a
+PDDL.
+\item Optimizar las reducciones para distintos tipos de planificadores, ya que
+el trabajo se concentró en planfificadores basados en SAT. Como punto de
+partida, puede investigarse a fondo por qué el planificador LAMA '11 tuvo
+mejores resultados que M en el dominio \coCOL.
+\end{enumerate}

@@ -286,7 +286,6 @@ aplicable y agrega $\FT[\Phi_\UNSAT]$, completando el plan.
     Pre: \> $\FT[\psi_\UNSAT]$ \,,\, VarPrimera-T($x$) \\
     Efe: \> $\neg$$\FT[\psi_\UNSAT]$ \,,\, Marcador-T($x$) \\[1em]
     %%%
-*** ¿POR QUÉ ESTOS NOMBRES? ***
     [A3] \textsc{SiguienteSobreExcluidos}($x$): \\[.2em]
     Pre: \> Marcador-T($x$) \,,\, no-T($x$) \\
     Efe: \> $\neg$no-T($x$) \,,\, T($x$) \,,\, $\neg$Marcador-T($x$) \,,\, \texttt{necesita-}$\FT[\psi_\UNSAT]$ \\[1em]
@@ -300,7 +299,6 @@ aplicable y agrega $\FT[\Phi_\UNSAT]$, completando el plan.
     Efe: $\neg$T($x$) \,,\, no-T($x$) \,,\, $\neg$Marcador-T($x$) \,,\, $\FT[\Phi_\UNSAT]$
     \end{tabbing}
     \end{minipage}
-*** ¿POR QUÉ HACE FALTA T Y NO-T? ***
   }
 }
 \caption[Acciones para realizar la iteración del cuantificador universal de
@@ -309,6 +307,8 @@ segundo orden]{Acciones para iterar sobre las $2^n$ relaciones unarias $T$
 proposicionales de UNSAT.}
 \label{fig:unsat}
 \end{figure}
+*** ¿POR QUÉ ESTOS NOMBRES? ***
+%! *** ¿POR QUÉ HACE FALTA T Y NO-T? ***
 
 Nótese que este método de iteración es extensible a relaciones de aridad $k>1$.
 El único cambio que se necesita es reemplazar $x$ y $y$ por $k$-tuplas de

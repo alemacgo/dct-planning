@@ -299,7 +299,6 @@ $[u:=v]$ & sustitución textual de $u$ por $v$
 
 \addtocontents{toc}{\vspace{2em}}  % Add a gap in the Contents, for aesthetics
 
-
 %% ----------------------------------------------------------------
 \mainmatter	  % Begin normal, numeric (1,2,3...) page numbering
 \pagestyle{fancy}  % Return the page headers back to the "fancy" style
@@ -315,12 +314,12 @@ $[u:=v]$ & sustitución textual de $u$ por $v$
 \input{./capitulos/conclusiones}
 
 %% ----------------------------------------------------------------
+%the Bibliography 
 \label{Bibliography}
+\bibliography{bibliografia}  % The references (bibliography) information are stored in the file named "Bibliography.bib"
 \lhead{\emph{Bibliografía}}  % Change the left side page header to "Bibliography"
 \bibliographystyle{aaai}  % Use the "unsrtnat" BibTeX style
 
-%the Bibliography 
-\bibliography{bibliografia}  % The references (bibliography) information are stored in the file named "Bibliography.bib"
 
 %% ----------------------------------------------------------------
 % Now begin the Appendices, including them as separate files
