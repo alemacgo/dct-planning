@@ -12,7 +12,8 @@ Los problemas de decisión son interesantes porque permiten modelar y razonar
 sobre aplicaciones reales. Por ejemplo, el problema de decisión de
 $k$-colorabilidad pregunta si los vértices de un grafo son coloreables 
 con $k$ colores distintos, de modo de que a ningún par de vértices se les
-asigne el mismo color. En un compilador, la asignación de valores
+% @A no esta explicado bien K-col ningún par de vértices conectados con un arco
+asigne el mismo color . En un compilador, la asignación de valores
 frecuentemente utilizados a registros para
 mejorar la eficiencia del código generado puede modelarse como
 $k$-colorabilidad: los vértices del grafo son las variables, y si dos variables
@@ -22,16 +23,19 @@ utilizar $k$ registros distintos para almacenar las variables.
 
 Los problemas de decisión pueden agruparse en distintas clases según su
 complejidad. Una importante clase de complejidad es NP (siglas de
+% O le quitamos mayus a NP o a PH + Ph en negritas
 \textit{Nondeterministic Polynomial time}), a la cual pertenecen problemas
 interesantes como $k$-colorabilidad, satisfacibilidad proposicional
 (\textbf{SAT}) y hallar un camino \textit{hamiltoniano} en un grafo. Otra clase
 más general de problemas de interés para este trabajo es PH (\textit{polynomial hierarchy}),
 que incluye problemas computacionalmente más complejos como formas restringidas de
+% Acronimo afuera en bold y la explicacion adentrp
 \textit{quantified boolean formula} (QBF).
 
 El área de investigación de planificación automática estudia una forma general
 de resolución de problemas utilizando \textbf{planes}. En un problema de planificación
 se especifica un estado inicial, un estado final y un conjunto de acciones posibles,
+% ; o . y segido. Luego el planificador se encarga de
 y el \textbf{planificador} construye una secuencia de acciones que conduce
 desde el estado inicial hasta el estado final, resolviendo el problema.
 
@@ -41,6 +45,7 @@ Este trabajo se enfoca en el desarrollo de una herramienta que permite
 traducir o, en lenguaje más formal, \textbf{reducir} un problema de
 decisión perteneciente a la clase PH codificado en lógica de segundo orden,
 a un problema de planificación automática. 
+%No pondria la motivacion sino la ventaja
 La motivación para realizar esta herramienta es que
 existen planificadores muy eficientes, pero no es trivial
 expresar un problema de decisión cualquiera en términos de estado inicial,
@@ -78,6 +83,7 @@ utilizan sistemas especializados para la modelación de restricciones y
 solucionadores provenientes de muchos sub-campos de Inteligencia Artificial.
 Sin embargo, dependiendo del solucionador, se podría requerir que la fórmula
 declarativa a solucionar esté en un formato particular, lo cual no es tan
+% Enfoque que sea independiente del domino... o enfoque independiente del dominio
 conveniente como un enfoque que independiente del dominio.
 
 El objetivo general del proyecto es permitir la resolución de problemas
@@ -103,6 +109,7 @@ y rápido al traductor.
 
 % Organización
 Este trabajo está dividido en cinco capítulos. El primer capítulo aporta la
+%fundamentacion es muy caiman.... creo que base suena mejor
 fundamentación teórica sobre la que está basada la traducción, incluyendo una
 introducción a las áreas de planificación automática y complejidad descriptiva.
 En el segundo capítulo se describe el lenguaje lógico diseñado para la

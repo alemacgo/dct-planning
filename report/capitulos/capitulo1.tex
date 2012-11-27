@@ -8,6 +8,7 @@ Este capítulo presenta brevemente los conceptos teóricos básicos para el
 desarrollo de este trabajo. Primero se explican los fundamentos de la
 planificación automática, área que provee un formalismo al cual se pueden
 traducir problemas de decisión. Luego, se define la disciplina de complejidad
+% No pondriía clasifica sino: determina el poder de expresiovidad de los distintos tipos de logica
 descriptiva, que clasifica distintos fragmentos de lógica de segundo orden
 según su complejidad computacional y permite establecer garantías sobre la
 dificultad de resolver problemas formulados en un lenguaje lógico.
@@ -16,6 +17,7 @@ con el formalismo lógico propuesto.
 
 \section{Planificación automática}
 La planificación automática es un campo de investigación dentro de la Inteligencia
+% an de acciones suena raro... suena mejor secuencia de acciones
 Artificial. Su enfoque se basa en descubrir un plan de acciones a seguir para
 lograr un objetivo concreto \citep{russell:book}. En este trabajo se manejará
 la concepción \textbf{clásica} de planificación, en la cual todas las acciones
@@ -25,11 +27,13 @@ decir, que sólo cambian con el resultado de las acciones aplicadas).
 \cite{fikes:strips} fueron pioneros en el área de planificación con su sistema
 STRIPS (\textit{Stanford Research
 Institute Problem Solver}), razón por la cual se llama STRIPS a la clase de
+% Se llama strips a los problema de planidficacion :S?!
 todos los problemas de planificación.
 
 Los investigadores de esta área han diseñado una representación compacta para
 expresar problemas de planificación de cualquier dominio, llamado PDDL
 (\textit{Planning Domain Definition Language}).
+% No se considera el fragmento mas simple de pddl porque usamos el forall para hacer pH
 En este trabajo se considera el fragmento más simple de PDDL, que es
 equivalente a STRIPS.
 Este fragmento describe todo lo necesario
@@ -48,11 +52,16 @@ F}$, donde:
 \item $C$ es un conjunto de \textbf{condiciones} o variables proposicionales.
 \item $A$ es un conjunto de \textbf{acciones}. Cada acción $a$, a su vez, es
 una tupla $a = \tup{pre, adds, deletes}$ que contiene los conjuntos de
+%No son conjuntos de precondiciones... la tumpla tiene "el" conjunto de precondiciones
+% y lo de condiciones que deben ser ciertas bla bla lo pondria entre parentesis... me parece
+% mas facil de leer
 precondiciones, condiciones que deben ser ciertas para poder aplicar la acción,
 y los conjuntos de efectos
+% El conjunto
 positivos (\textit{adds}) y negativos (\textit{deletes}) que causa la
 aplicación de la acción.
 \item $I \subseteq C$ es el \textbf{estado inicial}. Los estados son
+% I es el estado inicial, y este es subconjunto de C no? y lo mismo para F
 especificados por el conjunto de condiciones que son verdaderas en ellos, las
 demás condiciones se suponen falsas. Esto se llama la suposición del
 \textbf{mundo cerrado} \citep{russell:book}.
@@ -70,6 +79,7 @@ estén en una sola pila ordenados de forma ascendente. Cada bloque puede tener a
 lo sumo un bloque encima suyo, y la mano sólo puede cargar un bloque a la vez.
 En este caso, proposiciones válidas que pueden ser parte de un estado son,
 por ejemplo,
+% Cambiaria sobremesa(1) por sobremesa(Bloque1) para que se entienda mas
 \texttt{manoVacía}, \texttt{sobreMesa(0)}, \texttt{sobreMesa(1)}, \texttt{libre(0),
 \texttt{libre(1)}}.
 La Figura \ref{blocksworld_inicial} ilustra un estado cuyas únicas
@@ -137,6 +147,7 @@ luego de aplicar una secuencia de acciones al estado en la Figura
 \label{blocksworld_final}
 \end{figure}
 
+% Porque pues? xD
 En resumen, pues, un \textbf{problema de planificación} es expresado utilizando
 el lenguaje PDDL, que especifica su \textbf{estado inicial}, \textbf{acciones}
 (precondiciones y efectos de cada una) y \textbf{estado final}.
@@ -168,6 +179,7 @@ determinando si existe tal plan.
 PLANSAT pertenece a la clase de complejidad PSPACE \citep{ghallab:book}.
 PSPACE es la clase de problemas que pueden ser resueltos por una máquina de
 Turing determinística con una cantidad polinomial (en $n$, donde $n$ es el
+%Deterministica?
 tamaño del problema) de espacio en memoria. Los problemas PSPACE son, en
 general, más difíciles de resolver que los problemas NP, los cuales a su vez
 son problemas combinatorios complejos para los cuales se cree que no existen
@@ -221,6 +233,7 @@ Por esta razón se omiten los símbolos funcionales en lo sucesivo.
 Se denota con $\LPO(\sigma)$ y $\LSO(\sigma)$ a los conjuntos de todas las
 fórmulas de lógica de primer y segundo orden basadas en la firma $\sigma$.
 La única diferencia entre la LPO y la LSO es que en esta última se permite la
+% LAS formulas que ... SON descritas
 cuantificación sobre los símbolos relacionales. La fórmulas que forman parte
 de LSO están descritas en la Definición \ref{lso_def}.
 
@@ -406,7 +419,7 @@ $\iff \tup{\text{operadores de la lógica proposicional}}$\\
 \mbox{\hspace{5mm} $(\tup{\A, R'}, i) \models (E(0,1) \Rightarrow \neg R(0)
 \iff R(1))\ \land$} \\ 
 \mbox{\hspace{30mm} $(E(1,2) \Rightarrow R(1) \iff \neg R(2))$}\\
-$\iff \tup{\text{?}}$\\
+$\iff \tup{\text{definición \ref{semantica_def}(h)}}$\\
 \mbox{\hspace{5mm} $(\tup{\A, R'}, i) 
 \models (\forall xy)(E(x, y) \Rightarrow \neg(R'(x) \iff R'(y)))$}\\
 $\iff \tup{\text{definición \ref{semantica_def}(i)}}$\\
