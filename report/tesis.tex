@@ -212,10 +212,43 @@ Ingeniero de Computación}
 \addtotoc{Resumen}  % Add the "Abstract" page entry to the Contents
 \abstract{
 \addtocontents{toc}{\vspace{1em}}  % Add a gap in the Contents, for aesthetics
-Aquí va el resumen.
+Este trabajo tiene como objetivo el desarrollo de una herramienta que permita
+establecer una correspondencia entre problemas de decisión expresados en un 
+lenguaje descriptivo y problemas de planificación automática.
+Notando que existen problemas que son modelables más naturalmente utilizando la
+lógica, la motivación del trabajo es proporcionar una forma de
+solucionar estos problemas especificados de una manera declarativa.
 
-\noindent \textbf{Palabras clave}: Planificación Automática, Teoría de
+Para lograr esta meta se diseñaron dos reducciones orientadas específicamente a
+las clases de complejidad NP y PH, utilizando los formalismos de la Teoría de
+Complejidad Descriptiva que establece equivalencias entre lógicas de distintos
+poderes expresivos con clases de complejidad computacionales. Como los
+problemas de planificación automática son en general PSPACE-completos, es
+de interés observar que la primera traducción produce problemas de
+planificación restringidos que pertenezcan también a la clase NP, de modo que
+la resolución de problemas no sea más compleja de lo necesaria a causa de la reducción.
+
+La herramienta desarrollada consta de un analizador sintáctico de un lenguaje
+basado en la lógica de segundo orden y de una serie de procedimientos que
+recorren el árbol sintáctico para generar una serie de condiciones y operadores
+de un problema de planificación STRIPS, expresado en lenguaje PDDL.
+
+Se modelaron y solucionaron problemas de distintos dominios y tamaños a modo de
+probar la efectividad de un planificador basado en SAT para resolver los
+problemas traducidos. Los resultados fueron satisfactorios para problemas de
+tamaño moderado: el planificador logró resolver la mayoría de ellos en menos de
+cinco minutos.
+
+Parte de este trabajo fue presentado en la Conferencia Internacional de Planificación
+(ICAPS) en el año 2011, y los investigadores del área han
+reconocido que los dominios generados por la herramienta pueden ser de interés
+práctico, pues se conocen sus propiedades formales y es posible estudiarlos a
+fondo para descubrir mejores heurísticas y optimizaciones para los
+planificadores.
+
+\noindent \begin{small} \textbf{Palabras clave}: Planificación Automática, Teoría de
 Complejidad, Lógica, Ingeniería del Conocimiento, Inteligencia Artificial.
+\end{small}
 
 \clearpage % Abstract ended, start a new page
 %% ----------------------------------------------------------------
