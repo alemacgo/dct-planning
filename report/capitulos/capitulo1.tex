@@ -1,5 +1,3 @@
-% Chapter 2
-
 \chapter{Marco teórico}
 \label{Chapter1}
 \lhead{Capítulo 1. \emph{Marco teórico}}
@@ -8,17 +6,15 @@ Este capítulo presenta brevemente los conceptos teóricos básicos para el
 desarrollo de este trabajo. Primero se explican los fundamentos de la
 planificación automática, área que provee un formalismo al cual se pueden
 traducir problemas de decisión. Luego, se define la disciplina de complejidad
-% No pondriía clasifica sino: determina el poder de expresiovidad de los distintos tipos de logica
-descriptiva, que clasifica distintos fragmentos de lógica de segundo orden
-según su complejidad computacional y permite establecer garantías sobre la
+descriptiva, que determina la clase de complejidad computacional de distintos
+fragmentos de lógica de segundo orden y permite establecer garantías sobre la
 dificultad de resolver problemas formulados en un lenguaje lógico.
 Finalmente, se explican dos ejemplos de problemas NP fácilmente modelables
 con el formalismo lógico propuesto.
 
 \section{Planificación automática}
 La planificación automática es un campo de investigación dentro de la Inteligencia
-% an de acciones suena raro... suena mejor secuencia de acciones
-Artificial. Su enfoque se basa en descubrir un plan de acciones a seguir para
+Artificial. Su enfoque se basa en descubrir una secuencia de acciones a seguir para
 lograr un objetivo concreto \citep{russell:book}. En este trabajo se manejará
 la concepción \textbf{clásica} de planificación, en la cual todas las acciones
 tienen una consecuencia determinística y observable en ambientes estáticos (es
@@ -27,13 +23,11 @@ decir, que sólo cambian con el resultado de las acciones aplicadas).
 \cite{fikes:strips} fueron pioneros en el área de planificación con su sistema
 STRIPS (\textit{Stanford Research
 Institute Problem Solver}), razón por la cual se llama STRIPS a la clase de
-% Se llama strips a los problema de planidficacion :S?!
 todos los problemas de planificación.
 
 Los investigadores de esta área han diseñado una representación compacta para
 expresar problemas de planificación de cualquier dominio, llamado PDDL
 (\textit{Planning Domain Definition Language}).
-% No se considera el fragmento mas simple de pddl porque usamos el forall para hacer pH
 En este trabajo se considera el fragmento más simple de PDDL, que es
 equivalente a STRIPS.
 Este fragmento describe todo lo necesario
@@ -51,21 +45,15 @@ F}$, donde:
 \begin{itemize} 
 \item $C$ es un conjunto de \textbf{condiciones} o variables proposicionales.
 \item $A$ es un conjunto de \textbf{acciones}. Cada acción $a$, a su vez, es
-una tupla $a = \tup{pre, adds, deletes}$ que contiene los conjuntos de
-%No son conjuntos de precondiciones... la tumpla tiene "el" conjunto de precondiciones
-% y lo de condiciones que deben ser ciertas bla bla lo pondria entre parentesis... me parece
-% mas facil de leer
-precondiciones, condiciones que deben ser ciertas para poder aplicar la acción,
-y los conjuntos de efectos
-% El conjunto
-positivos (\textit{adds}) y negativos (\textit{deletes}) que causa la
+una tupla $a = \tup{pre, adds, deletes}$ que contiene el conjunto de
+precondiciones (condiciones que deben ser ciertas para poder aplicar la acción)
+y el conjunto de efectos positivos (\textit{adds}) y negativos (\textit{deletes}) que causa la
 aplicación de la acción.
-\item $I \subseteq C$ es el \textbf{estado inicial}. Los estados son
-% I es el estado inicial, y este es subconjunto de C no? y lo mismo para F
+\item $I$ es el \textbf{estado inicial}, con $I\subseteq C$. Los estados son
 especificados por el conjunto de condiciones que son verdaderas en ellos, las
 demás condiciones se suponen falsas. Esto se llama la suposición del
 \textbf{mundo cerrado} \citep{russell:book}.
-\item $F \subseteq C$ es el \textbf{estado final o meta}.
+\item $F$ es el \textbf{estado final o meta}, con $F \subseteq C$.
 \end{itemize}
 \end{definition}
 
@@ -79,9 +67,9 @@ estén en una sola pila ordenados de forma ascendente. Cada bloque puede tener a
 lo sumo un bloque encima suyo, y la mano sólo puede cargar un bloque a la vez.
 En este caso, proposiciones válidas que pueden ser parte de un estado son,
 por ejemplo,
-% Cambiaria sobremesa(1) por sobremesa(Bloque1) para que se entienda mas
-\texttt{manoVacía}, \texttt{sobreMesa(0)}, \texttt{sobreMesa(1)}, \texttt{libre(0),
-\texttt{libre(1)}}.
+\texttt{manoVacía}, \texttt{sobreMesa(bloque0)}, \texttt{sobreMesa(bloque1)},
+\texttt{libre(bloque0),
+\texttt{libre(bloque1)}}.
 La Figura \ref{blocksworld_inicial} ilustra un estado cuyas únicas
 proposiciones ciertas son estas mencionadas anteriormente.
 \begin{figure}[h!]
@@ -127,13 +115,14 @@ las nuevas proposiciones que han resultado de aplicar una acción
 siguiente estado producto de la acción aplicada (\textit{deletes}).
 \begin{Verbatim}[commandchars=\\\{\},
 codes={\catcode`$=3\catcode`^=7}]
-estado: sobreMesa(0) $\land$ {\color{red} sobreMesa(1)} $\land$ libre(0) $\land$ libre(1)
-        $\land$ {\color{red} manoVacía}
-\textit{acción: recoger_bloque(1)}
-estado:{\color{blue} enMano(1)} $\land$ sobreMesa(0) $\land$ {\color{red}
-libre(0)} $\land$ libre(1)
-\textit{acción: colocar_sobre(1, 0)}
-estado:{\color{blue} sobre(1, 0)} $\land$ sobreMesa(0) $\land$ {\color{blue}manoVacía} $\land$ libre(1)
+estado: sobreMesa(bloque0) $\land$ {\color{red} sobreMesa(bloque1)} $\land$ 
+        libre(bloque0) $\land$ libre(bloque1) $\land$ {\color{red} manoVacía}
+\textit{acción: recoger_bloque(bloque1)}
+estado: {\color{blue} enMano(bloque1)} $\land$ sobreMesa(bloque0) $\land$ 
+        {\color{red} libre(bloque0)} $\land$ libre(bloque1)
+\textit{acción: colocar_sobre(bloque1, bloque0)}
+estado: {\color{blue} sobre(bloque1, bloque0)} $\land$ sobreMesa(bloque0) $\land$ 
+        {\color{blue}manoVacía} $\land$ libre(bloque1)
 \end{Verbatim}
 
 La Figura \ref{blocksworld_final} es una representación de este estado final.
@@ -147,8 +136,7 @@ luego de aplicar una secuencia de acciones al estado en la Figura
 \label{blocksworld_final}
 \end{figure}
 
-% Porque pues? xD
-En resumen, pues, un \textbf{problema de planificación} es expresado utilizando
+En resumen, un \textbf{problema de planificación} es expresado utilizando
 el lenguaje PDDL, que especifica su \textbf{estado inicial}, \textbf{acciones}
 (precondiciones y efectos de cada una) y \textbf{estado final}.
 Un \textbf{plan} es una secuencia ordenada de acciones que resuelve el problema
@@ -179,7 +167,6 @@ determinando si existe tal plan.
 PLANSAT pertenece a la clase de complejidad PSPACE \citep{ghallab:book}.
 PSPACE es la clase de problemas que pueden ser resueltos por una máquina de
 Turing determinística con una cantidad polinomial (en $n$, donde $n$ es el
-%Deterministica?
 tamaño del problema) de espacio en memoria. Los problemas PSPACE son, en
 general, más difíciles de resolver que los problemas NP, los cuales a su vez
 son problemas combinatorios complejos para los cuales se cree que no existen
@@ -233,9 +220,8 @@ Por esta razón se omiten los símbolos funcionales en lo sucesivo.
 Se denota con $\LPO(\sigma)$ y $\LSO(\sigma)$ a los conjuntos de todas las
 fórmulas de lógica de primer y segundo orden basadas en la firma $\sigma$.
 La única diferencia entre la LPO y la LSO es que en esta última se permite la
-% LAS formulas que ... SON descritas
 cuantificación sobre los símbolos relacionales. La fórmulas que forman parte
-de LSO están descritas en la Definición \ref{lso_def}.
+de LSO son descritas en la Definición \ref{lso_def}.
 
 \begin{definition} Una fórmula pertenece a lógica de segundo orden (LSO) si y
 sólo si puede construirse mediante las siguientes reglas.
@@ -256,8 +242,6 @@ son:
 \item Si la relación $R^a\notin\sigma$ y $\Phi$ es una fórmula $\LSO(\sigma)$,
   entonces `$(\exists R)\Phi$' y `$(\forall R)\Phi$' son fórmulas $\LSO(\sigma)$.
 \end{enumerate}
-%\caption{Hola}
-%\label{a}
 \end{definition}
 
 Las fórmulas sin variables o predicados libres se llaman \textbf{sentencias}.
