@@ -21,7 +21,7 @@ proveer una forma alternativa y descriptiva de especificar problemas de forma
 que sea posible obtener e interpretar su solución.
 
 Como puede verse en la Figura \ref{esquema_herramienta}, la herramienta tiene
-como entradas una sentencia $\Phi\in\SOE(\sigma)$, y
+como entradas una firma $\sigma$, una sentencia $\Phi\in\SOE(\sigma)$, y
 una estructura finita de primer orden $\A\in\struc[\sigma]$ sobre la cual se
 intentará probar la propiedad definida por $\Phi$.
 Las salidas son un dominio y una instancia PDDL que tienen un plan válido si y
@@ -111,14 +111,21 @@ verdad de $R_i$. Por ejemplo, la acción para la relación $T^1$ en SAT es
 \end{Verbatim}
 }
 
+Esta acción realiza una conjetura sobre el valor de verdad de una variable
+proposicional de SAT. Al ser aplicada, la variable $x$ se considera
+\textbf{asignada a verdadero}. La proposición \texttt{conjetura} indica que el
+planificador está en la fase de suponer valores para las relaciones de segundo
+orden, previa a la fase de intentar demostrar que la suposición escogida es
+válida.
+
 \subsubsection{Acciones para las subfórmulas}
 Los operadores del segundo tipo están diseñados para construir una prueba de
 $\psi$ (si existe) por inducción sobre la estructura de $\psi$.
-Para cada subfórmula $\theta$ de $\psi$, hay una condición
+Para cada subfórmula $\theta$ de $\psi$, hay una proposición
 $\FT[\theta]$ que denota su validez, y hay una acción que la añade.
-Los parámetros de la condición $\FT[\theta]$ son las variables libres de
-$\theta$; la función $\FT[\cdot]$ se llama la \textit{traducción de la
-condición}.
+Los parámetros de la proposición $\FT[\theta]$ son las variables libres de
+$\theta$; la función $\FT[\cdot]$ se llama la \textit{traducción de las
+proposiciones}.
 
 El primer paso en la traducción es quitar todas las implicaciones
 y mover todas las negaciones hacia los literales mediante aplicaciones
@@ -131,13 +138,13 @@ $\bar x$ son las variables libres de $\theta$.}
 \begin{enumerate}[--]
 \item si $\theta(\bar x)=\bigwedge_{i=1}^n \theta_i(\bar x_i)$
   con $\bar x=\cup_{i=1}^n \bar x_i$, entonces generar la acción
-  $\texttt{probar\_y}[\theta]$ con parámetros $\bar x$, precondición
+  $\texttt{probar\_conjuncion}[\theta]$ con parámetros $\bar x$, precondición
   $\bigwedge_{i=1}^n \FT[\theta_i](\bar x_i)$ y efecto \textit{add}
   $\FT[\theta](\bar x)$,
 %
 \item si $\theta(\bar x)=\bigvee_{i=1}^n \theta_i(\bar x_i)$ con
   $\bar x=\cup_{i=1}^n \bar x_i$, entonces generar $n$ acciones de la forma
-  $\texttt{probar\_o}[\theta]_i(\bar x_i)$ con precondición
+  $\texttt{probar\_disyuncion}[\theta]_i(\bar x_i)$ con precondición
   $\FT[\theta_i](\bar x_i)$ y efecto \textit{add} $\FT[\theta](\bar x)$,
 %
 \item si $\theta(\bar x)=(\exists y)\theta'(\bar x,y)$, entonces generar
@@ -148,10 +155,12 @@ $\bar x$ son las variables libres de $\theta$.}
   dos acciones. La idea es probar $\theta(\bar x)$, variando $y$
   sobre todos los objetos.
 
+  Sea \SUC\ una relación de aridad 2 que define un orden total sobre el universo
+  de todos los objetos $|\A|$. $\SUC(x, y)$ indica que $y$ es el sucesor de $x$.
+
   La primera acción $\texttt{probar\_universal\_base}[\theta](\bar x)$ prueba $\theta'(\bar x,0)$.
   La acción tiene parámetros $\bar x$, precondición $\FT[\theta'](\bar x,0)$
   y efecto \textit{add} $\FT[(\forall y\leq z)\theta'(\bar x,y)](\bar x,0)$.
-  *** ACLARAR ***
   Observe que la traducción de la condición es aplicada a diferentes
 fórmulas,
   en las cuales la cuantificación está acotada por $z$.
@@ -161,7 +170,7 @@ fórmulas,
 verdad.
   La acción tiene parámetros $\bar x,z',z''$, precondición
   $\FT[(\forall y\leq z)\theta'(\bar x, y)](\bar x,z')\land\FT[\theta'](\bar x,z'')\land \SUC(z',z'')$
-  y efecto \textit{add} $\FT[(\forall y\leq z)\theta'(\bar x,y)](\bar x,z')$.
+  y efecto \textit{add} $\FT[(\forall y\leq z)\theta'(\bar x,y)](\bar x,z'')$.
 \end{enumerate}
 Todas estas acciones tienen como precondición adicional la condición
 \fttt{prueba}. Además, nótese que no hay acciones para las fórmulas literales.
@@ -172,7 +181,7 @@ fórmulas a condiciones de esta manera:
 \item $\FT[\neg Q(\bar x)](\bar x)=\fttt{no-}Q(\bar x)$,
 \item $\FT[(\forall y)\theta'(\bar x,y)](\bar x) =
   \FT[(\forall y\leq z)\theta'(\bar x,y)](\bar x,\max)$,
-\item en cualquier otro caso, $\FT[\theta](\bar x)=\fttt{es\_cierto\_<id>}(\bar x)$
+\item en cualquier otro caso, $\FT[\theta](\bar x)=\fttt{es\_cierto\_<operador>\_<id>}(\bar x)$
   donde \fttt{<id>} es un identificador único para $\theta$.
 \end{enumerate}
 %La función de traducción también se encarga de instanciar variables a términos
@@ -196,11 +205,11 @@ llamada \fttt{empezar-prueba} sirve para cambiar la fase de
 %    (holds_exists_8 ?x0) (holds_forall_9 ?x0)
 %    (holds_or_7 ?x0 ?x1) (holds_goal)
 %    (N ?x ?y) (P ?x ?y) (T ?x) (not-T ?x)
-%    (suc ?x ?y)
+%    (SUC ?x ?y)
 %  )
 %  (:action set_T_true
 %    :parameters (?x)
-%    :precondition (and (guess) (not-T ?x))
+%    :precondition (and (conjetura) (not-T ?x))
 %    :effect (and (T ?x) (not (not-T ?x))))
 %
 %  (:action prove_forall_9_1
@@ -211,7 +220,7 @@ llamada \fttt{empezar-prueba} sirve para cambiar la fase de
 %  (:action prove_forall_9_2
 %    :parameters (?y1 ?y2)
 %    :precondition (and (proof)
-%                       (suc ?y1 ?y2)
+%                       (SUC ?y1 ?y2)
 %                       (holds_forall_9 ?y1)
 %                       (holds_exists_8 ?y2))
 %    :effect (holds_forall_9 ?y2))
@@ -251,8 +260,8 @@ llamada \fttt{empezar-prueba} sirve para cambiar la fase de
 %    :effect (holds_goal))
 %
 %  (:action begin-proof
-%    :precondition (guess)
-%    :effect (and (proof) (not (guess)))) )
+%    :precondition (conjetura)
+%    :effect (and (proof) (not (conjetura)))) )
 %\end{SaveVerbatim}
 
 %\begin{figure}
@@ -297,6 +306,8 @@ $R$ no han sido asignados (\fttt{libre-f}), y en casos en los que un símbolo
 represente una función o función inyectiva, la situación inicial incluye
 condiciones del tipo \fttt{libre-R\_dom} y \fttt{libre-R\_ran}.
 
+Un ejemplo completo de la traducción de una instancia particular de SAT se
+encuentra en el Apéndice \ref{apendiceB}.
 
 \section{Propiedades formales}
 Las propiedades más importantes a considerar en la herramienta son solidez,
@@ -619,8 +630,8 @@ NP.
 & \rel \in \texttt{\textbackslash?[A-Z][A-Z0-9\_]*}, \\
 & \integer \in \mathbb{Z}^+ \\
 \end{alignat*}
-\label{gramatica}
 \caption[Gramática en BNF del lenguaje lógico]{Gramática en BNF del lenguaje que se utiliza para expresar $\Phi$ en la herramienta.}
+\label{gram}
 \end{figure}
 El lenguaje de entrada de la herramienta debe ser capaz de expresar
 sintácticamente cualquier fórmula \LSO\ existencial. En el capítulo
@@ -628,7 +639,7 @@ sintácticamente cualquier fórmula \LSO\ existencial. En el capítulo
 traducir problemas en la clase más compleja PH, por lo que es necesario
 agregar al lenguaje, además de los operadores estudiados hasta el momento,
 el operador $\forall$ de segundo orden, $\SOForall$.
-La Figura \ref{gramatica} muestra la gramática del lenguaje propuesto
+La Figura \ref{gram} muestra la gramática del lenguaje propuesto
 en forma Backus-Naur, que permite especificar fórmulas lógicas generales de
 segundo orden.
 
@@ -678,7 +689,7 @@ La herramienta fue implementada en el lenguaje de programación \textit{Python}.
 
 La primera parte del \textit{software} consiste en un analizador sintáctico LL(1) implementado
 de forma descendente recursiva. Según este esquema, se construye un árbol
-sintáctico de acuerdo a la gramática de la Figura \ref{gramatica}. Puede verse
+sintáctico de acuerdo a la gramática de la Figura \ref{gram}. Puede verse
 un ejemplo del árbol sintáctico resultante al analizar la fórmula de SAT en el
 Apéndice \ref{apendiceB}.
 
@@ -738,7 +749,7 @@ traducir(nodo):
 \end{center}
 \texttt{agregar\_acciones(nodo)} genera las acciones que especifica la traducción de la
 subfórmula particular que se encuentra en \texttt{nodo}, tal como
-es descrito en la Sección \ref{reduccion}.
+es descrito en la sección \ref{reduccion}.
 
 Finalmente, para obtener $\instance=\insred(\sigma,\Phi,\A)$ se interpreta la
 estructura $\A$ en el archivo de texto como la situación inicial del problema
@@ -748,6 +759,7 @@ $\instance$ serán exactamente las especificadas en $\domain$, ya traducidas con
 el último recorrido del árbol sintáctico.
 
 \section{Simplificación de la traducción}
+\label{simplificacion}
 Una sencilla modificación a la traducción es reemplazar las
 condiciones \texttt{libre-Ri}, presentes en el estado inicial, con
 condiciones \texttt{no-Ri}. Con esta simplificación, sólo es necesaria la

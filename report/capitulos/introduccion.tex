@@ -6,15 +6,15 @@
 \addcontentsline{toc}{chapter}{Introducción}
 % Descripción general
 En Ciencias de la Computación se entiende por \textbf{problemas de decisión}
-los problemas matemáticos en los que se plantea una pregunta sobre una entrada
+los problemas en los que se plantea una pregunta en un sistema formal sobre una entrada
 arbitraria, cuya respuesta puede ser afirmativa o negativa.
 Los problemas de decisión son interesantes porque permiten modelar y razonar
 sobre aplicaciones reales. Por ejemplo, el problema de decisión de
-$k$-colorabilidad pregunta si los vértices de un grafo son coloreables 
-con $k$ colores distintos, de modo de que a ningún par de vértices unidos por
-un arco se les asigne el mismo color . En un compilador, la asignación de valores
-frecuentemente utilizados a registros para
-mejorar la eficiencia del código generado puede modelarse como
+$k$-colorabilidad pregunta si los vértices de un grafo pueden ser coloreados
+con $k$ colores distintos, de modo de que a ningún par de vértices conectados
+por una arista se les asigne el mismo color . En un compilador, la tarea de
+asignar los valores frecuentemente utilizados a registros para
+mejorar la eficiencia del código generado puede modelarse con un problema de
 $k$-colorabilidad: los vértices del grafo son las variables, y si dos variables
 se necesitan al mismo tiempo se coloca un arco entre ellas. Al encontrar una
 forma de colorear este grafo con $k$ colores se ha hallado una forma de
@@ -30,21 +30,21 @@ que incluye problemas computacionalmente más complejos como formas restringidas
 \textit{Quantified Boolean Formula} (QBF).
 
 El área de investigación de planificación automática estudia una forma general
-de resolución de problemas utilizando \textbf{planes}. En un problema de planificación
-se especifica un estado inicial, un estado final y un conjunto de acciones
-posibles. Luego, el \textbf{planificador} construye una secuencia de acciones que conduce
-desde el estado inicial hasta el estado final, resolviendo el problema.
-
-% Concretar
+de resolución de problemas utilizando \textbf{planes}. Un problema de planificación
+consiste de un estado inicial, un conjunto de estados finales y un conjunto de
+acciones posibles. Luego, la tarea del \textbf{planificador} 
+consiste en encontrar una secuencia de acciones que conduzca
+el estado inicial hasta un estado final, o determinar que tal secuencia de
+acciones no existe.
 
 Este trabajo se enfoca en el desarrollo de una herramienta que permite
 traducir o, en lenguaje más formal, \textbf{reducir} un problema de
-decisión perteneciente a la clase PH codificado en lógica de segundo orden,
+decisión perteneciente a las clases NP o PH codificado en lógica de segundo orden,
 a un problema de planificación automática. 
 La motivación para realizar esta herramienta es que
 existen planificadores muy eficientes, pero no es trivial
 expresar un problema de decisión cualquiera en términos de estado inicial,
-final y acciones, como lo requieren los
+estados finales y acciones, como lo requieren los
 planificadores. A veces, la utilización de un lenguaje declarativo es una forma
 más concreta y directa para la descripción de un problema de decisión en
 particular. En estos casos, es preferible modelarlo en un lenguaje de más alto
@@ -75,10 +75,11 @@ Otro trabajo relacionado a este proyecto es el de \cite{cadoli:safedelay}. Los
 autores presentan una manera de razonar sobre los problemas de
 decisión, intentando reformularlos para hacerlos más fáciles de resolver. Se
 utilizan sistemas especializados para la modelación de restricciones y
-solucionadores provenientes de muchos sub-campos de Inteligencia Artificial.
+solucionadores provenientes de muchos sub-campos de la Inteligencia Artificial.
 Sin embargo, dependiendo del solucionador, se podría requerir que la fórmula
 declarativa a solucionar esté en un formato particular, lo cual no es tan
-conveniente como un enfoque independiente del dominio.
+conveniente como el enfoque ``independiente del dominio'' que provee la
+planificación automática.
 
 El objetivo general del proyecto es permitir la resolución de problemas
 NP y de la jerarquía polinomial (PH) expresados a través de un lenguaje declarativo basado en 
@@ -92,7 +93,7 @@ A fin de lograr el objetivo general, se plantean las siguientes metas
 específicas:
 \begin{itemize}
 \item El desarrollo de una herramienta que procese la descripción lógica de un problema 
-NP o PH y genere automáticamente un problema de planificación equivalente 
+en NP o PH y genere automáticamente un problema de planificación equivalente 
 formulado en el lenguaje PDDL (\textit{Planning Domain Definition Language}),
 de uso estándar en la comunidad de planificación automática.
 \item Una interfaz \textit{web} para este sistema que permita un acceso flexible
@@ -104,21 +105,28 @@ Este trabajo está dividido en cinco capítulos. El primer capítulo aporta las
 bases teórica sobre la que está fundamentada la traducción, incluyendo una
 introducción a las áreas de planificación automática y complejidad descriptiva.
 En el segundo capítulo se describe el lenguaje lógico diseñado para la
-formulación de problemas a alto nivel, se presenta una reducción base de NP
-lenguaje al lenguaje PDDL y se demuestran ciertas propiedades formales de esta
+formulación de problemas a alto nivel, se presenta una reducción base del
+fragmento de la lógica de segundo orden que captura a la clase NP
+al lenguaje PDDL y se demuestran las propiedades formales de esta
 traducción. 
 %En el capítulo 3 se discuten algunas optimizaciones aplicadas sobre
 %la función de reducción que permiten la generación de problemas de
 %planificación menos complejos sin alterar las propiedades formales básicas de
 %la traducción a NP. 
 El capítulo 3 presenta una extensión de la herramienta que
-le permite traducir problemas más generales, pertenecientes a la jerarquía
+permite traducir problemas más generales, pertenecientes a la jerarquía
 polinomial.
 El capítulo 4 trata sobre cómo fueron diseñados y llevados a
-cabo experimentos sobre diferentes problemas NP y PH traducidos con la herramienta,
+cabo experimentos sobre diferentes problemas en NP y PH traducidos con la herramienta,
 además de ofrecer una discusión de los resultados obtenidos. Finalmente, el
 capítulo 5 contiene conclusiones, recomendaciones e ideas para trabajos
 futuros.
+
+Parte de este trabajo ha sido publicado en la \textit{21st International Conference on
+Automated Planning and Scheduling} (ICAPS 2011;
+\citeauthor{porco:npreductions}), y
+enviado como artículo de investigación a la \textit{23rd International
+Conference on Automated Planning and Scheduling} (ICAPS 2013).
 
 %2. ACTIVIDADES QUE INVOLUCRA EL PROYECTO: 
 %a. Investigación sobre el material teórico que permiten relacionar la teoría de complejidad computacional con complejidad descriptiva (lógica)

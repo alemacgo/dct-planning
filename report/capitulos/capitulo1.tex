@@ -7,8 +7,7 @@ desarrollo de este trabajo. Primero se explican los fundamentos de la
 planificación automática, área que provee un formalismo al cual se pueden
 traducir problemas de decisión. Luego, se define la disciplina de complejidad
 descriptiva, que determina la clase de complejidad computacional de distintos
-fragmentos de lógica de segundo orden y permite establecer garantías sobre la
-dificultad de resolver problemas formulados en un lenguaje lógico.
+fragmentos de lógica de segundo orden según su expresividad.
 Finalmente, se explican dos ejemplos de problemas NP fácilmente modelables
 con el formalismo lógico propuesto.
 
@@ -22,8 +21,7 @@ decir, que sólo cambian con el resultado de las acciones aplicadas).
 
 \cite{fikes:strips} fueron pioneros en el área de planificación con su sistema
 STRIPS (\textit{Stanford Research
-Institute Problem Solver}), razón por la cual se llama STRIPS a la clase de
-todos los problemas de planificación.
+Institute Problem Solver}).
 
 Los investigadores de esta área han diseñado una representación compacta para
 expresar problemas de planificación de cualquier dominio, llamado PDDL
@@ -32,7 +30,7 @@ En este trabajo se considera el fragmento más simple de PDDL, que es
 equivalente a STRIPS.
 Este fragmento describe todo lo necesario
 para especificar un problema: el estado inicial, las acciones posibles con sus
-precondiciones y efectos, y el estado meta.
+precondiciones y efectos, y los estados meta.
 
 La Definición \ref{definicion_planificacion} presenta de manera formal qué es
 un problema de planificación. Los párrafos siguientes contienen una explicación
@@ -44,16 +42,16 @@ Matemáticamente, se define un problema de planificación STRIPS como $P = \tup{
 F}$, donde: 
 \begin{itemize} 
 \item $C$ es un conjunto de \textbf{condiciones} o variables proposicionales.
-\item $A$ es un conjunto de \textbf{acciones}. Cada acción $a$, a su vez, es
+\item $A$ es un conjunto de \textbf{acciones}. Cada acción $a$ es
 una tupla $a = \tup{pre, adds, deletes}$ que contiene el conjunto de
 precondiciones (condiciones que deben ser ciertas para poder aplicar la acción)
 y el conjunto de efectos positivos (\textit{adds}) y negativos (\textit{deletes}) que causa la
 aplicación de la acción.
-\item $I$ es el \textbf{estado inicial}, con $I\subseteq C$. Los estados son
+\item $I\subseteq C$ es el \textbf{estado inicial}. Los estados son
 especificados por el conjunto de condiciones que son verdaderas en ellos, las
 demás condiciones se suponen falsas. Esto se llama la suposición del
 \textbf{mundo cerrado} \citep{russell:book}.
-\item $F$ es el \textbf{estado final o meta}, con $F \subseteq C$.
+\item $F\subseteq C$ describe los \textbf{estados finales} o meta.
 \end{itemize}
 \end{definition}
 
@@ -86,21 +84,21 @@ la acción declara qué proposiciones en el mundo cambian cuando es aplicada,
 lo cual constituye sus \textbf{efectos}. Para una notación
 simplificada, PDDL permite la utilización de \textbf{parámetros} en los
 símbolos relacionales que describen sus precondiciones y efectos. Estos
-parámetros pueden ser instanciados en cualquier átomo. Volviendo al
+parámetros pueden ser instanciados con cualquier objeto. Volviendo al
 ejemplo anterior, un conjunto de acciones podría ser:
 \begin{Verbatim}[commandchars=\\\{\},
 codes={\catcode`$=3\catcode`^=7}]
-(:acción recoger_bloque
-    :parámetros (b)
-    :precondiciones (manoVacía $\land$ libre(b))
-    :efectos (enMano(b) $\land \neg$ manoVacía $\land \neg $sobreMesa(b))
+(:action recoger_bloque
+    :parameters (?b)
+    :precondition (and (manoVacía) (libre ?b))
+    :effect (and (enMano ?b) (not (manoVacía)) (not (sobreMesa ?b)))
 )
 
-(:acción colocar_sobre
-    :parámetros (b1, b2)
-    :precondiciones (enMano(b1) $\land$ libre(b2))
-    :efectos (sobre(b1, b2) $\land$ manoVacía $\land$
-              $\neg$ enMano(b1) $\land \neg$ libre(b2))
+(:action colocar_sobre
+    :parameters (?b1 ?b2)
+    :precondition (and (enMano ?b1) (libre ?b2))
+    :effect (and (sobre ?b1 ?b2) (manoVacía) (not (enMano ?b1))
+            (not (libre ?b2)))
 )
 \end{Verbatim}
 
@@ -115,14 +113,14 @@ las nuevas proposiciones que han resultado de aplicar una acción
 siguiente estado producto de la acción aplicada (\textit{deletes}).
 \begin{Verbatim}[commandchars=\\\{\},
 codes={\catcode`$=3\catcode`^=7}]
-estado: sobreMesa(bloque0) $\land$ {\color{red} sobreMesa(bloque1)} $\land$ 
-        libre(bloque0) $\land$ libre(bloque1) $\land$ {\color{red} manoVacía}
+estado: \{sobreMesa(bloque0), {\color{red} sobreMesa(bloque1)},
+         libre(bloque0), libre(bloque1), {\color{red} manoVacía}\}
 \textit{acción: recoger_bloque(bloque1)}
-estado: {\color{blue} enMano(bloque1)} $\land$ sobreMesa(bloque0) $\land$ 
-        {\color{red} libre(bloque0)} $\land$ libre(bloque1)
+estado: \{{\color{blue}enMano(bloque1)}, sobreMesa(bloque0),
+        {\color{red} libre(bloque0)}, libre(bloque1)\}
 \textit{acción: colocar_sobre(bloque1, bloque0)}
-estado: {\color{blue} sobre(bloque1, bloque0)} $\land$ sobreMesa(bloque0) $\land$ 
-        {\color{blue}manoVacía} $\land$ libre(bloque1)
+estado: \{{\color{blue}sobre(bloque1, bloque0)}, sobreMesa(bloque0),
+          {\color{blue}manoVacía}, libre(bloque1)\}
 \end{Verbatim}
 
 La Figura \ref{blocksworld_final} es una representación de este estado final.
@@ -138,14 +136,14 @@ luego de aplicar una secuencia de acciones al estado en la Figura
 
 En resumen, un \textbf{problema de planificación} es expresado utilizando
 el lenguaje PDDL, que especifica su \textbf{estado inicial}, \textbf{acciones}
-(precondiciones y efectos de cada una) y \textbf{estado final}.
+(precondiciones y efectos de cada una) y los \textbf{estados finales}.
 Un \textbf{plan} es una secuencia ordenada de acciones que resuelve el problema
 de planificación.
 
 Cuando se busca resolver varias instancias de un problema general se suelen
 agrupar los problemas de planificación en dominios. Dos problemas del mismo
 dominio comparten el mismo conjunto de acciones, mas no necesariamente el
-estado inicial o el estado meta. Por esto se dice que \textit{mundo de bloques}
+estado inicial o los estados meta. Por esto se dice que \textit{mundo de bloques}
 es un \textbf{dominio de planificación}, y el término \textbf{problema} se refiere a
 una instancia particular con estados inicial y final definidos, en
 el cual pueden utilizarse las acciones del dominio al que pertenece.
@@ -153,18 +151,19 @@ el cual pueden utilizarse las acciones del dominio al que pertenece.
 
 Un problema de planificación en PDDL es un par $\tup{\domain,\instance}$ con
 una descripción de un dominio y una instancia en el lenguaje PDDL
-\cite{mcdermott:pddl,fox:pddl}.
+\citep{mcdermott:pddl,fox:pddl}.
 \subsection{Complejidad en planificación}
 \label{complejidad_planificacion}
-Sea PLANSAT el problema de decisión que pregunta si existe algún plan que
-resuelve un problema de planificación. Según el formalismo que se ha definido
+Sea PLANSAT el problema de decisión que pregunta si existe un plan que
+resuelve un problema de planificación dado. Según el formalismo que se ha definido
 en la sección anterior,
 PLANSAT es \textbf{decidible} porque el número de estados es finito:
 un algoritmo basado en búsqueda desde el estado inicial que aplique
 todas las acciones posibles en cada estado acabará examinando todo el espacio y
 determinando si existe tal plan.
 
-PLANSAT pertenece a la clase de complejidad PSPACE \citep{ghallab:book}.
+PLANSAT pertenece a la clase de complejidad PSPACE
+\citep{bylander:plan-complexity}.
 PSPACE es la clase de problemas que pueden ser resueltos por una máquina de
 Turing determinística con una cantidad polinomial (en $n$, donde $n$ es el
 tamaño del problema) de espacio en memoria. Los problemas PSPACE son, en
@@ -188,7 +187,7 @@ intersección entre matemáticas y las ciencias de la computación
 que estudia la teoría de complejidad desde un punto de vista matemático, 
 sin utilizar modelos de computación como máquinas de Turing. La TCD surgió
 cuando se demostró que la clase de complejidad NP corresponde
-exactamente con la clase de problemas descriptibles en lógica de segundo orden
+exactamente con la clase de problemas expresables en lógica de segundo orden
 existencial \citep{fagin:spectra}. En los últimos años se ha establecido una
 correspondencia entre las clases de complejidad más importantes y lenguajes
 lógicos con distintos niveles de expresividad \citep{immerman:book}. En esta
@@ -210,10 +209,10 @@ denotadas por tuplas como $\sigma=\tup{P^1,Q^2,f^1,A,B}$, que contiene dos
 símbolos relacionales $P$ y $Q$ de aridades 1 y 2, respectivamente, un símbolo
 funcional $f$ de aridad 1, y dos constantes $A$ y $B$.
 
-En la TCD, si se considera que el dominio y rango de los símbolos funcionales
-es finito, estos pueden reemplazarse por símbolos relacionales
-equivalentes: en lugar de representar que $y$ es la imagen de $x$ utilizando
-$f(x) = y$, se utiliza la proposición lógica $F(x, y)$.
+Los símbolos funcionales de la forma $f(x) = y$ pueden representarse con una
+tupla de la relación $F(x, y)$, en la que se expresa que $y$ es la imagen de
+$x$, siempre y cuando se agreguen restricciones sobre $x$ y $y$ que expresen
+que $f$ es una función.
 Por esta razón se omiten los símbolos funcionales en lo sucesivo.
 
 \subsubsection{Lógica de segundo orden}
@@ -252,7 +251,7 @@ donde cada $\Q_i \in \{\exists,\forall\}$, y
 $\psi$ es una sentencia de primer orden sobre $\sigma\ \cup\ \{R_1^{a_1},\ldots,R_n^{a_n}\}$.
 Esta forma es universal: todas las sentencias de segundo orden pueden llevarse
 a una equivalente que cumpla con esta restricción.
-Si todos los $\Q_i$ son cuantificadores existenciales, puede decirse que
+Si todos los $\Q_i$ son cuantificadores existenciales, se dice que
 $\Phi$ es una sentencia \textbf{existencial de segundo orden}.
 La clase de todas las sentencias existenciales de segundo orden, también
 llamada el \textbf{fragmento existencial de la LSO}, es denotado por \SOE. Se
@@ -266,7 +265,7 @@ Las fórmulas lógicas son interpretadas con respecto a \textbf{estructuras de p
 orden}. Una estructura de primer orden se define sobre la firma
 $\sigma=\tup{R_1^{a_1},\ldots,R_s^{a_s},\\c_1,\ldots,c_t}$, donde cada $R_i$ es
 un símbolo relacional de aridad $a_i$, y cada $c_j$ es una constante. 
-La estructura de primer orden es una tupla
+Una estructura de primer orden es una tupla
 $\A=\tup{|\A|,R_1^\A,\ldots,R_s^\A,c_1^\A,\\\ldots,c_t^\A}$ con un universo
 no vacío $|\A|$, donde cada $R_i^\A\subseteq|\A|^{a_i}$ es un subconjunto de
 $a_i$-tuplas de $|\A|$, y cada
@@ -303,14 +302,14 @@ La siguiente definición será de utilidad para trabajar sobre la semántica
 formal.
 \begin{definition}
 Sea $\A \in \struc[\sigma]$ y sea $i$ una función 
-$i : \text{VAR}\ \cup \deriv |\A|$, donde \text{VAR} es el conjunto de
+$i : \text{VAR}\ \deriv |\A|$, donde \text{VAR} es el conjunto de
 todas las variables.
 Se dice que el par $(\A, i)$ es una \textbf{interpretación} de una fórmula de
 segundo orden $\Phi \in \LSO(\sigma)$.
 \end{definition}
 Como ejemplo, una posible interpretación de la fórmula $\Phi =
 (\exists xy) (T(x, y))$
-es $(\A, i)$, donde $i(x) = 1$ y $\A$ es la estructura ejemplo mencionada
+es $(\A, i)$, para toda variable $x$, donde $i(x) = 1$ y $\A$ es la estructura ejemplo mencionada
 anteriormente.
 \begin{definition}
 Se extiende $i$ sobre todos los términos del lenguaje. Como no hay símbolos
@@ -494,6 +493,7 @@ extendida con un operador de clausura transitiva.
 %of the edge relation.
 
 \section{Modelación de problemas}
+\label{modelacionproblemas}
 Consideremos, por ejemplo, el problema de satisfacibilidad
 proposicional (SAT). Una instancia de SAT es una fórmula en forma normal
 conjuntiva con $m$ cláusulas sobre $n$ variables proposicionales, donde una
