@@ -3,13 +3,13 @@
 \lhead{Capítulo 4. \emph{Experimentos y resultados}}
 
 Este capítulo presenta una serie de experimentos realizados para evaluar hasta
-qué punto es práctico resolver problemas NP y PH modelados en lógica y
+qué punto es práctico resolver problemas en NP y PH modelados en lógica y
 traducidos por la herramienta.
 En primer lugar, se justifica la escogencia de un planificador basado en SAT
 para la realización de los experimentos y se presenta una forma de calcular
 cotas inferiores y superiores para acotar la búsqueda de una solución. Luego,
 se explica el protocolo de realización de los experimentos y se describen brevemente 
-los problemas NP y PH que se utilizarán. Finalmente, se discuten los resultados
+los problemas en NP y PH que se utilizarán. Finalmente, se discuten los resultados
 obtenidos en estos experimentos.
 
 \section{Escogencia del planificador}
@@ -591,7 +591,8 @@ planes sea mucho mayor.
 \end{table}
 
 % por qué los resultados con dos variables externas dan mejor?
-*** EXPLICAR ESTOS RESULTADOS ***
+Las puebas realizadas con \qAEA-QBF pueden parecer un poco desconcertantes en relación con las del \qEA-QBF. Confrontándolos se nota una gran ventaja, por parte del poseedor de tres cuantificadores, en tiempo de resolución. Ésto se debe a que las instancias del \qEA-QBF eran negativas, y por lo tanto era necesario la evaluación de todos los posibles valores de la relación existencial, que vendría siendo como la resolución de un $\forall$ con todas las variables que posee $\exists$.
+
 
 %\begin{table}[h!]
 %\centering
@@ -681,8 +682,10 @@ $|V|$ & $n$ & $+$ & $-$ &  tiempo & long. plan  \\
 \end{table}
 
 Sorprendentemente, LAMA'11 es capaz de encontrar planes sumamente largos: en
-una instancia consiguió uno con más de 400.000 pasos.
-*** EXPLICAR POR QUÉ, EXPLICAR LOS RESULTADOS ***
+una instancia consiguió uno con más de 400.000 pasos. Se supone que la razón
+de que este planner sea capaz de lograr semejante hazaña es que, a diferencia de M, es
+un planner secuencial y el tipo de planes producidos por los problemas en $CO-NP$ son puramente secuenciales, es decir, no requieren
+de una conjetura (caso del cuantificador $\exists$), solo de la aplicación secuencial de acciones hasta llegar a la meta.
 
 \section{La herramienta en la web}
 
