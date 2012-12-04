@@ -334,7 +334,18 @@ es una función que asigna a las $\sigma$-estructuras un
 problema instanciado STRIPS.
 
 A continuación se demuestran las tres propiedades formales importantes sobre
-$f_{\sigma,\Phi}$.
+$f_{\sigma,\Phi}$:
+\begin{enumerate}
+\item $f_{\sigma,\Phi}$ es una reducción, esto es:
+    \begin{enumerate}
+        \item $f$ es \textbf{sólida}: Si el problema STRIPS $f_{\sigma,\Phi}$ tiene un plan,
+            entonces $\A \models \Phi$.
+        \item $f$ es \textbf{completa}: Si $\A\models\Phi$, entonces existe un plan para el 
+            problema STRIPS $f_{\sigma,\Phi}$.
+    \end{enumerate}
+\item $f_{\sigma,\Phi}$ corre en tiempo polinomial.
+\item $f_{\sigma,\Phi}$ no genera problemas más complejos que \SOE.
+\end{enumerate}
 
 \subsection{Demostración de reducción}
 Se demostrará que $\A \models \Phi$ si y sólo si $f_{\sigma,\Phi}(\A)$ tiene
@@ -344,7 +355,7 @@ el estado inicial (que depende de $\A$).
 \begin{proposition}
 \label{t1}
 Sean $t_1,\ldots,t_k$ términos instanciados, es decir, que no contienen
-variables. Sea $\A$ una estructura, $u\in|\A|$ y `$a$' una constante tal que
+variables. Sea $\A$ una estructura, $u$ un elemento en $|\A|$ y `$a$' una constante tal que
 $a^\A=u$.
 Entonces, $(\A, i[x:=u]) \models \varphi(t_1,\ldots,t_k,x)$ si y sólo si
 $(\A, i) \models \varphi(t_1,\ldots,t_k,a)$.
@@ -368,13 +379,13 @@ Sea $\varphi \in \LPO(\sigma)$ y $t_1,\ldots,t_k$ $\sigma$-términos instanciado
 Entonces, $(\A, i) \models \varphi(t_1,\ldots,t_k)$ si y sólo si
 existe un plan $\pi[t_1,\ldots,t_k]$ que alcanza
 $\FT[\varphi](t_1,\ldots,t_k)$ desde el \textbf{estado intermedio} $I[\A]$,
-el estado de STRIPS en el cual los operadores que construyen la
+el estado STRIPS en el cual los operadores que construyen la
 prueba empiezan a ser aplicables, definido por las siguientes condiciones:
 \begin{alignat*}{1}
 & I[\A] = \{\texttt{prueba}\} \cup \{ \texttt{R}(a_1,\ldots,a_k) :
 \tup{a_1^\A,\ldots,a_k^\A} \in R^\A\}\\
 & {\color{white} I[\A] = } \cup \{\texttt{no-R}(a_1,\ldots,a_k) : \tup{a_1^\A,\ldots,a_k^\A} \not\in R^\A\}\\
-& {\color{white} I[\A] = } \cup \{\texttt{SUC}(a_i, a_{i+1}) : 0 \leq i < n\}
+& {\color{white} I[\A] = } \cup \{\texttt{SUC}(a, b): a < b \land \neg (\exists c) (a < c < b)\}
 \end{alignat*}
 \end{theorem}
 \begin{proof}
@@ -423,19 +434,30 @@ Caso $\varphi = \varphi_1(t_1',\ldots,t'_{k_1}) \lor \varphi_2(t''_1,\ldots,t''_
 & \iff \tup{\text{definición \ref{semantica_def}(e)}}\\
 & \quad \quad (\A, i) \models \varphi_1(t'_1,\ldots,t'_{k'}) 
 \text{ o } (\A, i) \models \varphi_2(t''_1,\ldots,t''_{k''})\\
-& \text{Por casos. Caso $(\A, i) \models \varphi_1(t'_1,\ldots,t'_{k'})$:}\\
-& \quad \iff \tup{\text{hipótesis inductiva}}\\
-& \quad \quad \quad \pi_1[t_1,\ldots,t_{k_1}] \text{ es un plan que alcanza 
+& \ \Rightarrow \tup{\text{hipótesis inductiva, suponiendo que se utiliza la
+prueba de $\varphi_1$}}\\
+& \quad \quad \pi_1[t_1,\ldots,t_{k_1}] \text{ es un plan que alcanza 
 $\FT[\varphi_1](t_1,\ldots,t_{k_1})$ desde $[\A]$}\\
-& \quad \iff \langle \text{no hay \textit{deletes}} \rangle\\
-& \quad \quad \textbf{el plan } \tup{\pi_1(t_1,\ldots,t_{k_1});\
+& \iff \langle \text{no hay \textit{deletes}} \rangle\\
+& \quad \textbf{el plan } \tup{\pi_1(t_1,\ldots,t_{k_1});\
 \texttt{probar\_o\_}\varphi(t_1,\ldots,t_k)} \\
 & \quad \quad \textbf{alcanza la condición }
 \FT[\varphi](t_1,\ldots,t_k) \textbf{ desde } I[\A]\\
-& \text{Caso $(\A, i) \models \varphi_2(t''_1,\ldots,t''_{k''})$:}\\
-& \quad \quad \text{Análogo al caso anterior.}
+& \text{Puede llegarse a la misma conclusión utilizando la hipótesis}\\
+& \text{inductiva con $\varphi_2$. Falta probar la dirección inversa
+($\Leftarrow$):}\\
+& \quad\quad \text{el plan } \pi_1\ \text{alcanza la condición }
+\FT[\varphi](t_1,\ldots,t_k) \textbf{ desde } I[\A]\\
+& \iff \langle \text{$\pi_1$ tiene la acción
+    \texttt{probar\_o\_}$\varphi(t_1',\ldots,t_k')$} \rangle\\
+& \quad\quad \varphi_1 \text{ tiene un subplan para } \FT[\varphi](t_1',\ldots,t_k')\\
+& \ \Leftarrow \tup{\text{hipótesis inductiva}}\\
+& \quad\quad \A \models \varphi_1\\
+& \ \Leftarrow \tup{\text{fortalecimiento}}\\
+& \quad\quad \A \models \varphi\text{. El caso con $\varphi_2$ es análogo.}
 %Caso $\varphi = \varphi_1(t_1',\ldots,t'_{k'}) \Rightarrow \varphi_2(t''_1,\ldots,t''_{k''}) $:
 %\quad Ver caso anterior, pues $\varphi_1 \Rightarrow \varphi_2 = \neg \varphi_1 \lor \varphi_2$.
+%este tiene la accion probar_o_\phi_ver1 o probar_o_\phi_ver2. En primer caso (resp. segundo caso), el plan tiene un subplan para F[\phi_1]() y por hipotesis inductiva, A\models\phi_1 lo que implicar A\models\phi.
 \end{alignat*}
 
 Caso $\varphi = (\exists x)\ \theta(t_1,\ldots,t_k,x):$
@@ -443,14 +465,14 @@ Caso $\varphi = (\exists x)\ \theta(t_1,\ldots,t_k,x):$
 & \quad \quad (\A, i) \models \varphi\\
 & \iff \langle \text{por corolario \ref{corolario}, ya que todo objeto en $|\A|$
 tiene nombre, }\\
-& {\color{white} \iff \langle} \text{ existe una constante } `a' \rangle\\
+& {\color{white} \iff \langle} \text{ existe una constante `$a$'} \rangle\\
 & \quad \quad (\A, i) \models \theta(t_1,\ldots,t_k,a)\\
 & \iff \tup{\text{hipótesis inductiva}}\\
 & \quad \quad \pi[t_1,\ldots,t_k,a] \text{ es un plan que alcanza }
 \FT[\theta](t_1,\ldots,t_k,a) \text{ desde } I[\A]\\
-& \iff \tup{\text{no hay \textit{deletes}}}\\
+& \iff \\
 & \quad \quad \textbf{el plan } \langle \pi[t_1,\ldots,t_k,a];\
-\texttt{probar\_existencial\_}\varphi(t_1,\ldots,t_k)\rangle\\
+\texttt{probar\_existencial\_}\varphi(t_1,\ldots,t_k,a)\rangle\\
 & \quad \quad \textbf{alcanza la condición } \FT[\varphi](t_1,\ldots,t_k)
 \textbf{ desde } I[\A]
 \end{alignat*}
@@ -487,7 +509,7 @@ $f_{\sigma,\Phi}(\A)$ es:
 & \textsc{init}(\A) = \{\{ \texttt{P}(a_1,\ldots,a_k) :
 \tup{a_1^\A,\ldots,a_k^\A} \in P^\A\}\\
 & {\color{white} \texttt{init}[\A] = } \cup \{\texttt{no-P}(a_1,\ldots,a_k) : \tup{a_1^\A,\ldots,a_k^\A} \not\in P^\A\}\\
-& {\color{white} \texttt{init}[\A] = } \cup \{\texttt{SUC}(a_i, a_{i+1}) : 0 \leq i < n \} \\
+& {\color{white} \texttt{init}[\A] = } \cup \{\texttt{SUC}(a, b): a < b \land \neg (\exists c) (a < c < b)\}\\
 & {\color{white} \texttt{init}[\A] = } \cup \{\texttt{libre-R\_i}(t)) : \text{ para todo $t \in |\A|^{k_i}$},
 R_i\in\{R_1,\ldots,R_m\}\} \}
 \end{alignat*}
@@ -546,9 +568,8 @@ Se debe demostrar que los problemas de planificación producidos
 por $f_{\sigma,\Phi}(\A)$ tienen a lo sumo la misma
 complejidad que \SOE.
 
-El problema de decisión de existencia de un plan general para un problema
-STRIPS no está en NP porque (1)~el número de condiciones y acciones instanciadas puede ser
-exponencial en el tamaño de la entrada, y (2)~incluso los planes más cortos pueden
+Decidir la existencia de un plan general para un problema
+STRIPS no está en NP porque incluso los planes más cortos pueden
 ser de tamaño exponencial en el número de condiciones y acciones instanciadas.
 %Por lo tanto, no todas las reducciones son adecuadas para este propósito y su
 %diseño debe realizarse cuidadosamente. En esta sección se
@@ -561,8 +582,8 @@ sin efectos negativos está en NP \citep{bylander:plan-complexity}. La prueba
 depende del hecho de que un plan óptimo no necesita repetir acciones, y por lo
 tanto es de tamaño lineal. Puede extenderse esta noción: si todas las acciones que
 agregan efectos negativos pueden ser aplicadas a lo sumo una vez, verificar la
-existencia de un plan sigue estando en NP, pues el tamaño del plan no podrá ser
-mayor al número de acciones.
+existencia de un plan está en NP, pues el tamaño del plan debe ser de tamaño
+polinomial.
 
 \begin{definition}
 Un problema de planificación $P = \tup{C, A, I, F}$ es de tipo
@@ -595,7 +616,7 @@ El problema de decisión de existencia de un plan STRIPS-1 es NP-completo.
 \end{theorem}
 \begin{proof}
 \ \\ \textbf{Inclusión:} Todas las acciones de $A_1$ pueden ser aplicadas a lo
-sumo una vez. Como estas acciones pueden borrar condiciones (tienen
+sumo una vez. Como estas acciones pueden borrar proposiciones (tienen
 \textit{deletes}), en el peor caso puede requerirse aplicar \textbf{todas} las
 acciones de $A_0$ antes de aplicar otra acción de $A_1$. Por lo tanto, el
 tamaño de un plan es a lo sumo cuadrático en el número total de acciones.

@@ -41,7 +41,7 @@ intuitiva del problema.
 Matemáticamente, se define un problema de planificación STRIPS como $P = \tup{C, A, I,
 F}$, donde: 
 \begin{itemize} 
-\item $C$ es un conjunto de \textbf{condiciones} o variables proposicionales.
+\item $C$ es un conjunto de condiciones o \textbf{proposiciones}.
 \item $A$ es un conjunto de \textbf{acciones}. Cada acción $a$ es
 una tupla $a = \tup{pre, adds, deletes}$ que contiene el conjunto de
 precondiciones (condiciones que deben ser ciertas para poder aplicar la acción)
@@ -148,10 +148,18 @@ es un \textbf{dominio de planificación}, y el término \textbf{problema} se ref
 una instancia particular con estados inicial y final definidos, en
 el cual pueden utilizarse las acciones del dominio al que pertenece.
 
-
 Un problema de planificación en PDDL es un par $\tup{\domain,\instance}$ con
 una descripción de un dominio y una instancia en el lenguaje PDDL
-\citep{mcdermott:pddl,fox:pddl}.
+\citep{mcdermott:pddl,fox:pddl}. Como PDDL permite expresar las acciones
+parametrizadas en el dominio para ajustarlas a cualquier instancia, los
+planificadores deben implementar una función de instanciación $\ground$ que
+transforme la especificación en PDDL $\tup{\domain,\instance}$ en un problema
+STRIPS, en el que las acciones \textbf{no tienen parámetros}. Por ejemplo, en
+el problema STRIPS $\ground({\domain,\instance})$ que corresponde a la
+instancia de \textit{mundo de bloques} estudiada anteriormente, existen
+acciones \texttt{recoger\_bloque\_0} y \texttt{recoger\_bloque\_1}, así como
+operadores \texttt{colocar\_sobre} para todos los pares ordenados de bloques.
+
 \subsection{Complejidad en planificación}
 \label{complejidad_planificacion}
 Sea PLANSAT el problema de decisión que pregunta si existe un plan que
