@@ -107,7 +107,7 @@ Como en la sección anterior, se procede inductivamente sobre la estructura de $
 contador de $\#t$ bits desde cero hasta su máximo \citep{cormen:algorithms}.
 \end{enumerate}
 En 2, $[\![\pwin=u]\!]$ es 1 o 0 dependiendo de si $\pwin$ se refiere a la cota
-superior $u$ o no.  ***ACLARAR***
+superior $u$ o no.
 
 %upper bound $u$ or not. It is not hard to see that one
 %can get the unique expression $\pwin(\Phi)=4+\pwin(\Psi)$ for the
@@ -435,7 +435,7 @@ problema que se ubica en PH, y el complemento al problema de 3-colorabilidad de
 un grafo, \coCOL, perteneciente a la clase co-NP.
 Para QBF se utilizó M, el mismo planificador basado en SAT con el que se
 resolvieron los problemas NP. Para \coCOL se utilizó otro planificador del
-estado del arte, llamado LAMA'11 \cite{richter:lama}. *** JUSTIFICAR, COMO SALE EN EL PAPER ***.
+estado del arte, llamado LAMA'11 \citep{richter:lama}.
 
 Los experimentos se ejecutaron en un CPU Xeon 5140 corriendo a 2.33 GHz,
 con 2 GB de RAM y un tiempo límite de una hora y media.
@@ -487,7 +487,7 @@ resueltas con solución ($+$) y en las que no hay solución ($-$), y promedios
 de tiempo en segundos y longitud del plan paralelo (para las instancias
 resueltas donde hay solución).
 
-*** COLOCAR VENTANAS PARA LOS QBF ***
+*** ALDO: COLOCAR VENTANAS PARA LOS QBF ***
 \begin{table}[h!]
 \centering
   \begin{tabular}{lllrrrrrrrrrl}
@@ -591,8 +591,13 @@ planes sea mucho mayor.
 \end{table}
 
 % por qué los resultados con dos variables externas dan mejor?
-Las puebas realizadas con \qAEA-QBF pueden parecer un poco desconcertantes en relación con las del \qEA-QBF. Confrontándolos se nota una gran ventaja, por parte del poseedor de tres cuantificadores, en tiempo de resolución. Ésto se debe a que las instancias del \qEA-QBF eran negativas, y por lo tanto era necesario la evaluación de todos los posibles valores de la relación existencial, que vendría siendo como la resolución de un $\forall$ con todas las variables que posee $\exists$.
-
+Puede resultar curioso que las pruebas de \qAEA-QBF para dos variables
+cuantificadas universalmente en el nivel más externo dieron como resultado
+mejores tiempos que las del tipo \qEA-QBF que tenían dos variables dependientes
+de la cuantificación universal.
+Esto se debe a que en estas últimas pruebas había instancias negativas, por lo
+que era necesario evaluar todos los posibles valores de la cuantificación
+existencial, incurriendo en un mayores tiempos de corrida.
 
 %\begin{table}[h!]
 %\centering
@@ -657,7 +662,7 @@ $G(n,p)$. Los experimentos se realizaron en la misma máquina y con las
 mismas restricciones que los experimentos de problemas QBF.
 
 En este caso no se obtuvo buenos resultados con el planificador M.
-Los resultados de LAMA'11 \cite{richter:lama} se muestran en la
+Los resultados de LAMA'11 \citep{richter:lama} se muestran en la
 Tabla \ref{table:exp:co-3col}.
 
 \begin{table}[h!]
@@ -682,18 +687,17 @@ $|V|$ & $n$ & $+$ & $-$ &  tiempo & long. plan  \\
 \end{table}
 
 Sorprendentemente, LAMA'11 es capaz de encontrar planes sumamente largos: en
-una instancia consiguió uno con más de 400.000 pasos. Se supone que la razón
-de que este planner sea capaz de lograr semejante hazaña es que, a diferencia de M, es
-un planner secuencial y el tipo de planes producidos por los problemas en $CO-NP$ son puramente secuenciales, es decir, no requieren
-de una conjetura (caso del cuantificador $\exists$), solo de la aplicación secuencial de acciones hasta llegar a la meta.
+una instancia consiguió uno con más de 400.000 pasos. Se cree que la razón
+por la cual este planificador es capaz de lograr semejante hazaña es que, a diferencia de M, 
+es de tipo secuencial y la resolución de problemas en co-NP no requiere de
+conjeturas (pues no hay cuantificadores existenciales de segundo orden), sino
+de la aplicación lineal de acciones.
 
 \section{La herramienta en la web}
 
 Para la presentación de este trabajo en la Conferencia Internacional de
 Planificación Automática (ICAPS '11) se implementó una sencilla aplicación web
 utilizando \textit{Python} y tecnología \textit{CGI}.
-
-%!*** INCLUIR CAPTURA DE PANTALLA ***
 
 La aplicación web consta de una sección en donde el usuario puede introducir
 una fórmula $\Phi$ en \LSO\ y una firma $\sigma$ para generar un dominio de
