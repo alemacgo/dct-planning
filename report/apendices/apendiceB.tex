@@ -13,6 +13,7 @@ La instancia de SAT que se resolverá es
 \end{equation}
 
 \section{Dominio}
+\subsection{Entrada}
 La modelación del dominio SAT fue descrita en la sección
 \ref{modelacionproblemas}. Utilizando el lenguaje lógico que se ha definido en
 este capítulo, tenemos que $\Phi_\SAT$ es:
@@ -25,6 +26,7 @@ este capítulo, tenemos que $\Phi_\SAT$ es:
 La firma $\sigma_\SAT$ consta de las relaciones $N$ y $P$, las cuales 
 varían de instancia a instancia y definen las cláusulas CNF del problema.
 
+\subsection{Salida}
 La herramienta crea el árbol sintáctico de $\Phi_\SAT$, el cual se muestra en
 detalle en la Figura \ref{arbolsintactico}, y genera el archivo PDDL que se
 presenta a continuación.
@@ -152,18 +154,85 @@ sentencia $\Phi_{SAT}$. Los nodos terminales se marcan con un óvalo.}
 \end{landscape}
 
 \section{Problema}
+\subsection{Entrada}
 La estructura finita que codifica la instancia descrita por la fórmula
 \ref{satinstance} es $\A = \tup{|\A| = \{\texttt{zero}, \texttt{obj1},
 \texttt{max}\}, P, N}$, donde $P$ y $N$ son descritos con un archivo de texto
 de entrada que contiene las líneas:
 
+\begin{center}
 \begin{verbatim}
 ; primera cláusula
+(P zero zero)
+(N obj1 zero)
+(P max zero)
 
 ; segunda cláusula
+(N zero obj1)
+(N max obj2)
 
 ; tercera cláusula
+(N zero max)
+(P obj1 max)
+\end{verbatim}
+\end{center}
+
+Esto codifica $(p \lor \neg q \lor r) \land (\neg p \lor \neg r) \land (\neg p
+\lor q)$, con $p$ renombrada a \texttt{zero}, $q$ a \texttt{obj1}, y $r$ a
+\texttt{max}.
+
+\subsection{Salida}
+La salida de la herramienta es el siguiente archivo PDDL que establece las
+condiciones iniciales del problema:
+\begin{verbatim}
+(define (problem p)
+    (:domain sat)
+    ; zero y max fueron definidas como constantes del dominio
+    (:objects obj1)
+    (:init
+        (guess)
+        (SUC zero obj1)
+        (SUC obj1 max)
+        (not_t zero)
+        (not_t obj1)
+        (not_t max)
+        (P zero zero)
+        (N obj1 zero)
+        (P max zero)
+        (N zero obj1)
+        (N max obj1)
+        (N zero max)
+        (P obj1 max)
+    )
+    (:goal (es_cierto_meta))
+)
 \end{verbatim}
 
-En este caso, se ha renombrado a $p$ como \texttt{zero}, 
+\section{Solución}
+Se utilizó M para hallar una solución al problema de planificación generado por
+la herramienta. El plan encontrado fue el siguiente:
+\begin{verbatim}
+0 : (colocar_verdadera_T max)
+1 : (colocar_verdadera_T obj1)
+2 : (empezar-prueba)
+3 : (probar_conjuncion_2 zero max)
+4 : (probar_conjuncion_6 max zero)
+5 : (probar_conjuncion_6 obj1 zero)
+6 : (probar_disyuncion_7_0 zero max)
+7 : (probar_disyuncion_7_1 max zero)
+8 : (probar_disyuncion_7_1 obj1 zero)
+9 : (probar_existencial_8 max zero)
+10 : (probar_existencial_8 obj1 zero)
+11 : (probar_existencial_8 zero max)
+12 : (probar_universal_base_9)
+13 : (probar_universal_inductivo9 zero obj1)
+14 : (probar_universal_inductivo9 obj1 max)
+15 : (probar-meta)
+\end{verbatim}
 
+La primera parte del plan, antes del operador \texttt{empezar-prueba}, es la
+respuesta al problema de hallar una asignación de verdad a las variables $p$,
+$q$ y $r$ que satisfaga la fórmula \ref{satinstance}. La asignación es $T =
+\{\texttt{obj1}, \texttt{max}\}$, que es equivalente a $p = false$, $q = true$, $r = true$.
+La segunda parte del plan muestra la demostración de que la asignación escogida
+hace de $\Phi_\SAT$ una fórmula válida para la estructura de entrada.
