@@ -216,12 +216,15 @@ relación unaria $T$ cuantificada universalmente:
 \begin{alignat*}{1}
 \Phi_\UNSAT &= (\forall T^\text{Var})\psi_\UNSAT \\
 \psi_\UNSAT &= (\exists y\in\text{Cls})(\forall x\in\text{Var}) \\
-            &\quad\quad\ [(\neg P(x,y) \lor \neg T(x))\land(\neg N(x,y)\lor T(x))]
+            &\quad\quad\ [(P(x,y) \land \neg T(x))\lor(N(x,y)\land T(x))\land NotIn(x,y)]
 \end{alignat*}
+
+Donde la relación $NotIn(x,y)$ indica que la variable $x$ no está presente en la cláusula $y$.
+
 Esta fórmula expresa que para toda relación $T$ sobre variables
-proposicionales, existe una cláusula $y$ tal que para cada variable $x$, si $x$
-aparece positiva en $y$, $x$ es falsa, y si $x$ aparece negativa en $y$, $x$ es
-verdadera.
+proposicionales, existe una cláusula $y$ tal que para cada variable $x$, o $x$
+aparece positiva en $y$ y $x$ es falsa, o $x$ aparece negativa en $y$ y $x$ es
+verdadera, o $x$ no aparece en $y$.
 UNSAT se puede traducir automáticamente a \STRIPS considerando acciones que
 \textbf{iteran} sobre todas las posibles relaciones $T$, y acciones para
 obtener la condición $\FT[\psi_\UNSAT]$ para cada una de estas $T$.
