@@ -130,7 +130,6 @@ exponencial.
 
 \section{Traducción a \STRIPS}
 
-*** ACLARAR DEFINICIÓN FORMAL DE SISTEMA DE TIPOS ***
 \subsection{Sistema de tipos}
 Antes de extender la traducción a \PH es conveniente agregarle un sistema
 sencillo de tipos.
@@ -214,16 +213,18 @@ interpretaciones diferentes.
 Para aclarar este punto, considere la fórmula para UNSAT, que contiene una
 relación unaria $T$ cuantificada universalmente:
 
-*** ACLARAR: NO ES LA MISMA TRADUCCIÓN QUE SALE EN EL APÉNDICE ***
 \begin{alignat*}{1}
 \Phi_\UNSAT &= (\forall T^\text{Var})\psi_\UNSAT \\
 \psi_\UNSAT &= (\exists y\in\text{Cls})(\forall x\in\text{Var}) \\
-            &\quad\quad\ [(\neg P(x,y) \lor \neg T(x))\land(\neg N(x,y)\lor T(x))]
+            &\quad\quad\ [(P(x,y) \land \neg T(x))\lor(N(x,y)\land T(x))\land NotIn(x,y)]
 \end{alignat*}
+
+Donde la relación $NotIn(x,y)$ indica que la variable $x$ no está presente en la cláusula $y$.
+
 Esta fórmula expresa que para toda relación $T$ sobre variables
-proposicionales, existe una cláusula $y$ tal que para cada variable $x$, si $x$
-aparece positiva en $y$, $x$ es falsa, y si $x$ aparece negativa en $y$, $x$ es
-verdadera.
+proposicionales, existe una cláusula $y$ tal que para cada variable $x$, o $x$
+aparece positiva en $y$ y $x$ es falsa, o $x$ aparece negativa en $y$ y $x$ es
+verdadera, o $x$ no aparece en $y$.
 UNSAT se puede traducir automáticamente a \STRIPS considerando acciones que
 \textbf{iteran} sobre todas las posibles relaciones $T$, y acciones para
 obtener la condición $\FT[\psi_\UNSAT]$ para cada una de estas $T$.
@@ -307,8 +308,6 @@ segundo orden]{Acciones para iterar sobre las $2^n$ relaciones unarias $T$
 proposicionales de UNSAT.}
 \label{fig:unsat}
 \end{figure}
-*** ¿POR QUÉ ESTOS NOMBRES? ***
-%! *** ¿POR QUÉ HACE FALTA T Y NO-T? ***
 
 Nótese que este método de iteración es extensible a relaciones de aridad $k>1$.
 El único cambio que se necesita es reemplazar $x$ y $y$ por $k$-tuplas de
