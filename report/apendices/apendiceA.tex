@@ -64,6 +64,10 @@ a la siguiente posición $x2$ le corresponde otro nodo $y2$, y hay un arco entre
 \end{verbatim}
 
 \subsection{\TDM, \textit{3-Dimensional Matching}}
+Esta fórmula expresa que existen dos funciones biyectivas $F(x,y)$ y $G(y,z)$, que por 
+transitividad entre ellas simulan un subconjunto de tripletas $x$-$y$-$z$ de  $T(x,y,z)$,
+que no comparten ninguno de sus elementos (propiedad lograda la biyectividad de
+dichas funciones).
 \begin{verbatim}
 (so-exists (?F Inj)
   (so-exists (?G Inj)
@@ -155,7 +159,7 @@ es negativa existencial o universalmente.
 \end{verbatim}
 
 \subsection{\coCOL, No-3-Colorabilidad}
-Esta fórmula expresa que para toda posible coloración de nodos $R$, $G$ y $not-G \land not-R$, o dos nodos unidos por un arco tienen
+Esta fórmula expresa que para toda posible coloración de nodos $R$, $G$ y not-$G \land $ not-$R$, o dos nodos unidos por un arco tienen
 el mismo color, o un nodo tiene dos colores al mismo tiempo.
 \begin{verbatim}
 (so-forall (?R 1 @node)
