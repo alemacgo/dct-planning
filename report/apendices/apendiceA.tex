@@ -33,10 +33,10 @@ $x$ esta positiva en $y$ y $T(x)$, o $x$ esta negativa en $y$ y $not-T(x)$,
 \end{verbatim}
 \begin{figure}[h!]
 \centering
-\includegraphics[width=\textwidth]{figuras/esquema_herramienta.pdf}
+\includegraphics[width=\textwidth]{figuras/clique.pdf}
 \caption[Grafo con una \textit{clique} de tamaño $k = 6$]{Grafo con una clique de tamaño
 $k = 6$}
-\label{clique}
+\label{clique}  
 \end{figure}
 
 \begin{verbatim}
@@ -59,9 +59,16 @@ a la siguiente posición $x2$ le corresponde otro nodo $y2$, y hay un arco entre
                        (and (SUC ?x ?x2) (?f ?x2 ?y2)))
                    (?E ?y1 ?y2))))))))
 \end{verbatim}
-\begin{verbatim}
-; (exists F in Inj)(forall x)[x < MAX -> E(f(x),f(x+1))]
-\end{verbatim}
+% \begin{verbatim}
+% ; (exists F in Inj)(forall x)[x < MAX -> E(f(x),f(x+1))]
+% \end{verbatim}
+
+\begin{figure}[h!]
+\centering
+\includegraphics[width=\textwidth]{figuras/chd.pdf}
+\caption[Grafo con \textit{camino hamiltoniano}]{Grafo con \textit{camino hamiltoniano}}
+\label{hamil}  
+\end{figure}
 
 \subsection{\TDM, \textit{3-Dimensional Matching}}
 Esta fórmula expresa que existen dos funciones biyectivas $F(x,y)$ y $G(y,z)$, que por 
@@ -78,6 +85,13 @@ dichas funciones).
         (implies (and (?F ?x ?y) (?G ?x ?z))
                  (?T ?x ?y ?z))))))))
 \end{verbatim}
+
+\begin{figure}[h!]
+\centering
+\includegraphics[totalheight=0.4\textheight]{figuras/3dimmat.png}
+\caption[Ejemplo de \textit{3-Dimensional Matching}, \citep{wiki:3dm}]{Ejemplo de \textit{3-Dimensional Matching}, \citep{wiki:3dm}}
+\label{mat3}  
+\end{figure}
 
 \subsection{\TCOL, 3-colorabilidad}
 Esta fórmula expresa que existe una asignación de colores $R$, $G$ y $B$ tal que para todos los nodos
@@ -101,6 +115,13 @@ almenos y a lo sumo un color.
         (implies (?G ?x) (and (not (?R ?x)) (not (?B ?x))))
         (implies (?B ?x) (and (not (?R ?x)) (not (?G ?x)))))))))
 \end{verbatim}
+
+\begin{figure}[h!]
+\centering
+\includegraphics[width=\textwidth]{figuras/coloring.pdf}
+\caption[Grafo con \textit{3 Colorabilidad}]{Grafo con 3 Colorabilidad}
+\label{col3}  
+\end{figure}
 
 \subsection{\KCOL, k-colorabilidad}
 Esta fórmula expresa que existe una función de asignación de colores $F$, tal que a todo nodo se le es
@@ -177,3 +198,10 @@ el mismo color, o un nodo tiene dos colores al mismo tiempo.
                 )
                 (and (?R ?x) (?G ?x))))))
 \end{verbatim}
+
+\begin{figure}[h!]
+\centering
+\includegraphics[totalheight=0.4\textheight, angle=90]{figuras/clique4.pdf}
+\caption[Ejemplo de grafo \textit{No-3-Coloreable}]{Ejemplo de grafo No-3-Coloreable}
+\label{noclique}  
+\end{figure}
