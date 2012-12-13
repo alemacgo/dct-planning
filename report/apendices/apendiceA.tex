@@ -8,7 +8,7 @@
 
 \subsection{SAT, Satisfacibilidad proposicional}
 Existe una asignación de verdad $T$, tal que para toda cláusula $y$, existe una variable $x$, tal que:
-$x$ esta positiva en $y$ y $T(x)$, o $x$ esta negativa en $y$ y $not-T(x)$,
+$x$ está positiva en $y$ y $T(x)$, o $x$ está negativa en $y$ y $not-T(x)$,
 \begin{verbatim}
 (so-exists (?T 1)
   (forall (?y)
@@ -22,14 +22,17 @@ $x$ esta positiva en $y$ y $T(x)$, o $x$ esta negativa en $y$ y $not-T(x)$,
 
 \subsection{CLIQUE, Clique de tamaño $k$}
 
+En esta fórmula se utiliza la relación unaria $K$ para modelar la constante $k$
+del problema. Si se quiere que $k$ sea igual a $3$, por ejemplo, se agrega a la
+instancia \texttt{?K zero}, \texttt{?K obj1} y \texttt{?K obj2}.
+
 \begin{verbatim}
 (so-exists (?F Inj)
-  (and (forall (?y) (exists (?x) (?F ?x ?y)))  ; totality
     (forall (?x) (forall (?y)
       (implies (and (< ?x ?y)
                     (exists (?z) (and (?F ?x ?z) (?K ?z)))
                     (exists (?z) (and (?F ?y ?z) (?K ?z))))
-               (?E ?x ?y))))))
+               (?E ?x ?y)))))
 \end{verbatim}
 \begin{figure}[h!]
 \centering
@@ -39,14 +42,11 @@ $k = 6$}
 \label{clique}  
 \end{figure}
 
-\begin{verbatim}
-(exists F in Inj)(forall x y)[f(x) < K & f(y) < K -> E(x,y)]
-\end{verbatim}
-
 \subsection{\CHD, Camino Hamiltoniano Dirigido}
 Esta fórmula expresa que existe una manera ordenada $F(a,b)$ de visitar los nodos de grafo (la posición $a$ la tiene el nodo $b$), en
-la que para toda posición $x$, si no es la última, entonces existe un nodo $y1$ que le corresponde esta posición, y además
-a la siguiente posición $x2$ le corresponde otro nodo $y2$, y hay un arco entre $y1$ y $y2$.
+la que para toda posición $x$, si no es la última, entonces existe un nodo $y_1$ que le corresponde esta posición, y además
+a la siguiente posición $x_2$ le corresponde otro nodo $y_2$, y hay un arco entre
+$y_1$ y $y_2$.
 \begin{verbatim}
 (so-exists (?F Inj)
   (forall (?x)
@@ -119,7 +119,7 @@ almenos y a lo sumo un color.
 \begin{figure}[h!]
 \centering
 \includegraphics[width=\textwidth]{figuras/coloring.pdf}
-\caption[Grafo con \textit{3 Colorabilidad}]{Grafo con 3 Colorabilidad}
+\caption[Grafo con \textit{3 Colorabilidad}]{Grafo 3-coloreable}
 \label{col3}  
 \end{figure}
 
@@ -161,8 +161,8 @@ verdadera, o $x$ no aparece en $y$.
 \end{verbatim}
 
 \subsection{\qEA-QBF, Fórmula \textit{booleana} cuantificada $\Sigma_p^2$}
-Esta fórmula expresa que existe una relación $E0$ sobre variables
-proposicionales, tal que para toda relación $A0$ sobre variables
+Esta fórmula expresa que existe una relación \texttt{E0} sobre variables
+proposicionales, tal que para toda relación \texttt{A0} sobre variables
 proposicionales, Para toda cláusula $c$ existe una variable $x$, tal que: o $x$ aparece
 positiva en $c$ y es verdadera existencial o universalmente, o $x$ aparece negativa en $c$ y
 es negativa existencial o universalmente.

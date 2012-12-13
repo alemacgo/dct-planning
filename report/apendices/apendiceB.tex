@@ -8,7 +8,6 @@ En este sección se considera un problema pequeño de SAT y se describe el
 procedimiento de traducción y obtención de un plan.
 La instancia de SAT que se resolverá es
 \begin{equation}
-\label{satinstance}
 (p \lor \neg q \lor r) \land (\neg p \lor \neg r) \land (\neg p \lor q).
 \end{equation}
 
@@ -156,7 +155,7 @@ sentencia $\Phi_{SAT}$. Los nodos terminales se marcan con un óvalo.}
 \section{Problema}
 \subsection{Entrada}
 La estructura finita que codifica la instancia descrita por la fórmula
-\ref{satinstance} es $\A = \tup{|\A| = \{\texttt{zero}, \texttt{obj1},
+B.1. es $\A = \tup{|\A| = \{\texttt{zero}, \texttt{obj1},
 \texttt{max}\}, P, N}$, donde $P$ y $N$ son descritos con un archivo de texto
 de entrada que contiene las líneas:
 
@@ -232,7 +231,7 @@ la herramienta. El plan encontrado fue el siguiente:
 
 La primera parte del plan, antes del operador \texttt{empezar-prueba}, es la
 respuesta al problema de hallar una asignación de verdad a las variables $p$,
-$q$ y $r$ que satisfaga la fórmula \ref{satinstance}. La asignación es $T =
+$q$ y $r$ que satisfaga la fórmula B.1. La asignación es $T =
 \{\texttt{obj1}, \texttt{max}\}$, que es equivalente a $p = false$, $q = true$, $r = true$.
 La segunda parte del plan muestra la demostración de que la asignación escogida
 hace de $\Phi_\SAT$ una fórmula válida para la estructura de entrada.

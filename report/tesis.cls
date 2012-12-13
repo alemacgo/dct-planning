@@ -49,7 +49,7 @@
 \onehalfspacing
 \setlength{\parindent}{0pt}
 \setlength{\parskip}{2.0ex plus0.5ex minus0.2ex}
-\usepackage{vmargin}
+\usepackage{paquetes/vmargin}
 \setmarginsrb           { 1.5in}  % left margin
                         { 0.6in}  % top margin
                         { 1.0in}  % right margin
@@ -110,11 +110,11 @@
 \setcounter{dbltopnumber}{9}
 \usepackage{graphicx}
 \usepackage{epstopdf}
-\usepackage[scriptsize]{subfigure}
+\usepackage[scriptsize]{paquetes/subfigure}
 \usepackage{booktabs}
 \usepackage{rotating}
 \usepackage{listings}
-\usepackage{lstpatch}
+\usepackage{paquetes/lstpatch}
 \lstset{captionpos=b,
         frame=tb,
         basicstyle=\scriptsize\ttfamily,
