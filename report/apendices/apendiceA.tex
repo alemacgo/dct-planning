@@ -163,7 +163,7 @@ verdadera, o $x$ no aparece en $y$.
 \subsection{\qEA-QBF, Fórmula \textit{booleana} cuantificada $\Sigma_p^2$}
 Esta fórmula expresa que existe una relación \texttt{E0} sobre variables
 proposicionales, tal que para toda relación \texttt{A0} sobre variables
-proposicionales, Para toda cláusula $c$ existe una variable $x$, tal que: o $x$ aparece
+proposicionales, para toda cláusula $c$ existe una variable $x$, tal que: o $x$ aparece
 positiva en $c$ y es verdadera existencial o universalmente, o $x$ aparece negativa en $c$ y
 es negativa existencial o universalmente.
 \begin{verbatim}
@@ -180,7 +180,8 @@ es negativa existencial o universalmente.
 \end{verbatim}
 
 \subsection{\coCOL, No-3-Colorabilidad}
-Esta fórmula expresa que para toda posible coloración de nodos $R$, $G$ y not-$G \land $ not-$R$, o dos nodos unidos por un arco tienen
+Esta fórmula expresa que para toda posible coloración de nodos, donde los
+colores son expresados con las relaciones $R$ y $G$, o dos nodos unidos por un arco tienen
 el mismo color, o un nodo tiene dos colores al mismo tiempo.
 \begin{verbatim}
 (so-forall (?R 1 @node)
@@ -188,7 +189,6 @@ el mismo color, o un nodo tiene dos colores al mismo tiempo.
         (exists (?x @node)
             (or 
                 (exists (?y @node)
-                    ; no two adjacent vertices of the same color
                     (or (and (?E ?x ?y) (?R ?x) (?R ?y))
                         (and (?E ?x ?y) (?G ?x) (?G ?y))
                         (and (?E ?x ?y) (not (?R ?x)) 
