@@ -193,7 +193,7 @@ tipo uuf50 y uuf75 son no satisfacibles de tamaño 50 y 75.
 \begin{tabular}{lllllll}
 \multicolumn{5}{@{}c}{\footnotesize\SAT: $\pwin=[n+5,n+6]$} \\
 \midrule
-              &    $N^*$/$N$ & \#pos. & \#neg. & tiempo prom. \\
+              &    $N^*$/$N$ & \#pos. & \#neg. & tiempo prom. (seg) \\
 \midrule
 %                                                             % sample standard deviation
 uf20          &        40/40 &     40 &      0 &       1.7 \\ % 2.0
@@ -227,7 +227,7 @@ $p$, siendo $p$ variable.
 \begin{tabular}{lllllll}
 \multicolumn{5}{@{}c}{\footnotesize\textsc{Clique}: $\pwin=[2n+4, 3n+7]$} \\
 \midrule
-              &    $N^*$/$N$ & \#pos. & \#neg. & tiempo prom. \\
+              &    $N^*$/$N$ & \#pos. & \#neg. & tiempo prom. (seg) \\
 \midrule
 %5-3           &        40/40 &     10 &     30 &       0.0 \\ % 0.0
 %5-4           &        40/40 &      0 &     40 &       0.2 \\ % 0.5
@@ -263,7 +263,7 @@ utilización de ninguna heurística ni optimización específica al problema.
 \begin{tabular}{lllllll}
 \multicolumn{5}{@{}c}{\footnotesize\CHD: $\pwin=[n+3,n+10]$} \\
 \midrule
-              &    $N^*$/$N$ & \#pos. & \#neg. & tiempo prom. \\
+              &    $N^*$/$N$ & \#pos. & \#neg. & tiempo prom. (seg) \\
 \midrule
 %5             &        40/40 &     12 &     28 &       0.0 \\ % 0.0
 10            &        40/40 &     15 &     25 &       1.1 \\ % 2.3
@@ -287,7 +287,7 @@ juzgar por la cantidad de problemas resueltos con el mismo número de nodos.
 \begin{tabular}{lllllll}
 \multicolumn{5}{@{}c}{\footnotesize\TDM: $\pwin=[3n+4,3n+6]$} \\
 \midrule
-              &    $N^*$/$N$ & \#pos. & \#neg. & tiempo prom. \\
+              &    $N^*$/$N$ & \#pos. & \#neg. & tiempo prom. (seg) \\
 \midrule
 %5             &        40/40 &     19 &     21 &       0.0 \\ % 0.0
 10            &        40/40 &     36 &      4 &       9.6 \\ % 2.8
@@ -313,7 +313,7 @@ en lugar de un \textit{software especializado}, gracias a la herramienta.
 \begin{tabular}{lllllll}
 \multicolumn{5}{@{}c}{\footnotesize\TCOL: $\pwin=[2n+4, 2n+7]$} \\
 \midrule
-              &    $N^*$/$N$ & \#pos. & \#neg. & tiempo prom. \\
+              &    $N^*$/$N$ & \#pos. & \#neg. & tiempo prom. (seg) \\
 \midrule
 %5             &        40/40 &     37 &      3 &       0.0 \\ % 0.0
 10            &        40/40 &     18 &     22 &       0.1 \\ % 0.1
@@ -342,7 +342,7 @@ relativamente corto.
 \begin{tabular}{lllllll}
 \multicolumn{5}{@{}c}{\footnotesize\KCOL: $\pwin=[2n+4,3n+6]$} \\
 \midrule
-              &    $N^*$/$N$ & \#pos. & \#neg. & tiempo prom. \\
+              &    $N^*$/$N$ & \#pos. & \#neg. & tiempo prom. (seg) \\
 \midrule
 %5-2           &        40/40 &     20 &     20 &       0.0 \\ % 0.0
 %5-3           &        40/40 &     37 &      3 &       0.0 \\ % 0.0
@@ -389,7 +389,7 @@ $k=1,\ldots,|V|$.
 
 La Tabla \ref{chromatic} muestra los detalles de corrida de ocho instancias de
 grafos a los cuales se les determinó su número cromático utilizando la
-traducción de la herramienta y el planificador M como un oráculo para decidir
+herramienta y el planificador M como un oráculo para decidir
 la colorabilidad para distintos $k$.
 
 \begin{table}[h!]
@@ -493,7 +493,7 @@ resueltas donde hay solución).
     \multicolumn{10}{@{}c}{\footnotesize\qEA-QBF} \\
     \midrule
     %\toprule
-    & $\#\exists$ & $\#\forall$ &             & $n$ & $+$ & $-$ & tiempo &   long. plan &  \\
+    & $\#\exists$ & $\#\forall$ &             & $n$ & $+$ & $-$ & tiempo (seg) &   long. plan &  \\
     \midrule
           &          60 &           1 &             &   5 & -- &   5 &   184.3 &    -- &  \\
           &             &           2 &             &   5 & -- &   1 & 4,382.5 &    -- &  \\
@@ -507,7 +507,7 @@ resueltas donde hay solución).
 De los problemas QBF-\qEA con 60 variables existenciales y una universal fueron
 resueltos en tiempos relativamente cortos, aunque no al nivel de un
 solucionador especializado de problemas QBF.
-solución. Es probable que las instancias con 60 variables existenciales
+Es probable que las instancias con 60 variables existenciales
 y 2 universales no tuvieran ninguna solución, pero el planificador no pudo
 determinarlo porque fue abortado al agotarse el tiempo estipulado para los
 experimentos. Con 100 variables existenciales, el planificador encuentra
@@ -520,7 +520,7 @@ todos los modelos posibles de dos variables independientes.
   \begin{tabular}{lllrrrrrrrrrl}
     \multicolumn{10}{@{}c}{\footnotesize\qEAE-QBF} \\
     \midrule
-    & $\#\exists$ & $\#\forall$ & $\#\exists$ & $n$ & $+$ & $-$ & tiempo &   long. plan &  \\
+    & $\#\exists$ & $\#\forall$ & $\#\exists$ & $n$ & $+$ & $-$ & tiempo (seg) &   long. plan &  \\
     \midrule
           &          10 &           2 &          30 &   5 & -- &   5 & 4,199.2 &    -- &  \\
           &             &           2 &          50 &   5 & -- &   5 & 2,313.9 &    -- &  \\
@@ -546,7 +546,7 @@ responsables por un crecimiento exponencial en el tamaño del plan).
   \begin{tabular}{lllrrrrrrrrrl}
     \multicolumn{10}{@{}c}{\footnotesize\qAE-QBF} \\
     \midrule
-    & $\#\forall$ & $\#\exists$ &             & $n$ & $+$ & $-$ & tiempo & long. plan &  \\
+    & $\#\forall$ & $\#\exists$ &             & $n$ & $+$ & $-$ & tiempo (seg) & long. plan &  \\
     \midrule
           &           1 &         100 &             &   5 &   5 & -- &   147.9 &   319 &  \\ % #actions=45,378.6
     \cmidrule{2-10}
@@ -574,7 +574,7 @@ planes sea mucho mayor.
   \begin{tabular}{lllrrrrrrrrrl}
     \multicolumn{10}{@{}c}{\footnotesize\qAEA-QBF} \\
     \midrule
-    & $\#\forall$ & $\#\exists$ & $\#\forall$ & $n$ & $+$ & $-$ & tiempo &   long. plan &  \\
+    & $\#\forall$ & $\#\exists$ & $\#\forall$ & $n$ & $+$ & $-$ & tiempo (seg) &   long. plan &  \\
     \midrule
           &           1 &          60 &           1 &   5 &   1 & -- &   404.7 &   635 &  \\
           &             &          60 &           2 &   5 & -- & -- &     -- &    -- &  \\
@@ -617,7 +617,7 @@ Tabla \ref{table:exp:co-3col}.
 \begin{table}[h!]
 \centering
 \begin{tabular}{crrrrr}
-$|V|$ & $n$ & $+$ & $-$ &  tiempo & long. plan  \\
+$|V|$ & $n$ & $+$ & $-$ &  tiempo (seg) & long. plan  \\
 \midrule
     4 &   5 &   1 &   4 &   0.6 &   1,731  \\
     5 &   5 &   2 &   3 &  41.0 &   6,695  \\

@@ -21,7 +21,9 @@ decir, que sólo cambian con el resultado de las acciones aplicadas).
 
 \cite{fikes:strips} fueron pioneros en el área de planificación con su sistema
 STRIPS (\textit{Stanford Research
-Institute Problem Solver}).
+Institute Problem Solver}). El acrónimo STRIPS se ha empleado desde entonces
+para referirse al lenguaje \textit{de facto} que se utiliza para expresar
+problemas de planificación.
 
 Los investigadores de esta área han diseñado una representación compacta para
 expresar problemas de planificación de cualquier dominio, llamado PDDL
@@ -174,7 +176,7 @@ PLANSAT pertenece a la clase de complejidad PSPACE
 \citep{bylander:plan-complexity}.
 PSPACE es la clase de problemas que pueden ser resueltos por una máquina de
 Turing determinística con una cantidad polinomial (en $n$, donde $n$ es el
-tamaño del problema) de espacio en memoria. Los problemas PSPACE son, en
+tamaño de su entrada) de espacio en memoria. Los problemas PSPACE son, en
 general, más difíciles de resolver que los problemas NP, los cuales a su vez
 son problemas combinatorios complejos para los cuales se cree que no existen
 soluciones generales eficientes. Como en muchos otros dominios de inteligencia
@@ -402,7 +404,7 @@ donde $R$ se interpreta como $R'$.\\
 Se tiene por definición \ref{semantica_def}(b) que $(\tup{\A, R'},i) 
 \models E(0,1)$ y que \mbox{$(\tup{\A, R'},i) \models E(1,2)$}.\\
 También se tiene que $(\tup{\A, R'}, i) \models R'(1)$, 
-$(\tup{\A, R'}, i) \nvDash R'(0)$, y $(\tup{\A, R'}, i) \nvDash R'(1)$.\\
+$(\tup{\A, R'}, i) \nvDash R'(0)$, y $(\tup{\A, R'}, i) \nvDash R'(2)$.\\
 $\tup{\text{por definición \ref{semantica_def}(d) y (c)}}$\\
 \mbox{\hspace{5mm} $(\tup{\A, R'}, i) \models E(0,1) \land E(1,2) \land \neg
 R'(0) \land R'(1) \land \neg R'(2)$}\\
@@ -517,8 +519,8 @@ $N^\A=\{(1,0),(0,1),(2,1),(0,2)\}$ y $P^\A=\{(0,0),(2,0),(1,2)\}$.
 La existencia de una asignación de valores de verdad a las variables que
 satisfaga una fórmula en forma normal conjuntiva (CNF) puede ser expresada con la
 sentencia \SOE $\Phi_\SAT$:\footnote{Esta sentencia
-asume que $m\geq n$. En caso contrario, se debe añadir cláusulas tautológicas a
-la fórmula en CNF.}
+asume que el número de cláusulas es mayor o igual que el número de variables. 
+En caso contrario, se debe añadir cláusulas tautológicas a la fórmula en CNF.}
 \[ (\exists T^1)(\forall y)(\exists x)[(P(x,y)\land T(x))\lor(N(x,y)\land\neg T(x))] \]
 
 La fórmula puede leerse como: existe una asignación de valores de verdad $T$

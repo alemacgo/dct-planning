@@ -5,7 +5,7 @@
 
 Este trabajo ha presentado dos reducciones de la lógica de segundo orden a
 problemas de planificación automática que se adhieren a la Teoría de
-Complejidad Descriptiva. Las herramientas reciben como entrada una firma
+Complejidad Descriptiva. La herramienta recibe como entrada una firma
 $\sigma$, una sentencia en lógica de segundo orden (segundo orden existencial,
 en el caso de la traducción de NP) y una estructura $\A\in\struc[\sigma]$, y
 producen como salida un par de archivos en PDDL $\tup{\domain,\instance}$, que
@@ -16,7 +16,7 @@ problemas NP a STRIPS. Esta salida puede utilizarse con un planificador
 para obtener una solución al problema original.
 
 Los resultados de los experimentos muestran que la herramienta puede utilizarse
-para crear solucionadores a problemas específicos en NP o PH que tienen un buen desempeño
+para resolver problemas específicos en NP o PH, observando que tienen un buen desempeño
 sobre problemas pequeños. Así, por ejemplo, un profesional del área de
 computación que tenga la necesidad de resolver problemas pequeños de grafos, o
 requiera realizar pruebas de concepto para estudiar problemas académicos o de la vida
@@ -28,7 +28,7 @@ cumpla con sus objetivos:
 \item Modelar el problema de interés utilizando lógica de segundo orden, y
 escribirlo en la sintaxis propuesta por este trabajo.
 \item Utilizar la herramienta para producir el dominio y distintas instancias
-en PDDL, usar un planificador para conseguir soluciones a estas instancias y
+en PDDL. Usar un planificador para conseguir soluciones a estas instancias y
 analizar las soluciones arrojadas para constatar cómo se interpretan en el contexto del
 problema de interés.
 \end{enumerate}
@@ -37,7 +37,7 @@ Debe notarse que no todos los problemas son fácilmente modelables utilizando un
 lenguaje descriptivo como el que hemos desarrollado en este trabajo. Así como
 no existe un lenguaje de programación \textbf{ideal} que permita la expresión
 de cualquier problema de una forma sencilla, sino que existen distintos
-\textbf{paradigmas} y el programador debe tener la experticia para reconocer
+\textbf{paradigmas} y el programador debe tener la experticia de reconocer
 cuál es el más adecuado para cada problema determinado, no hay una única forma
 ``óptima'' de tratar con todos los problemas de decisión.
 Por ejemplo, sería particularmente engorroso intentar
@@ -51,11 +51,11 @@ el ejercicio puede tomar mucho tiempo.
 Además, la herramienta es de interés para los investigadores del área de
 planificación automática, pues los problemas de planificación que genera
 presentan un reto para los planificadores actuales y pueden utilizarse como una
-medida de comparación entre diferentes enfoques a cómo construir planificadores
+medida de comparación entre diferentes enfoques de cómo construir planificadores
 generales y eficientes, particularmente en el caso de \textit{SAT-planners} y
 en la búsqueda de planes paralelos.
 
-La reducción a NP presentada en este trabajo fue presentada en el mes de junio
+La reducción de NP a planificación expuesta en este trabajo fue presentada en el mes de junio
 de 2011 en la Conferencia Internacional de
 Planificación Automática (ICAPS '11) en la ciudad de Freiburg, Alemania
 \citep{porco:npreductions}.
