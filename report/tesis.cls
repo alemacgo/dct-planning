@@ -90,6 +90,7 @@
 \newtheorem{definition}[theorem]{Definición}
 \theoremstyle{remark}
 \newtheorem{remark}[theorem]{Remark}
+
 \usepackage[centerlast,small,sc]{caption}
 \setlength{\captionmargin}{20pt}
 \newcommand{\fref}[1]{Figure~\ref{#1}}

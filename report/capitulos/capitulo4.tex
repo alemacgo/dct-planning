@@ -158,6 +158,16 @@ fueron los tiempos de corrida.
 Los detalles sobre la modelación de cada problema pueden encontrarse en el
 Apéndice \ref{apendiceA}.
 
+Es importante recalcar que, como se ha demostrado la correctitud de la
+herramienta, \textbf{siempre se puede hallar una solución (si la instancia es
+positiva) o demostrar que no existe tal solución (si la instancia es
+negativa)}. Como no se dispone de máquinas con cantidad arbitraria de memoria
+ni de tiempo ilimitado, en las tablas de resultados se refleja la cantidad de
+problemas a los que el computador pudo responder dentro de sus límites. Esto no
+quiere decir que la herramienta falla en algunos casos, sino que la complejidad
+de un problema puede exceder la cantidad de tiempo y espacio prefijado para su
+resolución.
+
 \section{Experimentos y resultados de problemas NP}
 Se realizaron experimentos en los problemas NP-completos: \SAT, \CLIQUE, \CHD
 \ (Camino \textit{Hamiltoniano} Dirigido),
@@ -209,16 +219,13 @@ uuf75         &         1/40 &      0 &      1 &   1,746.4 \\ % 0.0
 \end{table}
 
 M fue capaz de resolver todos los problemas pequeños de SAT, tardándose más en
-las instancias no satisfacibles (para probar que no había solución). Como se
-puede constatar con los problemas de 75 variables, es evidente que la herramienta 
-no es la forma más eficiente de resolver problemas: solucionadores específicos
-de SAT pueden resolver problemas mucho mayores en menor tiempo. Sin embargo, ha
-sido un buen ejercicio constatar la equivalencia teórica entre el problema
-NP estándar, SAT, y planificación en STRIPS-1.
+las instancias no satisfacibles (para probar que no había solución). El límite
+de lo resoluble por el planificador con las restricciones fijadas estuvo entre las 50 y 75 variables.
 
 \subsection{Problemas de grafos y \TDM}
-Las instancias de problemas de grafos se generaron de acuerdo con el modelo $G(n, p)$
-\cite{bollobas:random-graphs}, variando $n$ y $p$, y las instancias para \TDM\ se generaron
+Las instancias de problemas de grafos se generaron de acuerdo con el modelo
+$G(n, p)$ de \cite{bollobas:random-graphs}; es decir, grafos de $n$ nodos con $p$ probabilidad de ocurrencia de
+cada arista. Las instancias para \TDM\ se generaron
 escogiendo aleatoriamente tripletas de $\{0,\ldots,n-1\}^3$ con probabilidad
 $p$, siendo $p$ variable. 
 
@@ -376,8 +383,7 @@ pequeños en el tamaño del problema.
 
 En total, de todos los 1920 problemas que se intentó resolver, fueron
 solucionadas 1614 instancias (el 84\%), 706 de las cuales eran positivas (es
-decir, se consiguió un plan que solucionaba el problema. El tiempo de corrida
-promedio entre todas las instancias resueltas fue de 180.9 segundos.
+decir, se consiguió un plan que solucionaba el problema.
 
 \subsection{Número cromático}
 
@@ -421,12 +427,13 @@ El último valor de $k$ para cada instancia es el número cromático.}
 \label{chromatic}
 \end{table}
 
-Nótese que los mayores tiempos de corrida corresponden generalmente a
+Nótese que los mayores tiempos de corrida corresponden normalmente a
 la prueba de $k$-colorabilidad para $k = \chi - 1$. Esto se debe a que
 para un grafo con número cromático $\chi$
 no es trivial descartar que sea $(\chi - 1)$-coloreable, y el programa debe
 agotar todas las posibles formas de colorearlo antes de rendirse e intentar con
-un color adicional.
+un color adicional. No se logró determinar qué propiedad del grafo causó
+mayores tiempos de corrida en el último valor de $k$ para las instancias 15-0.25 y 20-0.10.
 
 \section{Experimentos y resultados de problemas PH}
 Se llevaron a cabo diferentes experimentos para probar la dificultad de los
@@ -640,7 +647,10 @@ una instancia consiguió uno con más de 400.000 pasos. Se cree que la razón
 por la cual este planificador es capaz de lograr semejante hazaña es que, a diferencia de M, 
 es de tipo secuencial y la resolución de problemas en co-NP no requiere de
 conjeturas (pues no hay cuantificadores existenciales de segundo orden), sino
-de la aplicación lineal de acciones.
+de la aplicación lineal de acciones. En este caso llama la atención que el
+planificador tardó una gran cantidad de tiempo en el grafo de 6 vértices a
+pesar de que la longitud del plan no era excesivamente grande. La razón exacta
+de esto es desconocida.
 
 \section{La herramienta en la web}
 
@@ -666,4 +676,6 @@ de su preferencia para la resolución de problemas.
 
 En el sitio web también se proveen fórmulas predefinidas para los problemas NP
 y PH estudiados en este trabajo, a modo de facilitar el uso de la herramienta
-con problemas frecuentes a los potenciales usuarios.
+con problemas frecuentes a los potenciales usuarios. Se prevé que la
+herramienta web esté disponible bajo el subdominio del Grupo de Inteligencia
+Artificial de la Universidad Simón Bolívar, en \url{http://www.gia.usb.ve}.

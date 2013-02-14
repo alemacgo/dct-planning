@@ -334,7 +334,12 @@ es una función que asigna a las $\sigma$-estructuras un
 problema instanciado STRIPS.
 
 A continuación se demuestran las tres propiedades formales importantes sobre
-$f_{\sigma,\Phi}$:
+$f_{\sigma,\Phi}$.
+
+\begin{mdframed}
+\begin{theorem}
+\label{principal}
+\textbf{Propiedades formales de $f_{\sigma,\Phi}$}
 \begin{enumerate}
 \item $f_{\sigma,\Phi}$ es una reducción, esto es:
     \begin{enumerate}
@@ -346,6 +351,8 @@ $f_{\sigma,\Phi}$:
 \item $f_{\sigma,\Phi}$ corre en tiempo polinomial.
 \item $f_{\sigma,\Phi}$ no genera problemas más complejos que \SOE.
 \end{enumerate}
+\end{theorem}
+\end{mdframed}
 
 \subsection{Demostración de reducción}
 Se demostrará que $\A \models \Phi$ si y sólo si $f_{\sigma,\Phi}(\A)$ tiene
@@ -543,7 +550,7 @@ $\textsc{init}(f_{\sigma,\Phi}(\A))$. Sea $u_j = a_j^\A$ para $1 \leq j \leq k$.
 
 \subsection{Tiempo de corrida de la reducción}
 En esta sección se demuestra que $f_{\sigma,\Phi}$ es una reducción
-del problema NP expresado por $\Phi$ a STRIPS que corre en tiempo polinomial.
+del problema NP expresado por $\Phi$ a un problema STRIPS que corre en tiempo polinomial.
 
 Recuerde que 
 $ f_{\sigma,\Phi}(\A) = \ground(\domred(\sigma,\Phi),\insred(\sigma,\Phi,\A))

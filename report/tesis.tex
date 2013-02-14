@@ -27,6 +27,8 @@
 \usepackage{caption}
 \usepackage{paquetes/multirow}
 \usepackage{lscape}
+\usepackage{mdframed}
+
 %:%s/\(bibitem.\+\)and/\1y/g
 %\usepackage[letterpaper, inner=3cm, outer=2cm]{geometry}
 %\addtolength[\topmargin]{-1.5cm}
@@ -169,7 +171,7 @@
 Presentado ante la Ilustre Universidad Simón Bolívar \\
 como requisito parcial para optar al título de \\
 Ingeniero de Computación}
-    \date{Sartenejas, Diciembre de 2012}
+    \date{Sartenejas, febrero de 2013}
 \end{titlepage}
 %%%% Título
 
@@ -229,22 +231,22 @@ planificación restringidos que pertenezcan también a la clase NP, de modo que
 la resolución de problemas no sea más compleja de lo necesaria a causa de la reducción.
 
 La herramienta desarrollada consta de un analizador sintáctico de un lenguaje
-basado en la lógica de segundo orden y de una serie de procedimientos que
-recorren el árbol sintáctico para generar una serie de condiciones y operadores
-de un problema de planificación STRIPS, expresado en lenguaje PDDL.
+basado en la lógica de segundo orden y de una serie de recorridos del
+árbol sintáctico para generar un problema de planificación STRIPS, expresado en lenguaje PDDL. Un aspecto
+importante de la herramienta es que cumple con las propiedades formales
+postuladas en el Teorema \ref{principal}, que acotan su complejidad.
 
 Se modelaron y solucionaron problemas de varios dominios y tamaños a modo de
 probar la efectividad de un planificador basado en SAT para resolver los
-problemas traducidos. Los resultados fueron satisfactorios para problemas de
-tamaño moderado: el planificador logró resolver la mayoría de ellos en menos de
+problemas traducidos. Los resultados fueron satisfactorios para problemas
+pequeños: el planificador logró resolver la mayoría de ellos en menos de
 cinco minutos.
 
 Parte de este trabajo fue presentado en la \textit{21st International
 Conference on Automated Planning and Scheduling} (ICAPS 2011), y
 los investigadores del área han reconocido que los dominios generados por la 
-herramienta son de interés
-práctico, pues se conocen sus propiedades formales y es posible estudiarlos a
-fondo para descubrir mejores heurísticas y optimizaciones para los
+herramienta son de interés práctico, pues se conocen sus propiedades formales y 
+es posible estudiarlos a fondo para descubrir mejores heurísticas y optimizaciones para los
 planificadores.
 
 \noindent \begin{small} \textbf{Palabras clave}: Planificación Automática, Teoría de

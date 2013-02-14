@@ -1,0 +1,273 @@
+SLIDE 01
+========
+(presentación)
+
+
+SLIDE 02
+========
+En esta presentación daremos a conocer el objetivo del trabajo; 
+
+luego haremos un repaso de la fundamentación teórica, específicamente de las áreas de planificación automática, lógica de segundo orden y complejidad descriptiva;
+
+después hablaremos sobre el funcionamiento de la herramienta de software que hemos desarrollado para reducir automáticamente problemas de decisión en planificación;
+
+seguidamente presentaremos dos ejemplos extendidos con los cuales explicaremos las reducciones de problemas pertenecientes a las clases NP y PH;
+
+y finalmente describiremos los experimentos realizados y discutiremos los resultados.
+
+SLIDE 03
+========
+
+Crear una herramienta que tome la declaración de un problema en un lenguaje declarativo de alto nivel.
+
+Declarativo: porque no se especifican los pasos a seguir para llegar a una solución, al contrario de un lenguaje imperativo.
+
+… y la herramienta transforme la descripción del problema automáticamente, en tiempo polinomial, al lenguaje PDDL para luego ser resuelto por un planificador.
+
+Se utilizó como lenguaje de codificación  la lógica, ya que es sencillo, ampliamente usado en computación, y soportado por la teoría de complejidad descriptiva.
+
+SLIDE 04
+========
+(marco teórico)
+
+
+SLIDE 05
+========
+La planificación automática es un campo de investigación dentro de la Inteligencia Artificial. Su enfoque se basa en descubrir una secuencia de acciones a seguir para lograr un objetivo concreto (Russell y Norvig, 2010). En este trabajo se manejará la concepción clásica de planificación, en la cual todas las acciones tienen una consecuencia determinística y observable en ambientes estáticos (es decir, que sólo cambian con el resultado de las acciones aplicadas).
+
+En un problema de planificación se parte de un estado inicial y se intenta conseguir una secuencia de acciones (operadores) que permitan llegar a la meta.
+
+Un problema de planificación es una tupla C, A, I, F, con:
+- un conjunto de condiciones C o proposiciones
+- un conjunto de acciones A u operadores
+- un estado inicial I, que se representa como un subconjunto de C (las condiciones que son verdaderas en el estado inicial)
+- un conjunto de estados meta F, que cada uno es un subconjunto de C
+A la solución de un problema (secuencia de acciones) se le denomina plan.
+
+El language PDDL, Planning Domain Definition Language, es el lenguaje estándar utilizado por la comunidad para especificar los problemas de planificación. Se suele dividir la entrada de los planificadores en dominio y problema. En el dominio se especifican cuáles son los átomos y operadores, el problema tiene información sobre el estado inicial y el estado final.
+
+SLIDE 06
+========
+En esta lámina vemos un ejemplo de especificación de un dominio y un problema en el lenguaje PDDL. El dominio de bloques trata de utilizar una mano robótica para apilar bloques enumerados de cierta manera.
+(explicar dominio, explicar problema, explicar dibujos)
+
+SLIDE 07
+========
+(explicar resolución, adds en azul, deletes en rojo)
+
+
+SLIDE 08
+========
+Algunos resultados sobre la complejidad de planificación:
+
+- Determinar la existencia de un plan para un problema de planificación general es PSPACE-completo (Bylander, 1994)
+
+- Si cada operador puede aplicarse a lo sumo una vez sobre los mismos parámetros, determinar la existencia de un plan está en NP
+
+En una traducción de problemas NP a planificación, nos interesa una garantía de complejidad: no volver el problema más difícil de resolver
+
+
+SLIDE 09
+========
+La lógica de segundo orden es una extensión de la lógica de primer orden que permite cuantificar sobre predicados o relaciones, es decir, tiene sentido la expresión: existe una relación de aridad 1 tal que para todo x que cumple P(x), se cumple R(x). 
+
+SLIDE 10
+========
+Una estructura de primer orden sobre una firma sigma (bla) es una tupla (bla)… se dice que una fórmula phi es satisfecha por una estructura A si y sólo si...
+
+
+SLIDE 11
+========
+Por ejemplo, tengamos la firma sigma y la estructura A, donde el universo sea {0, 1, 2} y la relación E de aridad 2 esté compuesta de los pares ordenados (0,1) y (1,2), la constante t se interprete como el elemento 2 y la constante s como 0.
+Entonces las siguientes fórmulas se satisfacen: (mencionar las dos fórmulas, en la primera el "testigo" es x = 1).
+
+
+SLIDE 12
+========
+Estos son ejemplos de proposiciones de lógica de segundo orden.
+Una propiedad P que sólo satisfacen dos números, puede ser modelada con la siguiente fórmula:
+(primera fórmula)
+
+Si queremos capturar los nodos de un grafo cuyo grado externo es superior a cero, suponiendo que E(x, y) denota la existencia de un arco entre los nodos x y y, podemos modelarlo de esta forma:
+(segunda fórmula)
+
+Si queremos una fórmula que sea verdadera si y sólo si un grado es 2-coloreable, podemos utilizar la siguiente:
+(tercera fórmula)
+
+SLIDE 13
+========
+La teoría de complejidad descriptiva es una rama de la teoría de complejidad computacional que tiene como objetivo caracterizar las clases de complejidad por el tipo de lógica requerida para expresar lenguajes en ellos. En ella:
+- Una clase de complejidad (clase de problemas) corresponde a un fagmento de la lógica
+
+
+SLIDE 14
+========
+En esta tabla podemos ver las principales equivalencias entre clases de complejidad y clases de complejidad descriptiva, que corresponden a lógicas con mayor o menor poder expresivo. Las equivalencias más relevantes para este trabajo son las de NP y PH.
+
+SLIDE 15
+========
+Ahora veremos un ejemplo de problema perteneciente a la clase de complejidad NP: satisfacibilidad proposicional. Para modelar este problema en lógica, recordemos su definición: decimos que una fórmula en CNF (forma normal conjuntiva) es satisfacible si y sólo si existe una asignación de variables en la cual toda cláusula tiene al menos una variable satisfecha.
+
+(explicar predicados)
+
+Esta fórmula modela el dominio de SAT: todas las estructuras que satisfagan esta fórmula son *satisfacibles*.
+
+SLIDE 16
+========
+Un ejemplo de estructura satisfacible es la siguiente.
+Tenemos la fórmula: (fórmula)
+Luego, si tomamos a p = 0, q = 1, r = 2, tenemos que P es … y N es … (explicar por qué).
+La fórmula se satisface asignando p y q a verdadero y r a falso (explicar por qué).
+
+
+SLIDE 17
+========
+La herramienta.
+
+SLIDE 18
+========
+Nuestra herramienta es una reducción automática (izquierda) que toma una sentencia en LSO y una estructura de primer orden, y produce como resultados un dominio y un problema PDDL, los cuales pueden ser la entrada de un planificador, del que se obtendrá la solución al problema original.
+Las garantías que ofrece la herramienta son:
+- La traducción corre en tiempo polinomial
+- En el caso de los problemas NP, el problema generado no es mas difícil de resolver que el original
+
+SLIDE 19
+========
+Ahora presentaremos unos ejemplos extendidos que demuestran paso a paso cómo ocurre la traducción automática en la herramienta.
+
+SLIDE 20
+========
+Primero concentrémonos en el caso de los problemas NP. Tomaremos la traducción del problema de SAT.
+
+SLIDE 21
+========
+Ésta es la modelación en lógica de segundo orden, utilizando los elementos sintácticos que hemos descrito en nuestro trabajo (operadores como so-exists, etc. en lugar de símbolos matemáticos por simplicidad).
+
+
+SLIDE 22
+========
+Éste es el dominio de planificación que la herramienta produce como salida al recibir la fórmula de SAT.
+
+SLIDE 23
+========
+(explicar que la cuantificación de segundo orden existencial produce un operador para colocar un elemento en verdadero)
+
+
+SLIDE 24
+========
+(explicar que P y N son condiciones en el problema de planificación)
+
+
+SLIDE 25
+========
+(explicar el and)
+
+
+SLIDE 26
+========
+(explicar el or)
+
+
+SLIDE 27
+========
+(explicar el exists)
+
+
+SLIDE 28
+===============
+(explicar el forall, cómo ocurre la iteración similar a una inducción)
+
+SLIDE 29
+========
+(explicar la condición especial de guess, el plan se pica en dos partes para evitar simetrías, y el holds_goal)
+
+SLIDE 30
+========
+Ahora estudiaremos un ejemplo de traducción de un problema que no está en NP, sino que forma parte de la más general jerarquía polinomial PH, UNSAT.
+
+
+SLIDE 31
+========
+Ésta es la modelación de UNSAT, muy similar a SAT.
+(explicar por qué hace falta NotIn)
+(explicar brevemente que se agregó un sistema de tipos: tipos variables y cláusulas)
+
+
+SLIDES 32 y 33
+========
+(explicar cómo se implementan los tipos en el PDDL)
+
+
+SLIDES 34-38
+========
+(explicar para todo de segundo orden)
+
+
+SLIDE 39
+========
+Ahora describiremos brevemente los experimentos realizados sobre diferentes tipos de problemas y presentaremos los resultados obtenidos.
+
+
+SLIDE 40
+========
+Primero, los problemas NP.
+Se codificaron, tradujeron y resolvieron los problemas NP:
+- SAT (provenientes de la conocida librería de problemas en línea SATLIB)
+- Clique de tamaño k
+- Camino hamiltoniano en grafos dirigidos
+- 3-dimensional matching 
+- 3-colorabilidad
+
+Se utilizaron:
+- CPUs Xeon 1.86GHz con 2GB de memoria RAM
+- El planificador M, basado en SAT, creado por Jussi Rintanen
+
+SLIDE 41
+========
+Aquí podemos ver ejemplos reales de grafos en los cuales el planificador pudo hallar una respuesta al problema.
+(explicar brevemente camino hamiltoniano y clique)
+
+SLIDE 42
+========
+(leer el resumen, no extenderse mucho)
+
+SLIDE 43
+========
+Se determinó el número cromático de varios grafos utilizando la herramienta como un oráculo, probando la k colorabilidad con valores incrementales de k. Nótese que los mayores tiempos suelen corresponder al número chi - 1.
+
+SLIDE 44
+========
+Se codificaron, tradujeron y resolvieron los problemas PH:
+- QBF (Quantified Boolean Formula)
+- El complemento de 3 colorabilidad
+
+Utilizando
+- CPUs 5140 Xeon 2.33GHz con 2GB de memoria RAM y 1.5 horas de tiempo limite.
+- El planificador M, basado en SAT, creado por Jussi Rintanen
+- El planificador secuencial LAMA, creado por Silvia Richter
+
+SLIDE 45
+========
+- Problemas QBF aleatorios con 150 cláusulas cada uno
+- Fueron realizados cuatro tipos de QBF: ∃∀, ∃∀∃, ∀∃ y ∀∃∀
+(destacar algún resultado?)
+
+
+SLIDE 46
+========
+- Problemas aleatorios de no-3 Colorabilidad
+(?)
+
+SLIDE 47
+========
+- Método eficiente para generar reducciones automáticas de problemas NP a STRIPS
+
+- Una vez que los problemas son traducidos a PDDL, se está aprovechando el trabajo de toda una comunidad científica para resolverlos sin necesidad de programar solvers especializados para cada problema
+
+- Reto: reducir problemas generales en PSPACE a STRIPS
+- Calcular clausuras transitivas de predicados definibles en lógica de segundo orden
+
+
+SLIDE 48
+========
+(gracias)
