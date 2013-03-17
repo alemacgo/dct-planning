@@ -14,6 +14,10 @@ flags:
         Send output PDDL file to this location
     --problem=path:
         Translate the domain and instance in this location
+    --np:
+        Use the NP translation
+    --ph:
+        Use the PH translation
 """
 
 try:
@@ -22,12 +26,12 @@ try:
     output_path = None
     problem_path = None
     silence = False
+    unique_translation = False
 
     option = 1 # current command-line option
     flag = argv[option]
 
     while flag[:2] == "--":
-        print flag
         if flag == "--nocolor": 
             colors = False
         elif flag == "--silent":   # to implement!
@@ -36,10 +40,21 @@ try:
             output_path = flag[9:]
         elif flag[:9] == "--problem":
             problem_path = flag[10:]
+        elif flag == "--np" and not unique_translation:
+            unique_translation = True
+            os.system('git checkout master')
+        elif flag == "--ph" and not unique_translation:
+            unique_translation = True
+            os.system('git checkout new')
+        elif (flag == "--np" or flag == '--ph') and unique_translation:
+            unique_translation = False
         else:
             raise SystemExit("unknown flag '%s'. \n%s" %(flag, usage))
         option += 1
         flag = argv[option]
+
+    if not unique_translation:
+        raise SystemExit("please choose a translation: use either '--np' or '--ph'.\n")
 
     # opening main prenex file
     file_path = argv[option]
