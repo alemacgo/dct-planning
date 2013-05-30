@@ -74,6 +74,8 @@ try:
         print "warning: no signature file found"
     except parser.SignatureError, e:
         print "warning (signature error): %s" %(e.msg)
+    except:
+        print 'warning: unknown signature error'
 
 except IndexError:
     raise SystemExit(usage)
